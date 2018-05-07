@@ -22,7 +22,22 @@ const createLintingRule = () => ({
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    appManitor: './src/pages/redis/appManitor/appManitor.js',
+    instanceList: './src/pages/redis/appManitor/instanceList.js',
+    instance: './src/pages/redis/appManitor/instance.js',
+    alertList: './src/pages/redis/appManitor/alertList.js',
+    alertEdit: './src/pages/redis/appManitor/alertEdit.js',
+    appDetail: './src/pages/redis/appManitor/appDetail.js',
+    
+    compOverview: './src/pages/redis/compOverview/compOverview.js',
+    compInstanceList: './src/pages/redis/compOverview/instanceList.js',
+    compInstance: './src/pages/redis/compOverview/instance.js',
+    compAlertList: './src/pages/redis/compOverview/alertList.js',
+    compAlertEdit: './src/pages/redis/compOverview/alertEdit.js',
+    compBackupsList: './src/pages/redis/compOverview/backupsList.js',
+    compBackups: './src/pages/redis/compOverview/backups.js',
+    compRecoverList: './src/pages/redis/compOverview/recoverList.js'
   },
   output: {
     path: config.build.assetsRoot,
@@ -71,10 +86,16 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         options: {
-          limit: 10000,
+          limit: 257000, // 这个数值是由加载的东西的体积和决定的
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
+      },
+      /* sass loader start */
+      {
+        test: /\.(sass|scss)?$/,
+        loader: 'style-loader!css-loader!sass-loader'
       }
+      /* sass loader end */
     ]
   },
   node: {

@@ -24,6 +24,10 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    // 使用iview时不报不认识的标签名的错误
+    "vue/no-parsing-error": [2, { "x-invalid-end-tag": false }],
+    // 解决axios的报错
+    'no-unused-vars': 0
   }
 }

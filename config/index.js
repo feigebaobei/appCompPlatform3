@@ -47,11 +47,26 @@ module.exports = {
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
+    appManitor: path.resolve(__dirname, '../dist/appManitor.html'),
+    instanceList: path.resolve(__dirname, '../dist/instanceList.html'),
+    instance: path.resolve(__dirname, '../dist/instance.html'),
+    alertList: path.resolve(__dirname, '../dist/alertList.html'),
+    alertEdit: path.resolve(__dirname, '../dist/alertEdit.html'),
+    appDetail: path.resolve(__dirname, '../dist/appDetail.html'),
+    
+    compOverview: path.resolve(__dirname, '../dist/compOverview.html'),
+    compInstanceList: path.resolve(__dirname, '../dist/compInstanceList.html'),
+    compInstance: path.resolve(__dirname, '../dist/compInstance.html'),
+    compAlertList: path.resolve(__dirname, '../dist/compAlertList.html'),
+    compAlertEdit: path.resolve(__dirname, '../dist/compAlertEdit.html'),
+    compBackupsList: path.resolve(__dirname, '../dist/compBackupsList.html'),
+    compBackups: path.resolve(__dirname, '../dist/compBackups.html'),
+    compRecoverList: path.resolve(__dirname, '../dist/compRecoverList.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

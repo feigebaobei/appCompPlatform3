@@ -54,8 +54,93 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'index.html',
-      inject: true
+      template: './template/index.html',
+      inject: true,
+      chunks: ['app']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'appManitor.html',
+      template: './template/appManitor/appManitor.html',
+      inject: true,
+      chunks: ['appManitor']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'instanceList.html',
+      template: './template/appManitor/instanceList.html',
+      inject: true,
+      chunks: ['instanceList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'instance.html',
+      template: './template/appManitor/instance.html',
+      inject: true,
+      chunks: ['instance']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'alertList.html',
+      template: './template/appManitor/alertList.html',
+      inject: true,
+      chunks: ['alertList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'alertEdit.html',
+      template: './template/appManitor/alertEdit.html',
+      inject: true,
+      chunks: ['alertEdit']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'appDetail.html',
+      template: './template/appManitor/appDetail.html',
+      inject: true,
+      chunks: ['appDetail']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compOverview.html',
+      template: './template/compOverview/compOverview.html',
+      inject: true,
+      chunks: ['compOverview']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compInstanceList.html',
+      template: './template/compOverview/compInstanceList.html',
+      inject: true,
+      chunks: ['compInstanceList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compInstance.html',
+      template: './template/compOverview/compInstance.html',
+      inject: true,
+      chunks: ['compInstance']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compAlertList.html',
+      template: './template/compOverview/compAlertList.html',
+      inject: true,
+      chunks: ['compAlertList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compAlertEdit.html',
+      template: './template/compOverview/compAlertEdit.html',
+      inject: true,
+      chunks: ['compAlertEdit']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compBackupsList.html',
+      template: './template/compOverview/compBackupsList.html',
+      inject: true,
+      chunks: ['compBackupsList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compBackups.html',
+      template: './template/compOverview/compBackups.html',
+      inject: true,
+      chunks: ['compBackups']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'compRecoverList.html',
+      template: './template/compOverview/compRecoverList.html',
+      inject: true,
+      chunks: ['compRecoverList']
     }),
     // copy custom static assets
     new CopyWebpackPlugin([

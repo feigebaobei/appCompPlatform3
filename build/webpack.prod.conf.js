@@ -66,7 +66,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       filename: process.env.NODE_ENV === 'testing'
         ? 'index.html'
         : config.build.index,
-      template: 'index.html',
+      template: './template/index.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -76,7 +76,176 @@ const webpackConfig = merge(baseWebpackConfig, {
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'app']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.appManitor,
+      template: './template/appManitor/appManitor.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'appManitor']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.instanceList,
+      template: './template/appManitor/instanceList.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'instanceList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.instance,
+      template: './template/appManitor/instance.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'instance']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.alertList,
+      template: './template/appManitor/alertList.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'alertList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.alertEdit,
+      template: './template/appManitor/alertEdit.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'alertEdit']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.appDetail,
+      template: './template/appManitor/appDetail.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'appDetail']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compOverview,
+      template: './template/compOverview/compOverview.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compOverview']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compInstanceList,
+      template: './template/compOverview/compInstanceList.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compInstanceList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compInstance,
+      template: './template/compOverview/compInstance.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compInstance']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compAlertList,
+      template: './template/compOverview/compAlertList.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compAlertList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compAlertEdit,
+      template: './template/compOverview/compAlertEdit.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compAlertEdit']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compBackupsList,
+      template: './template/compOverview/compBackupsList.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compBackupsList']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compBackups,
+      template: './template/compOverview/compBackups.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compBackups']
+    }),
+    new HtmlWebpackPlugin({
+      filename: config.build.compRecoverList,
+      template: './template/compOverview/compRecoverList.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compRecoverList']
     }),
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
