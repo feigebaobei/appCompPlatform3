@@ -79,9 +79,21 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunksSortMode: 'dependency',
       chunks: ['manifest', 'vendor', 'app']
     }),
+    // new HtmlWebpackPlugin({
+    //   filename: config.build.appManitor,
+    //   template: './template/appManitor/appManitor.html',
+    //   inject: true,
+    //   minify: {
+    //     removeComments: true,
+    //     collapseWhitespace: true,
+    //     removeAttributeQuotes: true
+    //   },
+    //   chunksSortMode: 'dependency',
+    //   chunks: ['manifest', 'vendor', 'appManitor']
+    // }),
     new HtmlWebpackPlugin({
-      filename: config.build.appManitor,
-      template: './template/appManitor/appManitor.html',
+      filename: config.build.appInstanceList,
+      template: './template/appManitor/appInstanceList.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -89,11 +101,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         removeAttributeQuotes: true
       },
       chunksSortMode: 'dependency',
-      chunks: ['manifest', 'vendor', 'appManitor']
+      chunks: ['manifest', 'vendor', 'appInstanceList']
     }),
     new HtmlWebpackPlugin({
-      filename: config.build.instanceList,
-      template: './template/appManitor/instanceList.html',
+      filename: config.build.appInstance,
+      template: './template/appManitor/appInstance.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -101,11 +113,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         removeAttributeQuotes: true
       },
       chunksSortMode: 'dependency',
-      chunks: ['manifest', 'vendor', 'instanceList']
+      chunks: ['manifest', 'vendor', 'appInstance']
     }),
     new HtmlWebpackPlugin({
-      filename: config.build.instance,
-      template: './template/appManitor/instance.html',
+      filename: config.build.appAlertList,
+      template: './template/appManitor/appAlertList.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -113,11 +125,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         removeAttributeQuotes: true
       },
       chunksSortMode: 'dependency',
-      chunks: ['manifest', 'vendor', 'instance']
+      chunks: ['manifest', 'vendor', 'appAlertList']
     }),
     new HtmlWebpackPlugin({
-      filename: config.build.alertList,
-      template: './template/appManitor/alertList.html',
+      filename: config.build.appAlertEdit,
+      template: './template/appManitor/appAlertEdit.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -125,19 +137,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         removeAttributeQuotes: true
       },
       chunksSortMode: 'dependency',
-      chunks: ['manifest', 'vendor', 'alertList']
-    }),
-    new HtmlWebpackPlugin({
-      filename: config.build.alertEdit,
-      template: './template/appManitor/alertEdit.html',
-      inject: true,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
-      },
-      chunksSortMode: 'dependency',
-      chunks: ['manifest', 'vendor', 'alertEdit']
+      chunks: ['manifest', 'vendor', 'appAlertEdit']
     }),
     new HtmlWebpackPlugin({
       filename: config.build.appDetail,

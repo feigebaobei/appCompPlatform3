@@ -48,12 +48,11 @@ module.exports = {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
     appManitor: path.resolve(__dirname, '../dist/appManitor.html'),
-    instanceList: path.resolve(__dirname, '../dist/instanceList.html'),
-    instance: path.resolve(__dirname, '../dist/instance.html'),
-    alertList: path.resolve(__dirname, '../dist/alertList.html'),
-    alertEdit: path.resolve(__dirname, '../dist/alertEdit.html'),
+    appInstanceList: path.resolve(__dirname, '../dist/appInstanceList.html'),
+    appInstance: path.resolve(__dirname, '../dist/appInstance.html'),
+    appAlertList: path.resolve(__dirname, '../dist/appAlertList.html'),
+    appAlertEdit: path.resolve(__dirname, '../dist/appAlertEdit.html'),
     appDetail: path.resolve(__dirname, '../dist/appDetail.html'),
-    
     compOverview: path.resolve(__dirname, '../dist/compOverview.html'),
     compInstanceList: path.resolve(__dirname, '../dist/compInstanceList.html'),
     compInstance: path.resolve(__dirname, '../dist/compInstance.html'),

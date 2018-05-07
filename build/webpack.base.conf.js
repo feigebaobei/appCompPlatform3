@@ -23,13 +23,12 @@ module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js',
-    appManitor: './src/pages/redis/appManitor/appManitor.js',
-    instanceList: './src/pages/redis/appManitor/instanceList.js',
-    instance: './src/pages/redis/appManitor/instance.js',
-    alertList: './src/pages/redis/appManitor/alertList.js',
-    alertEdit: './src/pages/redis/appManitor/alertEdit.js',
+    // appManitor: './src/pages/redis/appManitor/appManitor.js',
+    appInstanceList: './src/pages/redis/appManitor/instanceList.js',
+    appInstance: './src/pages/redis/appManitor/instance.js',
+    appAlertList: './src/pages/redis/appManitor/alertList.js',
+    appAlertEdit: './src/pages/redis/appManitor/alertEdit.js',
     appDetail: './src/pages/redis/appManitor/appDetail.js',
-    
     compOverview: './src/pages/redis/compOverview/compOverview.js',
     compInstanceList: './src/pages/redis/compOverview/instanceList.js',
     compInstance: './src/pages/redis/compOverview/instance.js',

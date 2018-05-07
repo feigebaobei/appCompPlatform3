@@ -1,6 +1,7 @@
 <template>
   <div>
-    <Tabs type="card">
+    <userInfoDefeat v-if="!userInfo.status"></userInfoDefeat>
+    <Tabs type="card" v-if="userInfo.status">
       <TabPane :label="tabs[0]">
         <cardListvue :tab="tabs[0]"></cardListvue>
       </TabPane>
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+import userInfoDefeat from './userInfoDefeat.vue'
 import cardListvue from './cardListvue.vue'
 export default {
   name: 'tab',
@@ -21,6 +23,7 @@ export default {
     }
   },
   components: {
+    userInfoDefeat,
     cardListvue
   },
   computed: {

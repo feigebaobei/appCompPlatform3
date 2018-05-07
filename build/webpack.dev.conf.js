@@ -58,35 +58,35 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       inject: true,
       chunks: ['app']
     }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'appManitor.html',
+    //   template: './template/appManitor/appManitor.html',
+    //   inject: true,
+    //   chunks: ['appManitor']
+    // }),
     new HtmlWebpackPlugin({
-      filename: 'appManitor.html',
-      template: './template/appManitor/appManitor.html',
+      filename: 'appInstanceList.html',
+      template: './template/appManitor/appInstanceList.html',
       inject: true,
-      chunks: ['appManitor']
+      chunks: ['appInstanceList']
     }),
     new HtmlWebpackPlugin({
-      filename: 'instanceList.html',
-      template: './template/appManitor/instanceList.html',
+      filename: 'appInstance.html',
+      template: './template/appManitor/appInstance.html',
       inject: true,
-      chunks: ['instanceList']
+      chunks: ['appInstance']
     }),
     new HtmlWebpackPlugin({
-      filename: 'instance.html',
-      template: './template/appManitor/instance.html',
+      filename: 'appAlertList.html',
+      template: './template/appManitor/appAlertList.html',
       inject: true,
-      chunks: ['instance']
+      chunks: ['appAlertList']
     }),
     new HtmlWebpackPlugin({
-      filename: 'alertList.html',
-      template: './template/appManitor/alertList.html',
+      filename: 'appAlertEdit.html',
+      template: './template/appManitor/appAlertEdit.html',
       inject: true,
-      chunks: ['alertList']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'alertEdit.html',
-      template: './template/appManitor/alertEdit.html',
-      inject: true,
-      chunks: ['alertEdit']
+      chunks: ['appAlertEdit']
     }),
     new HtmlWebpackPlugin({
       filename: 'appDetail.html',
