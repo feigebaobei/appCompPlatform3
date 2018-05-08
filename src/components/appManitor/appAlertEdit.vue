@@ -1,17 +1,23 @@
 <template>
   <div>
-    tablevue
+    <!-- appAlertEdit -->
+    <Row>
+      <Col>
+        < 告警策略
+      </Col>
+    </Row>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'tablevue',
+  name: 'appAlertEdit',
   data () {
-    return {}
   },
+  components: {},
   computed: {},
-  methods: {},
+  methods: {
+  },
   mounted () {}
 }
 </script>

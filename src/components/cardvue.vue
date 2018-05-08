@@ -1,6 +1,8 @@
 <template>
   <div class="apppanel">
-    <h3 v-html="item.name" class="titleName"></h3>
+    <a href="./appDetail.html">
+      <h3 v-html="item.name" class="titleName"></h3>
+    </a>
     <p class="deptName">
       <span v-html="item.dept_name"></span>
       <span class="monite" v-html="item.flag ? '管理' : ''"></span>
@@ -8,7 +10,8 @@
     <div class="content">
       <!-- <Badge count="3"> -->
       <!-- <a href="#" class="demo-badge" v-for="item in calcComptName" v-html="item"></a> -->
-      <span class="badge" v-for="text in calcComptName" v-html="text" :key="text"></span>
+      <a href="#" class="badge" v-for="text in calcComptName" v-html="text" :key="text"></a>
+      <!-- <span class="badge" v-for="text in calcComptName" v-html="text" :key="text"></span> -->
       <!-- </Badge> -->
     </div>
     <Row class="bottom">
@@ -75,7 +78,7 @@ export default {
       text-align: middle;
       padding: 0 10px;
       text-align: center;
-      margin: 0 5px;
+      margin: 5px 5px;
     }
   }
   .monite {

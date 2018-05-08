@@ -1,6 +1,5 @@
 <template>
   <div id="instanceList">
-    instanceList
     <layoutvue :nav="appInstanceList"></layoutvue>
   </div>
 </template>

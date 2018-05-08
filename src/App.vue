@@ -2,7 +2,8 @@
   <div id="app">
     <!-- <img src="./assets/logo.png">
     <router-view/> -->
-    <layoutvue :nav="appManage"></layoutvue>
+    <layoutvue :nav="appManageAndOverview"></layoutvue>
+    <!-- <layoutvue></layoutvue> -->
   </div>
 </template>
 
@@ -12,7 +13,7 @@ export default {
   name: 'App',
   data () {
     return {
-      appManage: 'appManage'
+      appManageAndOverview: 'appManageAndOverview'
     }
   },
   components: {

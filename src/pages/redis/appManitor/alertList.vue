@@ -1,12 +1,21 @@
 <template>
-  <div id="alertList">
-    alertList
+  <div>
+    <layoutvue :nav="appAlertList"></layoutvue>
   </div>
 </template>
 
 <script>
+import layoutvue from '../../../components/layoutvue.vue'
 export default {
-  name: 'alertList'
+  name: 'alertList',
+  data () {
+    return {
+      appAlertList: 'appAlertList'
+    }
+  },
+  components: {
+    layoutvue
+  }
 }
 </script>
 
