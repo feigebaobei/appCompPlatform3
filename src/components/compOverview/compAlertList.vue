@@ -5,8 +5,8 @@
         <h1>告警策略</h1>
       </Col>
       <Col span="12" style="text-align: right;">
-        <Button type="primary" @click="modalAddAlert = true">创建告警策略</Button>
-        <Modal v-model="modalAddAlert" title="创建告警策略" width="700">
+        <Button type="primary" @click="modalAddAert = true">创建告警策略</Button>
+        <Modal v-model="modalAddAert" title="创建告警策略" width="700">
           <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="100">
             <FormItem label="策略名称" prop="name">
               <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
@@ -37,8 +37,7 @@
                 告警策略
               </Col>
               <Col>
-                <!-- placeholder -->
-                <!-- <multiplethreshold :item="item"></multiplethreshold> -->
+                placeholder
               </Col>
             </Row>
             <FormItem label="设置告警群" prop="dingdingName">
@@ -69,12 +68,20 @@
 </template>
 
 <script>
-// import multiplethreshold from '../multipleThreshold.vue'
 export default {
-  name: 'appAlertList',
+  name: 'compAlertList',
   data () {
     return {
-      modalAddAlert: false,
+      responseAlertList: {
+        data: {
+          data: [],
+          message: '',
+          status: 0
+        },
+        status: 0
+      },
+      /* 创建告警策略 start */
+      modalAddAert: false,
       formDataAddAlert: {
         name: '',
         policyType: '',
@@ -99,14 +106,31 @@ export default {
           {required: true, message: '请输入告警策略名称', trigger: 'change'}
         ]
       },
-      responseAlertList: {
-        data: {
-          data: [],
-          message: '',
-          status: 0
+      /* 创建告警策略 end */
+      // 穿梭框 start
+      transferData: [
+        {
+          key: 'key0',
+          label: 'label0'
         },
-        status: 0
-      },
+        {
+          key: 'key1',
+          label: 'label1'
+        },
+        {
+          key: 'key2',
+          label: 'label2'
+        },
+        {
+          key: 'key3',
+          label: 'label3'
+        },
+        {
+          key: 'key4',
+          label: 'label4'
+        }
+      ],
+      transferTargetKey: ['key0', 'key3'],
       alertListColumns: [
         {
           title: 'id',
@@ -118,7 +142,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './appAlertEdit.html?id=' + params.row.id
+                href: './compAlertEdit.html?id=' + params.row.id
               }
             }, params.row.policy_name)
           }
@@ -166,43 +190,17 @@ export default {
           }
         }
       ],
-      curRowData: {},
-      // 穿梭框 start
-      transferData: [
-        {
-          key: 'key0',
-          label: 'label0'
-        },
-        {
-          key: 'key1',
-          label: 'label1'
-        },
-        {
-          key: 'key2',
-          label: 'label2'
-        },
-        {
-          key: 'key3',
-          label: 'label3'
-        },
-        {
-          key: 'key4',
-          label: 'label4'
-        }
-      ],
-      transferTargetKey: ['key0', 'key3'],
       // 穿梭框 end
-      modalOperate: false
+      modalOperate: false,
+      curRowData: {}
     }
   },
-  components: {
-    // multiplethreshold
-  },
+  components: {},
   computed: {
     alertListData () {
       var result = []
       var data = this.responseAlertList.data.data
-      if (!data.length) { return }
+      if (!data.length) { return result }
       for (var i = 0, iLen = data.length; i < iLen; i++) {
         var obj = {}
         obj.application_name = data[i].application_name
@@ -221,9 +219,6 @@ export default {
     },
     transferShow () {
       return this.formDataAddAlert.alertObj === '2'
-    },
-    item () {
-      return {}
     }
   },
   methods: {
@@ -325,8 +320,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  color: #eee;
-  background: #fff;
-}
+
 </style>

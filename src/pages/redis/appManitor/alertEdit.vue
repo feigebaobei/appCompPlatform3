@@ -1,12 +1,22 @@
 <template>
   <div id="alertEdit">
-    alertEdit
+    <!-- alertEdit -->
+    <layoutvue :nav="appAlertEdit"></layoutvue>
   </div>
 </template>
 
 <script>
+import layoutvue from '../../../components/layoutvue.vue'
 export default {
-  name: 'alertEdit'
+  name: 'alertEdit',
+  data () {
+    return {
+      appAlertEdit: 'appAlertEdit'
+    }
+  },
+  components: {
+    layoutvue
+  }
 }
 </script>
 

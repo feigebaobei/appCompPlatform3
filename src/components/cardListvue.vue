@@ -1,7 +1,9 @@
 <template>
   <div>
+    <slot name='addApp'></slot>
     <!-- <p>{{tab}} {{isRenderMyApp}}</p> -->
-    <cardvue v-if='isRenderMyApp' v-for="item in responseMyApp.data.data" :key="item.id" :item="item"></cardvue>
+    <cardvue v-if='isRenderMyApp' v-for="item in responseMyApp.data.data" :key="item.id" :item="item">
+    </cardvue>
     <cardvue v-if='isRenderElseApp' v-for="item in responseElseApp.data.data" :key="item.id" :item="item"></cardvue>
     <cardvue v-if='isRenderOverview' v-for="item in responseOverview.data.data" :key="item.id" :item="item"></cardvue>
     <cardvue v-if='isRenderAudit' v-for="item in responseAudit.data.data" :key="item.id" :item="item"></cardvue>
@@ -74,8 +76,9 @@ export default {
       this.$axios({
         method: 'get',
         url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token
       }).then(response => {
-        console.log(response)
+        // console.log(response)
         this.responseMyApp = response
       })
     },
@@ -83,8 +86,9 @@ export default {
       this.$axios({
         method: 'get',
         url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
       }).then(response => {
-        console.log(response)
+        // console.log(response)
         this.responseElseApp = response
       })
     },
@@ -92,8 +96,9 @@ export default {
       this.$axios({
         method: 'get',
         url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token
       }).then(response => {
-        console.log(response)
+        // console.log(response)
         this.responseOverview = response
       })
     },
@@ -101,8 +106,9 @@ export default {
       this.$axios({
         method: 'get',
         url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
       }).then(response => {
-        console.log(response)
+        // console.log(response)
         this.responseAudit = response
       })
     },
@@ -123,6 +129,24 @@ export default {
           this.requestAudit()
           break
       }
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
     }
   },
   mounted () {

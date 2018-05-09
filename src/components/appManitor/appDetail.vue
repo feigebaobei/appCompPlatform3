@@ -8,7 +8,7 @@
       <Col span="4">
         <Button type="primary" @click="modalMoniter = true">权限管理</Button>
         <Modal v-model="modalMoniter" title="权限管理" @on-ok="okMoniter" @on-cancel="cancelMoniter">
-          <Form ref="formDataMoniter" :model="formDataMoniter" :rules="formruleMoniter" :label-width="100">
+          <Form ref="formDataMoniter" :model="formDataMoniter" :rules="formruleMoniter" :label-width="80">
             <FormItem label="选择权限" prop="select">
               <Select v-model="formDataMoniter.select" placeholder="请选择权限种类">
                 <Option value="moniter">管理员</Option>
@@ -52,6 +52,28 @@
       <Col span="8" v-html="responseDetail.data.data.created_time"></Col>
     </Row>
     <hr class="hr">
+    <Row>
+      <Col span="24" v-if="responseComp.data.data.length">
+        <Button v-for="item in responseComp.data.data" :key="item.component_id" v-html="item.component_name" class="comp"></Button>
+        <Button type="primary" class="comp" @click="modalAddComp = true">添加组件</Button>
+        <Modal v-model="modalAddComp" title="添加组件">
+          <Form ref="formDataAddComp" :model="formDataAddComp" :rules="formRuleAddComp" :label-width="100">
+            <FormItem label="组件类型" prop="type">
+              <Select v-model="formDataAddComp.type" placeholder="请选择组件类型">
+                <Option value="redis">redis</Option>
+                <Option value="codis">codis</Option>
+                <Option value="gateway">gateway</Option>
+              </Select>
+            </FormItem>
+            <FormItem>
+              <Button type="primary" @click="handleSubmitAddComp('formDataAddComp')">Submit</Button>
+              <Button type="ghost" @click="handleResetAddComp('formDataAddComp')" style="margin-left: 8px">Reset</Button>
+            </FormItem>
+          </Form>
+          <div slot="footer"></div>
+        </Modal>
+      </Col>
+    </Row>
   </div>
 </template>
 
@@ -81,8 +103,27 @@ export default {
         id: [
           {required: true, message: '请按格式输入', trigger: 'blur'}
         ]
-      }
+      },
       // moniter end
+      responseComp: {
+        data: {
+          data: {},
+          message: '',
+          status: 0
+        },
+        status: 0
+      },
+      // 添加组件
+      modalAddComp: false,
+      formDataAddComp: {
+        type: ''
+      },
+      formRuleAddComp: {
+        type: [
+          {required: true, message: '请选择组件类型', trigger: 'blur'}
+        ]
+      }
+      // 添加组件
     }
   },
   components: {},
@@ -125,6 +166,41 @@ export default {
       } else {
         this.$Message.error('操作失败！')
       }
+    },
+    // 应用id
+    appId: function () {
+      var href = window.location.href
+      var reg = /\?id=(\d)*#\//
+      var resultArr = reg.exec(href)
+      var idStr = resultArr[0]
+      var id = idStr.slice(4, -2)
+      // console.log(id)
+      return id
+    },
+    handleSubmitAddComp (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$axios({
+            method: 'post',
+            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/app-components',
+            data: this.qs.stringify({
+              app_id: this.appId(),
+              component_id: this.formDataAddComp.type
+            })
+          }).then(response => {
+            // console.log(response)
+            this.modalAddComp = false
+            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+          }).catch(error => {
+            console.log(error)
+          })
+        } else {
+          this.$Message.error('不可为空')
+        }
+      })
+    },
+    handleResetAddComp (name) {
+      this.$refs[name].resetFields()
     }
   },
   mounted () {
@@ -137,6 +213,16 @@ export default {
       this.responseDetail = response
     })
     // 请求与当前应用相关的组件
+    this.$axios({
+      method: 'post',
+      url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/components',
+      data: this.qs.stringify({
+        app_id: this.appId()
+      })
+    }).then(response => {
+      console.log(response)
+      this.responseComp = response
+    })
   }
 }
 </script>
@@ -144,5 +230,8 @@ export default {
 <style lang="scss" scoped>
 .hr {
   margin: 15px 0;
+}
+.comp {
+  margin: 0px 8px;
 }
 </style>

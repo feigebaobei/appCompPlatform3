@@ -1,14 +1,20 @@
 <template>
-  <div id="recoverList">
-    recoverList
+  <div>
+    <layoutvue :nav="compRecoverList"></layoutvue>
   </div>
 </template>
 
 <script>
+import layoutvue from '../../../components/layoutvue.vue'
 export default {
   name: 'recoverList',
   data () {
-    return {}
+    return {
+      compRecoverList: 'compRecoverList'
+    }
+  },
+  components: {
+    layoutvue
   },
   computed: {},
   methods: {},

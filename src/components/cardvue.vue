@@ -1,22 +1,25 @@
 <template>
   <div class="apppanel">
-    <a href="./appDetail.html">
+    </slot>
+    <a :href="link(item)">
       <h3 v-html="item.name" class="titleName"></h3>
     </a>
     <p class="deptName">
-      <span v-html="item.dept_name"></span>
+      <!-- <span v-html="item.department_name"></span> -->
       <span class="monite" v-html="item.flag ? '管理' : ''"></span>
     </p>
     <div class="content">
       <!-- <Badge count="3"> -->
       <!-- <a href="#" class="demo-badge" v-for="item in calcComptName" v-html="item"></a> -->
-      <a href="#" class="badge" v-for="text in calcComptName" v-html="text" :key="text"></a>
       <!-- <span class="badge" v-for="text in calcComptName" v-html="text" :key="text"></span> -->
       <!-- </Badge> -->
+      <!-- <a href="#" class="badge" v-for="text in calcComptName" v-html="text" :key="text"></a> -->
+      <a href="#" class="badge" v-for="text in item.component_name" :key="text" v-html="text"></a>
     </div>
     <Row class="bottom">
       <Col span="15">
-        <span>管理员：</span><span v-html="item.admin_name" class="name"></span>
+        <!-- 部门名称 -->
+        <span v-if="calcDepartment.length" v-for="text in calcDepartment" :key="text" v-html="text" style="margin: 0 5px;"></span>
       </Col>
       <Col span="9">
         <a :href="link(item)">
@@ -39,6 +42,11 @@ export default {
       // console.log(this.item)
       var str = this.item.compt_name
       var arr = str.split(',')
+      return arr
+    },
+    calcDepartment () {
+      var depart = this.item.department_name
+      var arr = depart.split(',')
       // console.log(arr)
       return arr
     }

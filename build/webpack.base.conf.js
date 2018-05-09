@@ -29,7 +29,7 @@ module.exports = {
     appAlertList: './src/pages/redis/appManitor/alertList.js',
     appAlertEdit: './src/pages/redis/appManitor/alertEdit.js',
     appDetail: './src/pages/redis/appManitor/appDetail.js',
-    compOverview: './src/pages/redis/compOverview/compOverview.js',
+    // compOverview: './src/pages/redis/compOverview/compOverview.js',
     compInstanceList: './src/pages/redis/compOverview/instanceList.js',
     compInstance: './src/pages/redis/compOverview/instance.js',
     compAlertList: './src/pages/redis/compOverview/alertList.js',

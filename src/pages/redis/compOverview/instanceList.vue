@@ -1,6 +1,6 @@
 <template>
   <div id="instanceList">
-    <layoutvue :nav="compOverview"></layoutvue>
+    <layoutvue :nav="compInstanceList"></layoutvue>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ export default {
   name: 'instanceList',
   data () {
     return {
-      compOverview: 'compOverview'
+      compInstanceList: 'compInstanceList'
     }
   },
   components: {

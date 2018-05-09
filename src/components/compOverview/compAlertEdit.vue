@@ -31,8 +31,7 @@
           告警策略
         </Col>
         <Col>
-          <!-- placeholder -->
-          <multiplethreshold :item="item"></multiplethreshold>
+          placeholder
         </Col>
       </Row>
       <FormItem label="设置告警群" prop="dingdingName">
@@ -47,7 +46,6 @@
 </template>
 
 <script>
-import multiplethreshold from '../multipleThreshold.vue'
 export default {
   name: 'appAlertEdit',
   data () {
@@ -86,9 +84,7 @@ export default {
       }
     }
   },
-  components: {
-    multiplethreshold
-  },
+  components: {},
   computed: {
     transferShow () {
       return this.formDataAlertPolicy.alertObj === '2'
@@ -125,25 +121,6 @@ export default {
         target_group: data.target_group,
         token: data.token
       }
-    },
-    item () {
-      return [
-        {
-          field: [
-            {
-              label: 'cpu利用率',
-              value: 'cpu'
-            },
-            {
-              label: '内存利用率',
-              value: 'memory'
-            }
-          ],
-          operate: ['>', '>=', '<', '<=', '=', '!='],
-          threshold: ['', ''],
-          time: ['统计周期5分钟', '统计周期10分钟']
-        }
-      ]
     }
   },
   methods: {

@@ -6,10 +6,10 @@
         <Row>
           <Col span="8">
             <a href="./index.html" v-if="responseSider.data.data.nav === '应用管理'" style="color: #fff">
-              <h1 v-html="responseSider.data.data.nav" ></h1>
+              <h1 v-html="responseSider.data.data.nav"></h1>
             </a>
             <a href="./index.html" v-if="responseSider.data.data.nav === '组件概览'" style="color: #fff">
-              <h1 v-html="responseSider.data.data.nav" ></h1>
+              <h1 v-html="responseSider.data.data.nav"></h1>
             </a>
           </Col>
           <Col span="8" offset='8' class="userbox">
@@ -38,7 +38,7 @@
                 <Icon type="ios-keypad"></Icon>
                 <span v-html="item.name"></span>
               </template>
-              <a :href="navHref(subItem)" style="color: #333; padding: 15px 5px;" v-for="subItem in item.child" :key="subItem.id">
+              <a :href="navHref(subItem)" style="color: #333;" v-for="subItem in item.child" :key="subItem.id">
               <!-- <a href="./appInstanceList.html" style="color: #333; padding: 15px 5px;" v-for="subItem in item.child" :key="subItem.id"> -->
                 <MenuItem name="item.id + '-' + subItem.id" v-html="subItem.name"></MenuItem>
               </a>
@@ -50,21 +50,20 @@
         <Layout :style="{padding: '10px 24px 24px'}">
           <!-- 加载相应的组件 start -->
           <!-- <managevue v-if="nav === 'manage'"></managevue> -->
-          <!-- <tabvue v-if="nav === 'appManageAndOverview'"></tabvue> -->
+          <tabvue v-if="nav === 'appManageAndOverview'"></tabvue>
           <appinstancelistvue v-if="nav === 'appInstanceList'"></appinstancelistvue>
           <appinstance v-if="nav === 'appInstance'"></appinstance>
           <appalertlist v-if="nav === 'appAlertList'"></appalertlist>
-          <tabvue v-if="nav === 'appAlertEdit'"></tabvue>
-          <!-- <tabvue v-if="nav === 'appDetail'"></tabvue> -->
+          <appalertedit v-if="nav === 'appAlertEdit'"></appalertedit>
           <appdetail v-if="nav === 'appDetail'"></appdetail>
-          <tabvue v-if="nav === 'compOverview'"></tabvue>
-          <tabvue v-if="nav === 'compInstanceList'"></tabvue>
-          <tabvue v-if="nav === 'compInstance'"></tabvue>
-          <tabvue v-if="nav === 'compAlertList'"></tabvue>
-          <tabvue v-if="nav === 'compAlertEdit'"></tabvue>
-          <tabvue v-if="nav === 'compBackupsList'"></tabvue>
-          <tabvue v-if="nav === 'compBackups'"></tabvue>
-          <tabvue v-if="nav === 'compRecoverList'"></tabvue>
+          <!-- <tabvue v-if="nav === 'compOverview'"></tabvue> -->
+          <compinstancelist v-if="nav === 'compInstanceList'"></compinstancelist>
+          <compinstance v-if="nav === 'compInstance'"></compinstance>
+          <compalertlist v-if="nav === 'compAlertList'"></compalertlist>
+          <compalertedit v-if="nav === 'compAlertEdit'"></compalertedit>
+          <compbackupslist v-if="nav === 'compBackupsList'"></compbackupslist>
+          <compbackups v-if="nav === 'compBackups'"></compbackups>
+          <comprecovelist v-if="nav === 'compRecoverList'"></comprecovelist>
           <!-- 加载相应的组件 end -->
         </Layout>
         <!-- main end -->
@@ -77,7 +76,15 @@ import tabvue from './tabvue.vue'
 import appdetail from './appManitor/appDetail.vue'
 import appinstancelistvue from './appManitor/appInstanceListCont.vue'
 import appalertlist from './appManitor/appAlertList.vue'
+import appalertedit from './appManitor/appAlertEdit.vue'
 import appinstance from './appManitor/appInstance.vue'
+import compinstancelist from './compOverview/compInstanceList.vue'
+import compinstance from './compOverview/compInstance.vue'
+import compalertlist from './compOverview/compAlertList.vue'
+import compalertedit from './compOverview/compAlertEdit.vue'
+import compbackupslist from './compOverview/compBackupsList.vue'
+import compbackups from './compOverview/compBackups.vue'
+import comprecovelist from './compOverview/compRecoverList.vue'
 export default {
   name: 'layoutvue',
   props: ['nav'],
@@ -102,7 +109,15 @@ export default {
     appdetail,
     appinstancelistvue,
     appalertlist,
-    appinstance
+    appalertedit,
+    appinstance,
+    compinstancelist,
+    compinstance,
+    compalertlist,
+    compalertedit,
+    compbackupslist,
+    compbackups,
+    comprecovelist
   },
   computed: {
     getResponseSider: {
@@ -196,8 +211,13 @@ export default {
     // 再根据用户信息，请求导航信息
     requestUserInfo () {
       this.$axios({
-        method: 'post',
-        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
+        // method: 'post',
+        method: 'get',
+        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=' + this.getRequest().token
+        url: 'http://dev.infra.console.com/api/user'
+        // data: this.qs.stringify({
+        //   token: this.getRequest().token
+        // })
       }).then(response => {
         this.$store.dispatch('setUser', response.data.data)
         this.requestNav()
@@ -210,13 +230,33 @@ export default {
       this.$axios({
         method: 'get',
         url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
+        // url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
       }).then(response => {
         // console.log(response)
         this.responseSider = response
       })
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
     }
   },
   mounted () {
+    // 请求用户信息和导航信息
     this.requestUserInfo()
   }
 }

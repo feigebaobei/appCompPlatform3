@@ -1,16 +1,23 @@
 <template>
-  <div id="compbackups">
-    backups
+  <div>
+    <layoutvue :nav="compBackups"></layoutvue>
   </div>
 </template>
 
 <script>
+import layoutvue from '../../../components/layoutvue.vue'
 export default {
   name: 'backups',
   data () {
-    return {}
+    return {
+      compBackups: 'compBackups'
+    }
   },
-  computed: {},
+  components: {
+    layoutvue
+  },
+  computed: {
+  },
   methods: {},
   mounted () {}
 }

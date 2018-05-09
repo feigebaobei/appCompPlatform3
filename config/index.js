@@ -14,7 +14,9 @@ module.exports = {
 
     // Various Dev Server settings
     // host: 'localhost', // can be overwritten by process.env.HOST
-    host: '127.0.0.1', // can be overwritten by process.env.HOST
+    // host: '127.0.0.1', // can be overwritten by process.env.HOST
+    host: '172.88.1.127',
+    // host: 'www.cloud.com',
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
@@ -47,13 +49,13 @@ module.exports = {
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
-    appManitor: path.resolve(__dirname, '../dist/appManitor.html'),
+    // appManitor: path.resolve(__dirname, '../dist/appManitor.html'),
     appInstanceList: path.resolve(__dirname, '../dist/appInstanceList.html'),
     appInstance: path.resolve(__dirname, '../dist/appInstance.html'),
     appAlertList: path.resolve(__dirname, '../dist/appAlertList.html'),
     appAlertEdit: path.resolve(__dirname, '../dist/appAlertEdit.html'),
     appDetail: path.resolve(__dirname, '../dist/appDetail.html'),
-    compOverview: path.resolve(__dirname, '../dist/compOverview.html'),
+    // compOverview: path.resolve(__dirname, '../dist/compOverview.html'),
     compInstanceList: path.resolve(__dirname, '../dist/compInstanceList.html'),
     compInstance: path.resolve(__dirname, '../dist/compInstance.html'),
     compAlertList: path.resolve(__dirname, '../dist/compAlertList.html'),

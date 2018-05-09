@@ -151,18 +151,18 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunksSortMode: 'dependency',
       chunks: ['manifest', 'vendor', 'appDetail']
     }),
-    new HtmlWebpackPlugin({
-      filename: config.build.compOverview,
-      template: './template/compOverview/compOverview.html',
-      inject: true,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
-      },
-      chunksSortMode: 'dependency',
-      chunks: ['manifest', 'vendor', 'compOverview']
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: config.build.compOverview,
+    //   template: './template/compOverview/compOverview.html',
+    //   inject: true,
+    //   minify: {
+    //     removeComments: true,
+    //     collapseWhitespace: true,
+    //     removeAttributeQuotes: true
+    //   },
+    //   chunksSortMode: 'dependency',
+    //   chunks: ['manifest', 'vendor', 'compOverview']
+    // }),
     new HtmlWebpackPlugin({
       filename: config.build.compInstanceList,
       template: './template/compOverview/compInstanceList.html',

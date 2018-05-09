@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: 'appInstance',
+  name: 'compInstance',
   data () {
     return {
       responseInstance: {
@@ -107,23 +107,11 @@ export default {
         obj.tag_name = info[i].tag_name
         result.push(obj)
       }
-      console.log(result)
+      // console.log(result)
       return result
     }
   },
   methods: {
-    // 应用id
-    // appId: function () {
-    //   var href = window.location.href
-    //   var reg = /\?id=(\d)*#?\/?/
-    //   var resultArr = reg.exec(href)
-    //   console.log(resultArr)
-    //   var idStr = resultArr[0]
-    //   console.log(idStr)
-    //   var id = idStr.slice(4, -2)
-    //   console.log(id)
-    //   return id
-    // },
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串
       var index = url.indexOf('?')
@@ -141,20 +129,17 @@ export default {
         }
       }
       return theRequest
-    },
-    getInstanceData () {
-      // const url = 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/redis/detail/id/9'
-      const url = 'http://www.cloud.com/api/redis/detail/id/' + this.getRequest().id
-      // const url = 'http://www.cloud.com/api/redis/detail/id/9'
-      console.log(url)
-      this.$axios.get(url).then(response => {
-        console.log(response)
-        this.responseInstance = response
-      })
     }
   },
-  created () {
-    this.getInstanceData()
+  mounted () {
+    // 请求实例信息
+    this.$axios({
+      url: 'http://10.99.1.135/api/redis/detail/id/' + this.getRequest().id,
+      method: 'get'
+    }).then(response => {
+      // console.log(response)
+      this.responseInstance = response
+    })
   }
 }
 </script>

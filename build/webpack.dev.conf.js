@@ -94,12 +94,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       inject: true,
       chunks: ['appDetail']
     }),
-    new HtmlWebpackPlugin({
-      filename: 'compOverview.html',
-      template: './template/compOverview/compOverview.html',
-      inject: true,
-      chunks: ['compOverview']
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'compOverview.html',
+    //   template: './template/compOverview/compOverview.html',
+    //   inject: true,
+    //   chunks: ['compOverview']
+    // }),
     new HtmlWebpackPlugin({
       filename: 'compInstanceList.html',
       template: './template/compOverview/compInstanceList.html',
