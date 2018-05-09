@@ -6,7 +6,7 @@
       </Col>
       <Col span="2">
       <Button type="primary" @click="modalAddRecover = true">添加恢复</Button>
-      <Modal v-model="modalAddRecover" title="创建备份">
+      <Modal v-model="modalAddRecover" title="申请恢复">
         <Form ref="formDataAddRecover" :model="formDataAddRecover" :rules="formRuleAddRecover" :label-width="80">
           <FormItem label="源IP" prop="ipOrigin">
             <Input v-model="formDataAddRecover.ipOrigin" placeholder="请输入源ip"></Input>
@@ -18,7 +18,7 @@
             <Row>
               <Col span='12'>
                 <FormItem prop="date">
-                  <DatePicker type="date" placeholder="请选择日期" v-model="formDataAddRecover.date"></DatePicker>
+                  <Date-picker  placeholder="选择日期"  type="datetime" :value="formDataAddRecover.date"  :key="formDataAddRecover.date"  format="yyyy-MM-dd"  @on-change="formDataAddRecover.date=$event" ></Date-picker>
                 </FormItem>
               </Col>
               <Col span='12'>
@@ -43,7 +43,7 @@
       </Modal>
       </Col>
     </Row>
-    <!-- <Table height="600" border :data="recoverListData" :columns="recoverListColumns"></Table> -->
+    <Table border :columns="recoverListColumns" :data="recoverListData"></Table>
   </div>
 </template>
 
@@ -52,14 +52,7 @@ export default {
   name: 'compRecoverList',
   data () {
     return {
-      responseRecoverList: {
-        data: {
-          data: [],
-          message: '',
-          status: 0
-        },
-        status: 0
-      },
+      recoverList: '',
       // 添加恢复
       modalAddRecover: false,
       formDataAddRecover: {
@@ -83,52 +76,63 @@ export default {
         portDest: [
           {required: true, message: '请输入目的port', trigger: 'change'}
         ],
-        // date: [
-        //   {required: true, message: '请选择日期', trigger: 'change'}
-        // ],
+        date: [
+          {required: true, message: '请选择日期', pattern: /.+/, trigger: 'change'}
+        ],
         time: [
-          {required: true, message: '请选择小时', trigger: 'change'}
+          {required: true, message: '请选择小时', pattern: /.+/, trigger: 'change'}
         ]
       },
       recoverListColumns: [
         {
-          title: '',
-          key: ''
+          title: '源IP',
+          key: 'source_ip'
+        },
+        {
+          title: '源Port',
+          key: 'source_port'
+        },
+        {
+          title: '时间点',
+          key: 'operate_time'
+        },
+        {
+          title: '目的IP',
+          key: 'target_ip'
+        },
+        {
+          title: '目的Port',
+          key: 'target_port'
+        },
+        {
+          title: '状态',
+          key: 'status'
         }
-      ]
+      ],
+      recoverListData: []
     }
   },
   components: {},
-  computed: {
-    recoverListData () {
-      var result = []
-      var data = this.responseRecoverList.data.data
-      if (!data.length) { return result }
-      for (var i = 0, iLen = data.length; i < iLen; i++) {
-        var obj = {}
-        obj.name = data[i].name
-        result.push(obj)
-      }
-      return result
-    }
-  },
   methods: {
     /* 添加恢复 start */
     handleSubmitAddRecover (name) {
+      let dateTime = this.formDataAddRecover.date + this.formDataAddRecover.time
+      dateTime = dateTime.split('-').join().split(':').join().split(',').join('')
+      let newTime = dateTime.slice(0, dateTime.length - 2)
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://10.99.1.135/api/alarm/edit',
+            url: 'http://10.99.1.135/api/recover/add',
             data: this.qs.stringify({
               source_ip: this.formDataAddRecover.ipOrigin,
               source_port: this.formDataAddRecover.portOrigin,
               target_ip: this.formDataAddRecover.ipDest,
               target_port: this.formDataAddRecover.portDest,
-              time: this.formDataAddRecover.time
+              recover_time: newTime
             })
           }).then(response => {
-            console.log(response)
+            console.log('打印数据', response)
             this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
           }).catch(error => {
             console.log(error)
@@ -149,17 +153,30 @@ export default {
       } else {
         this.$Message.error('操作失败！')
       }
+    },
+    getValue (value) {
+      console.log(value)
     }
   },
   mounted () {
     // 请求恢复的表格数据
-    // this.$axios({
-    //   method: '',
-    //   url: ''
-    // }).then(response => {
-    //   console.log(response)
-    //   this.responseRecoverList = response
-    // })
+    this.$axios({
+      method: 'get',
+      url: 'http://10.99.1.135/api/recover/list'
+    }).then(res => {
+      this.recoverList = res.data.data
+      console.log('列表渲染数据', this.recoverList)
+      for (let i of this.recoverList) {
+        this.recoverListData.push({
+          source_ip: i.source_ip,
+          source_port: i.source_port,
+          operate_time: i.operate_time,
+          target_ip: i.target_ip,
+          target_port: i.target_port,
+          status: i.status
+        })
+      }
+    })
   }
 }
 </script>

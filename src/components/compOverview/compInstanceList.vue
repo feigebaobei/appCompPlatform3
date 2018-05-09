@@ -2,12 +2,13 @@
   <div>
     <Row :gutter="25" style="margin: 24px 0">
       <Col span="8">
-        <Input type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
+        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
       </Col>
       <Col span="8">
-        <Button type="primary">添加实例</Button>
+        <Button type="primary" @click="selectedInstanceData(searchText)">添加实例</Button>
       </Col>
     </Row>
+    <!-- <Table height="600" border :data="instanceListDataBox.data" :columns="instanceListColumns"></Table> -->
     <Table height="600" border :data="instanceListData" :columns="instanceListColumns"></Table>
   </div>
 </template>
@@ -17,6 +18,7 @@ export default {
   name: 'compInstanceList',
   data () {
     return {
+      searchText: '',
       responseInstanceList: {
         data: {
           data: [],
@@ -30,6 +32,8 @@ export default {
           title: 'id',
           align: 'center',
           key: 'id',
+          width: 80,
+          fixed: 'left',
           sortable: true,
           sortType: 'desc'
         },
@@ -38,6 +42,7 @@ export default {
           align: 'center',
           // key: 'name',
           width: 100,
+          fixed: 'left',
           sortable: true,
           render: (h, params) => {
             return h('a', {
@@ -129,55 +134,127 @@ export default {
           title: '状态',
           align: 'center',
           key: 'status',
+          width: 80,
+          fixed: 'right',
           filters: [
             {
-              label: '已审核'
+              label: '申请中',
+              value: '申请中'
             },
             {
-              label: '已审核'
-            },
-            {
-              label: '已审核'
+              label: '使用中',
+              value: '使用中'
             }
           ],
           filterMultiple: false,
           filterMethod (value, row) {
+            if (value === '申请中') {
+              return row.status === '申请中'
+            } else {
+              if (value === '使用中') {
+                return row.status === '使用中'
+              }
+            }
           }
         }
-      ]
+      ],
+      instanceListDataBox: []
     }
   },
   components: {
   },
   computed: {
-    instanceListData () {
-      var data = this.responseInstanceList.data.data
+    instanceListData: {
+      set (data) {
+        this.instanceListDataBox = []
+        // console.log(data)
+        if (!data.length) { return [] }
+        for (var i = 0, iLen = data.length; i < iLen; i++) {
+          var obj = {}
+          obj.application_name = data[i].application_name
+          obj.audit_text = data[i].audit_text
+          obj.conReal = data[i].conReal
+          obj.conPeak = data[i].conPeak
+          obj.conThreshold = data[i].conThreshold
+          obj.cpuReal = data[i].cpuReal
+          obj.cpuPeak = data[i].cpuPeak
+          obj.cpuThreshol = data[i].cpuThreshol
+          obj.id = data[i].id
+          obj.name = data[i].name
+          obj.opsReal = data[i].opsReal
+          obj.opsPeak = data[i].opsPeak
+          obj.opsThreshold = data[i].opsThreshold
+          obj.port = data[i].port
+          obj.status = data[i].status
+          obj.vip = data[i].vip
+          // result.push(obj)
+          this.instanceListDataBox.push(obj)
+        }
+        // console.log(this.instanceListDataBox)
+      },
+      get () {
+        return this.instanceListDataBox
+      }
+    }
+  },
+  methods: {
+    selectedInstanceData (name) {
+      // console.log(name)
+      this.instanceListData = this.search(this.responseInstanceList, name)
+    },
+    search (response, condition) {
+      // console.log(condition, 'condition')
       var result = []
-      if (!data) { return [] }
-      for (var i = 0, iLen = data.length; i < iLen; i++) {
-        var obj = {}
-        obj.application_name = data[i].application_name
-        obj.audit_text = data[i].audit_text
-        obj.conReal = data[i].conn_info.real
-        obj.conPeak = data[i].conn_info.peak
-        obj.conThreshold = data[i].conn_info.threshold
-        obj.cpuReal = data[i].cpu_info.real
-        obj.cpuPeak = data[i].cpu_info.peak
-        obj.cpuThreshol = data[i].cpu_info.threshold
-        obj.id = data[i].id
-        obj.name = data[i].name
-        obj.opsReal = data[i].ops_info.real
-        obj.opsPeak = data[i].ops_info.peak
-        obj.opsThreshold = data[i].ops_info.threshold
-        obj.port = data[i].port
-        obj.status = data[i].status
-        obj.vip = data[i].vip
-        result.push(obj)
+      var data = response.data.data
+      if (!data.length) { return [] }
+      if (!condition) {
+        for (var i = 0, iLen = data.length; i < iLen; i++) {
+          var obj = {}
+          obj.application_name = data[i].application_name
+          obj.audit_text = data[i].audit_text
+          obj.conReal = data[i].conn_info.real
+          obj.conPeak = data[i].conn_info.peak
+          obj.conThreshold = data[i].conn_info.threshold
+          obj.cpuReal = data[i].cpu_info.real
+          obj.cpuPeak = data[i].cpu_info.peak
+          obj.cpuThreshol = data[i].cpu_info.threshold
+          obj.id = data[i].id
+          obj.name = data[i].name
+          obj.opsReal = data[i].ops_info.real
+          obj.opsPeak = data[i].ops_info.peak
+          obj.opsThreshold = data[i].ops_info.threshold
+          obj.port = data[i].port
+          obj.status = data[i].status
+          obj.vip = data[i].vip
+          result.push(obj)
+        }
+      } else {
+        for (i = 0, iLen = data.length; i < iLen; i++) {
+          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
+            obj = {}
+            obj.application_name = data[i].application_name
+            obj.audit_text = data[i].audit_text
+            obj.conReal = data[i].conn_info.real
+            obj.conPeak = data[i].conn_info.peak
+            obj.conThreshold = data[i].conn_info.threshold
+            obj.cpuReal = data[i].cpu_info.real
+            obj.cpuPeak = data[i].cpu_info.peak
+            obj.cpuThreshol = data[i].cpu_info.threshold
+            obj.id = data[i].id
+            obj.name = data[i].name
+            obj.opsReal = data[i].ops_info.real
+            obj.opsPeak = data[i].ops_info.peak
+            obj.opsThreshold = data[i].ops_info.threshold
+            obj.port = data[i].port
+            obj.status = data[i].status
+            obj.vip = data[i].vip
+            result.push(obj)
+          }
+        }
       }
       return result
     }
   },
-  methods: {},
   mounted () {
     // 请求表格数据
     this.$axios({
@@ -186,6 +263,8 @@ export default {
     }).then(response => {
       console.log(response)
       this.responseInstanceList = response
+      // this.instanceListData = response
+      this.selectedInstanceData()
     })
   }
 }

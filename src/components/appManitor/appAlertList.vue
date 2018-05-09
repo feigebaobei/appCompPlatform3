@@ -13,22 +13,17 @@
             </FormItem>
             <FormItem label="策略类型" prop="policyType">
               <Select v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
-                <Option value="redis">Redis基础监控</Option>
-                <Option value="codis">codis</Option>
-                <Option value="gateway">gateway</Option>
+                <Option :value="item.id" v-for="item in add_page.policy_type_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="所属应用" prop="app">
               <Select v-model="formDataAddAlert.app" placeholder="请选择所属应用">
-                <Option value="learn">学习中心</Option>
-                <Option value="learn1">学习中心1</Option>
-                <Option value="learn2">学习中心2</Option>
+                <Option :value="item.id" v-for="item in add_page.application_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="告警对象" prop="alertObj">
               <RadioGroup v-model="formDataAddAlert.alertObj">
-                <Radio label="1">全部实例</Radio>
-                <Radio label="2">部分实例</Radio>
+                <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
               </RadioGroup>
             </FormItem>
             <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer>
@@ -37,6 +32,34 @@
                 告警策略
               </Col>
               <Col>
+                <Row>
+                  <Col span="6">
+                    <FormItem label="">
+                      <Select v-model="formDataAddAlert.metric_id">
+                        <Option :value="item.id" v-for="item in add_page.metric_group" :key="item.id">{{item.name}}</Option>
+                      </Select>
+                    </FormItem>
+                  </Col>
+                  <Col span="5">
+                    <!--<FormItem label="">-->
+                      <Select v-model="formDataAddAlert.operator_id">
+                        <Option :value="item.id" v-for="item in add_page.operator_group" :key="item.id">{{item.name}}</Option>
+                      </Select>
+                    <!--</FormItem>-->
+                  </Col>
+                  <Col span="5">
+                    <!--<FormItem label="">-->
+                      <Input v-model="formDataAddAlert.input" placeholder=""></Input>
+                    <!--</FormItem>-->
+                  </Col>
+                  <Col span="8">
+                    <!--<FormItem label="">-->
+                      <Select v-model="formDataAddAlert.period_id">
+                        <Option :value="item.value" v-for="item in add_page.period_group" :key="item.id">{{item.full_name}}</Option>
+                      </Select>
+                    <!--</FormItem>-->
+                  </Col>
+                </Row>
                 <!-- placeholder -->
                 <!-- <multiplethreshold :item="item"></multiplethreshold> -->
               </Col>
@@ -74,26 +97,32 @@ export default {
   name: 'appAlertList',
   data () {
     return {
+      add_page: '',
       modalAddAlert: false,
       formDataAddAlert: {
         name: '',
         policyType: '',
         app: '',
         alertObj: '',
-        dingdingName: ''
+        dingdingName: '',
+        metric_id: '',
+        threshold: '',
+        operator_id: '',
+        period_id: '',
+        input: ''
       },
       fromRuleAddAlert: {
         name: [
           {required: true, message: '请输入策略名称', trigger: 'change'}
         ],
         policyType: [
-          {required: true, message: '请选择策略类型', trigger: 'change'}
+          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
         ],
         app: [
-          {required: true, message: '请选择所属应用', trigger: 'change'}
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
         alertObj: [
-          {required: true, message: '请选择告警对象', trigger: 'change'}
+          {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
         ],
         dingdingName: [
           {required: true, message: '请输入告警策略名称', trigger: 'change'}
@@ -228,6 +257,7 @@ export default {
   },
   methods: {
     handleSubmitAndAlert (name) {
+      console.log(this.formDataAddAlert)
       this.$refs[name].validate((valid) => {
         if (valid) {
           // 这个接口会出错，后端正在调整。
@@ -238,13 +268,13 @@ export default {
               name: this.formDataAddAlert.name,
               type: this.formDataAddAlert.policyType,
               application_id: this.formDataAddAlert.app, // 应当没有
-              target: 'all',
-              metric_id: ['', ''],
+              target: this.formDataAddAlert.alertObj,
+              metric_id: ['1', '2'],
               token: 'token',
-              threshold: ['', ''],
-              operator_id: ['', ''],
-              period_id: ['', ''],
-              instance_id: '',
+              threshold: ['1', '2'],
+              operator_id: ['1', '1'],
+              period_id: ['1', '1'],
+              instance_id: valid,
               dingding_name: this.formDataAddAlert.dingdingName
             })
           }).then(response => {
@@ -317,8 +347,15 @@ export default {
       method: 'get',
       url: 'http://10.99.1.135/api/alarm/list/id/0'
     }).then(response => {
-      console.log(response)
+      console.log('表格列表', response)
       this.responseAlertList = response
+    })
+    this.$axios({
+      method: 'get',
+      url: 'http://10.99.1.135/api/alarm/add_page'
+    }).then(res => {
+      this.add_page = res.data.data
+      console.log('对话框展示数据', this.add_page)
     })
   }
 }

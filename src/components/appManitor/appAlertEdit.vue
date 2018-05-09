@@ -1,28 +1,23 @@
 <template>
   <div>
     <!-- appAlertEdit -->
-    <Form ref="formDataAlertPolicy" :model="formDataAlertPolicy" :rules="formRuleAlertPolicy" :label-width="100">
+    <Form ref="formDataAlertPolicy" :model="formItem" :rules="formRuleAlertPolicy" :label-width="100">
       <FormItem label="策略名称" prop="name">
-        <Input v-model="formDataAlertPolicy.name" placeholder="请输入策略名称"></Input>
+        <Input v-model="formItem.name" placeholder="请输入策略名称" :v-html="formData.name"></Input>
       </FormItem>
       <FormItem label="策略类型" prop="policyType">
-        <Select v-model="formDataAlertPolicy.policyType" placeholder="请选择策略类型">
-          <Option value="redis">Redis基础监控</Option>
-          <Option value="codis">codis</Option>
-          <Option value="gateway">gateway</Option>
+        <Select v-model="formItem.policyType" placeholder="请选择策略类型">
+          <Option :value="item.id" v-for="item in formData.policy_type_group" :key="item.id">{{item.name}}</Option>
         </Select>
       </FormItem>
       <FormItem label="所属应用" prop="app">
-        <Select v-model="formDataAlertPolicy.app" placeholder="请选择所属应用">
-          <Option value="learn">学习中心</Option>
-          <Option value="learn1">学习中心1</Option>
-          <Option value="learn2">学习中心2</Option>
+        <Select v-model="formItem.app" placeholder="请选择所属应用">
+          <Option :value="item.id" v-for="item in formData.application_group" :key="item.id">{{item.name}}</Option>
         </Select>
       </FormItem>
       <FormItem label="告警对象" prop="alertObj">
-        <RadioGroup v-model="formDataAlertPolicy.alertObj">
-          <Radio label="1">全部实例</Radio>
-          <Radio label="2">部分实例</Radio>
+        <RadioGroup v-model="formItem.alertObj">
+          <Radio :label="item.id" v-for="item in formData.target_group" :key="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
       <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer>
@@ -36,7 +31,7 @@
         </Col>
       </Row>
       <FormItem label="设置告警群" prop="dingdingName">
-        <Input v-model="formDataAlertPolicy.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+        <Input v-model="formItem.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
       </FormItem>
       <FormItem style="margin: 0 0 0 100px;">
         <Button type="primary" @click="handleSubmitAndPolicy('formDataAlertPolicy')">Submit</Button>
@@ -59,21 +54,28 @@ export default {
       //   alertObj: '',
       //   dingdingName: ''
       // },
+      formItem: {
+        name: '',
+        policyType: '',
+        app: '',
+        alertObj: '',
+        dingdingName: ''
+      },
       formRuleAlertPolicy: {
         name: [
           {required: true, message: '请输入策略名称', trigger: 'change'}
         ],
         policyType: [
-          {required: true, message: '请选择策略类型', trigger: 'change'}
+          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
         ],
         app: [
-          {required: true, message: '请选择所属应用', trigger: 'change'}
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
         alertObj: [
-          {required: true, message: '请选择告警对象', trigger: 'change'}
+          {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
         ],
         dingdingName: [
-          {required: true, message: '请输入告警策略名称', trigger: 'change'}
+          {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
       },
       responseAlertPolicy: {
@@ -83,7 +85,8 @@ export default {
           status: 0
         },
         status: 0
-      }
+      },
+      formData: ''
     }
   },
   components: {
@@ -155,17 +158,17 @@ export default {
             method: 'post',
             url: 'http://10.99.1.135/api/alarm/edit',
             data: this.qs.stringify({
-              name: this.formDataAlertPolicy.name,
-              type: this.formDataAlertPolicy.policyType,
-              application_id: this.formDataAlertPolicy.app, // 应当没有
+              name: this.formItem.name,
+              type: this.formItem.policyType,
+              application_id: this.formItem.app, // 应当没有
               target: 'all',
-              metric_id: ['', ''],
+              metric_id: ['1', '2'],
               token: 'token',
-              threshold: ['', ''],
-              operator_id: ['', ''],
-              period_id: ['', ''],
-              instance_id: '',
-              dingding_name: this.formDataAlertPolicy.dingdingName,
+              threshold: ['1', '2'],
+              operator_id: ['1', '2'],
+              period_id: ['1', '2'],
+              instance_id: valid,
+              dingding_name: this.formItem.dingdingName,
               id: this.getRequest().id,
               index: ''
             })
@@ -218,8 +221,17 @@ export default {
       url: 'http://10.99.1.135/api/alarm/edit_page/id/' + this.getRequest().id
       // url: 'http://10.99.1.135/api/alarm/edit_page/id/10'
     }).then(response => {
-      console.log(response)
       this.responseAlertPolicy = response
+    })
+    this.$axios({
+      method: 'get',
+      url: 'http://10.99.1.135/api/alarm/edit_page/id/' + this.getRequest().id
+    }).then(res => {
+      this.formData = res.data.data
+      this.formItem.name = this.formData.name
+      this.formItem.policyType = this.formData.application_id
+      this.formItem.app = this.formData.application_id
+      this.formItem.alertObj = this.formData.application_id
     })
   }
 }

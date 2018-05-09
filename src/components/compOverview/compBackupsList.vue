@@ -54,7 +54,6 @@
       </Modal>
       </Col>
     </Row>
-      {{responseCreateBackups.data.data.application_group}}
     <Table border stripe height="800" :columns="backupsListColumns" :data="backupsListData"></Table>
   </div>
 </template>

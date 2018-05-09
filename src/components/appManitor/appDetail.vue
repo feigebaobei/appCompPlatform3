@@ -167,15 +167,23 @@ export default {
         this.$Message.error('操作失败！')
       }
     },
-    // 应用id
-    appId: function () {
-      var href = window.location.href
-      var reg = /\?id=(\d)*#\//
-      var resultArr = reg.exec(href)
-      var idStr = resultArr[0]
-      var id = idStr.slice(4, -2)
-      // console.log(id)
-      return id
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
     },
     handleSubmitAddComp (name) {
       this.$refs[name].validate((valid) => {
@@ -184,7 +192,7 @@ export default {
             method: 'post',
             url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/app-components',
             data: this.qs.stringify({
-              app_id: this.appId(),
+              app_id: this.getRequest().id,
               component_id: this.formDataAddComp.type
             })
           }).then(response => {
@@ -217,7 +225,7 @@ export default {
       method: 'post',
       url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/components',
       data: this.qs.stringify({
-        app_id: this.appId()
+        app_id: this.getRequest().id
       })
     }).then(response => {
       console.log(response)

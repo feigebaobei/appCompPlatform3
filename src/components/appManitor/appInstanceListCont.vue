@@ -15,31 +15,29 @@
           <Form ref="formDataAddInstance" :model="formDataAddInstance" :rules="formRuleAddInstance" :label-width="100">
             <FormItem label="架构类型" prop="version">
               <RadioGroup v-model="formDataAddInstance.version">
-                <Radio label="colony">集群版</Radio>
-                <Radio label="main">主从版</Radio>
+                <Radio v-for="item in addInstance.arch_type" :key="item.id" :label="item.id">{{item.name}}</Radio>
               </RadioGroup>
             </FormItem>
             <FormItem label="容量" prop="capacity">
-              <Input v-model="formDataAddInstance.capacity" type="text" placeholder="请输入应用名称"></Input>
+                <Input v-model="formDataAddInstance.capacity" type="text" placeholder="请输入应用容量"></Input>
             </FormItem>
             <FormItem label="节点类型" prop="duplicate">
               <RadioGroup v-model="formDataAddInstance.duplicate">
-                <Radio label="2">双副本</Radio>
-                <Radio label="1">单副本</Radio>
+                <Radio :label="item.id" v-for="item in addInstance.node_type" :key="item.id">{{item.name}}</Radio>
               </RadioGroup>
             </FormItem>
             <FormItem label="实例规格" prop="rule">
               <Select v-model="formDataAddInstance.rule" placeholder="请选择实例规格">
-                <Option value="32">32G集群版</Option>
-                <Option value="64">64G集群版</Option>
+                <Option :value="item.name" v-for="item in addInstance.mem_type" :key="item.id"></Option>
               </Select>
             </FormItem>
             <FormItem label="所属应用" prop="app">
               <Select v-model="formDataAddInstance.app" placeholder="请选择所属应用">
-                <Option value="redis">redis</Option>
-                <Option value="codis">codis</Option>
-                <Option value="gateway">gateway</Option>
+                <Option :value="item.name" v-for="item in addInstance.application_group" :key="item.id">{{item.name}}</Option>
               </Select>
+            </FormItem>
+            <FormItem label="申请事由" prop="reason">
+              <Input v-model="formDataAddInstance.reason" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入申请事由"></Input>
             </FormItem>
             <FormItem>
               <Button type="primary" @click="handleSubmitAddInstance('formDataAddInstance')">Submit</Button>
@@ -61,6 +59,7 @@ export default {
   name: 'appInstanceListCont',
   data () {
     return {
+      addInstance: 'null',
       modalAddInstance: false,
       instanceListColumns: [
         {
@@ -199,13 +198,13 @@ export default {
       },
       formRuleAddInstance: {
         version: [
-          {required: true, message: '请选择版本', trigger: 'change'}
+          {required: true, message: '请选择版本', pattern: /.+/, trigger: 'change'}
         ],
         capacity: [
           {required: true, message: '请输入容量', trigger: 'change'}
         ],
         duplicate: [
-          {required: true, message: '请选择副本', trigger: 'change'}
+          {required: true, message: '请选择副本', pattern: /.+/, trigger: 'change'}
         ],
         rule: [
           {required: true, message: '请选择实例规则', trigger: 'change'}
@@ -256,8 +255,15 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$axios({
-            method: '',
-            url: ''
+            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/redis/add',
+            method: 'post',
+            data: {
+              'name': name,
+              'application_id': valid,
+              'arch_type': this.formDataAddInstance.version,
+              'node_type': this.formDataAddInstance.duplicate,
+              'mem_type': this.formDataAddInstance.rule
+            }
           }).then(response => {
             console.log(response)
             this.modalAddInstance = false
@@ -269,6 +275,7 @@ export default {
           this.$Message.error('不可为空')
         }
       })
+      console.log('这里是表单信息：', this.formDataAddInstance)
     },
     handleResetAddInstance (name) {
       this.$refs[name].resetFields()
@@ -281,26 +288,19 @@ export default {
         this.$Message.error('操作失败！')
       }
     },
-    getTableData () {
-      let url = 'http://10.99.1.135/api/redis/list/id/0'
+    addInstanceData () {
+      let url = 'http://www.cloud.com/api/redis/add_page'
       this.$axios.get(url).then((res) => {
-        console.log(res)
+        this.addInstance = res.data.data
       })
-    },
-    ok () {
-      this.$Message.info('申请成功')
-    },
-    cancel () {
-      this.$Message.info('取消申请')
     }
   },
   mounted () {
-    // this.getTableData()
+    this.addInstanceData()
     this.$axios({
       url: 'http://www.cloud.com/api/redis/list/id/0',
       method: 'get'
     }).then(response => {
-      console.log(response)
       this.responseInstanceList = response
     })
   }

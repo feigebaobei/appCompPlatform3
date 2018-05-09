@@ -21,7 +21,10 @@
                     <Icon type="arrow-down-b"></Icon>
                 </a>
                 <DropdownMenu slot="list">
+                  <a href="http://api.service.100tal.com/sso/logout?path=/https://service.100tal.com/sso/login/324899092
+">
                     <DropdownItem>退出</DropdownItem>
+                  </a>
                 </DropdownMenu>
             </Dropdown>
           </Col>
@@ -32,17 +35,29 @@
       <layout>
         <!-- 导航 start -->
         <Sider :style="{height: '100vh', left: 0, overflow: 'auto', background: '#fff'}" class="aside">
-          <Menu v-if="getResponseSider.data.data.menu.length" v-for="item in getResponseSider.data.data.menu" :key="item.name" theme="light" width="auto">
-            <Submenu name="item.id">
+          <!-- <Menu v-if="getResponseSider.data.data.menu.length" v-for="(item, index) in getResponseSider.data.data.menu" :key="item.name" theme="light" width="auto" active-name="0-2" :open-names="['0']">
+            <Submenu :name="index">
+              <template slot="title">
+                <Icon type="ios-keypad"></Icon>
+                <span v-html="item.name, index"></span>
+              </template>
+              <a :href="navHref(subItem)" style="color: #333;" v-for="(subItem, subIndex) in item.child" :key="subItem.id">
+                <MenuItem :name="index-subIndex" v-html="subItem.name"></MenuItem>
+              </a>
+            </Submenu>
+          </Menu> -->
+          <Menu v-if="getResponseSider.data.data.menu.length" :active-name="activeMenuItem()" :open-names="[getResponseSider.data.data.menu[0].name]">
+            <!-- <Submenu v-for="(item, index) in getResponseSider.data.data.menu" :key="index" :name="index"> -->
+            <Submenu v-for="(item, index) in getResponseSider.data.data.menu" :key="item.id" :name="item.name">
               <template slot="title">
                 <Icon type="ios-keypad"></Icon>
                 <span v-html="item.name"></span>
               </template>
-              <a :href="navHref(subItem)" style="color: #333;" v-for="subItem in item.child" :key="subItem.id">
-              <!-- <a href="./appInstanceList.html" style="color: #333; padding: 15px 5px;" v-for="subItem in item.child" :key="subItem.id"> -->
-                <MenuItem name="item.id + '-' + subItem.id" v-html="subItem.name"></MenuItem>
+              <a :href="navHref(subItem)" style="color: #333;" v-for="(subItem, subIndex) in item.child" :key="subItem.id">
+                <MenuItem :name="menuItemName(index, subIndex)" v-html="subItem.name"></MenuItem>
               </a>
             </Submenu>
+            <!-- </Submenu> -->
           </Menu>
         </Sider>
         <!-- 导航 end -->
@@ -163,13 +178,8 @@ export default {
       }
     },
     openSider () {
-      var position = window.location.href
-      // console.log(position)
-      var reg = /\/(\w*)\.html/
-      reg.test(position)
-      var $1 = RegExp.$1
-      // console.log($1)
-      switch ($1) {
+      var href = this.getPosition()
+      switch (href) {
         case 'appInstanceList':
         case 'appInstance':
         case 'appAlertList':
@@ -181,6 +191,43 @@ export default {
     }
   },
   methods: {
+    getPosition () {
+      var position = window.location.href
+      // console.log(position)
+      var reg = /\/(\w*)\.html/
+      reg.test(position)
+      var $1 = RegExp.$1
+      return $1
+    },
+    menuItemName (index, subIndex) {
+      var str = index + '-' + subIndex
+      return str
+    },
+    activeMenuItem () {
+      var href = this.getPosition()
+      switch (href) {
+        case 'appInstanceList':
+        case 'appInstance':
+        case 'appDetail':
+          return '0-0'
+        case 'appAlertList':
+        case 'appAlertEdit':
+          return '0-1'
+        case 'compInstanceList':
+        case 'compInstance':
+          return '0-0'
+        case 'compAlertList':
+        case 'compAlertEdit':
+          return '0-1'
+        case 'compBackupsList':
+        case 'compBackups':
+          return '0-3'
+        case 'compRecoverList':
+          return '0-4'
+        default:
+          return ''
+      }
+    },
     navHref (subItem) {
       if (subItem.role === 'appManitor') {
         switch (subItem.name) {
@@ -214,7 +261,9 @@ export default {
         // method: 'post',
         method: 'get',
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=' + this.getRequest().token
-        url: 'http://dev.infra.console.com/api/user'
+        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token='
+        // url: 'http://dev.infra.console.com/api/user'
+        // url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
         // data: this.qs.stringify({
         //   token: this.getRequest().token
         // })
@@ -252,6 +301,7 @@ export default {
           theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
         }
       }
+      console.log(theRequest)
       return theRequest
     }
   },
