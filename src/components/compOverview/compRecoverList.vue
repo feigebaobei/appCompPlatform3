@@ -86,27 +86,57 @@ export default {
       recoverListColumns: [
         {
           title: '源IP',
-          key: 'source_ip'
+          key: 'source_ip',
+          align: 'center',
+          sortable: true
         },
         {
           title: '源Port',
-          key: 'source_port'
+          key: 'source_port',
+          align: 'center',
+          sortable: true
         },
         {
           title: '时间点',
-          key: 'operate_time'
+          key: 'operate_time',
+          align: 'center',
+          sortable: true
         },
         {
           title: '目的IP',
-          key: 'target_ip'
+          key: 'target_ip',
+          align: 'center',
+          sortable: true
         },
         {
           title: '目的Port',
-          key: 'target_port'
+          key: 'target_port',
+          align: 'center',
+          sortable: true
         },
         {
           title: '状态',
-          key: 'status'
+          key: 'status',
+          filters: [
+            {
+              label: '已完成',
+              value: '已完成'
+            },
+            {
+              label: '进行中',
+              value: '进行中'
+            }
+          ],
+          filterMultiple: false,
+          filterMethod (value, row) {
+            if (value === '已完成') {
+              return row.status === '已完成'
+            } else {
+              if (value === '进行中') {
+                return row.status === '进行中'
+              }
+            }
+          }
         }
       ],
       recoverListData: []

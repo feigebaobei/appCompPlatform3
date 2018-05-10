@@ -1,7 +1,15 @@
 <template>
   <div>
     <!-- <userInfoDefeat v-if="!userInfo.status"></userInfoDefeat> -->
-    <Tabs type="card" v-if="userInfo.status">
+    <!-- {{tabs}}
+    <hr>
+    {{testData}} -->
+    <!-- {{tabs()}}
+    <hr>
+    {{tabs()[0]}}
+    <hr>
+    {{tabs()[1]}} -->
+    <Tabs type="card" v-if="userInfo.userStatus">
       <TabPane :label="tabs[0]">
         <cardListvue :tab="tabs[0]">
           <Row slot="addApp">
@@ -15,9 +23,9 @@
                   <FormItem label="描述" prop="describe">
                     <Input type="text" v-model="formDataAddApp.describe" placeholder="请输入描述"></Input>
                   </FormItem>
-                  <FormItem label="所属部门" prop="department_name">
+                  <!-- <FormItem label="所属部门" prop="department_name">
                     <Input type="text" v-model="formDataAddApp.department_name" placeholder="请输入所属部门"></Input>
-                  </FormItem>
+                  </FormItem> -->
                   <FormItem label="所属域" prop="domain">
                     <Input type="text" v-model="formDataAddApp.domain" placeholder="请输入所属域"></Input>
                   </FormItem>
@@ -60,7 +68,7 @@ export default {
       formDataAddApp: {
         name: '',
         describe: '',
-        department_name: '',
+        // department_name: '',
         domain: '',
         compAddress: '',
         wikiAddress: '',
@@ -73,9 +81,9 @@ export default {
         describe: [
           {required: true, message: '请输入描述', trigger: 'change'}
         ],
-        department_name: [
-          {required: true, message: '请输入所属部门', trigger: 'change'}
-        ],
+        // department_name: [
+        //   {required: true, message: '请输入所属部门', trigger: 'change'}
+        // ],
         domain: [
           {required: true, message: '请输入所属域', trigger: 'change'}
         ],
@@ -89,6 +97,7 @@ export default {
           {required: true, message: '请输入申请原因', trigger: 'change'}
         ]
       }
+      // tabs: this.setTabs()
     }
   },
   components: {
@@ -98,30 +107,41 @@ export default {
   computed: {
     /* 根据用户身份，显示选项卡。 start */
     userInfo () {
-      console.log(this.$store.getters.getUserInfo)
+      // console.log(this.$store.getters.getUserInfo)
       return this.$store.getters.getUserInfo
     },
     tabs () {
-      console.log(this.userInfo.role)
-      switch (this.userInfo.role) {
-        case '2':
+      var b = this.userInfo.role
+      // console.log(b)
+      switch (b) {
+        case 2:
           return ['我的应用', '其它应用']
-        case '1':
+        case 1:
           return ['概览', '审核管理']
       }
     }
     /* 根据用户身份，显示选项卡。 end */
   },
   methods: {
+    // setTabs () {
+    //   var a = this.$store.getters.getUserInfo.role
+    //   console.log(a)
+    //   switch (a) {
+    //     case 2:
+    //       return ['我的应用', '其它应用']
+    //     case 1:
+    //       return ['概览', '审核管理']
+    //   }
+    // },
     // 添加应用
     handleSubmitAddApp (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$axios({
             method: 'post',
-            // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps',
-            url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token,
-            data: {
+            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps',
+            // url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token,
+            data: this.qs.stringify({
               token: this.getRequest().token,
               app_id: '',
               app_key: '',
@@ -130,11 +150,12 @@ export default {
               desc: this.formDataAddApp.describe,
               domain: this.formDataAddApp.domain,
               wiki_url: this.formDataAddApp.wikiAddress,
-              resp_url: this.formDataAddApp.compAddress,
+              // resp_url: this.formDataAddApp.compAddress,
+              repo_url: this.formDataAddApp.compAddress,
               creator_id: this.$store.getters.getUserInfo.uid,
-              group_id: this.formDataAddApp.department_name,
+              // group_id: this.formDataAddApp.department_name,
               status: ''// 不知道为什么没有申请原因
-            }
+            })
           }).then(response => {
             console.log(response)
             this.modalAddApp = false

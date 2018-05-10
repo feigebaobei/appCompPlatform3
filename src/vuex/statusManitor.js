@@ -8,8 +8,8 @@ const store = new Vuex.Store({
     userInfo: {
       uid: '',
       name: '',
-      role: 1,
-      token: '',
+      role: '',
+      token: '234',
       tokenTime: '',
       // department_name: 'development',
       // department_name: 'maintenance',

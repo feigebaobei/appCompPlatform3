@@ -31,35 +31,70 @@ export default {
       columns1: [
         {
           title: '实例名称',
-          key: 'instance_name'
+          key: 'instance_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '实例id',
-          key: 'instance_id'
+          key: 'instance_id',
+          align: 'center',
+          sortable: true
         },
         {
           title: '所属应用',
-          key: 'application_name'
+          key: 'application_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份时间',
-          key: 'start_time'
+          key: 'start_time',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份策略',
-          key: 'policy'
+          key: 'policy',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份大小',
-          key: 'size'
+          key: 'size',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份类型',
-          key: 'type'
+          key: 'type',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份状态',
-          key: 'status'
+          key: 'status',
+          align: 'center',
+          filters: [
+            {
+              label: '已完成',
+              value: '已完成'
+            },
+            {
+              label: '进行中',
+              value: '进行中'
+            }
+          ],
+          filterMultiple: false,
+          filterMethod (value, row) {
+            if (value === '已完成') {
+              return row.status === '已完成'
+            } else {
+              if (value === '进行中') {
+                return row.status === '进行中'
+              }
+            }
+          }
         }
       ],
       data1: []

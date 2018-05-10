@@ -88,51 +88,76 @@ export default {
       backupsListColumns: [
         {
           title: 'id',
-          key: 'id'
+          align: 'center',
+          key: 'id',
+          fixed: 'left',
+          sortable: true,
+          sortType: 'desc'
         },
         {
           title: '策略名称',
+          align: 'center',
           key: '',
+          sortable: true,
+          sortType: 'desc',
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './compBackups.html?id=' + params.row.id
+                href: './compBackups.html?id=' + params.row.id + '&token' + this.$store.getters.getUserInfo.token
               }
             }, params.row.name)
           }
         },
         {
           title: '策略类型',
-          key: 'policy_type'
+          key: 'policy_type',
+          align: 'center',
+          sortable: true
         },
         {
           title: '所属应用',
-          key: 'application_name'
+          key: 'application_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份策略',
-          key: 'backup_type'// 没找到
+          key: 'backup_type',
+          align: 'center',
+          sortable: true
         },
         {
           title: '备份时间',
-          key: 'operator_time'
+          key: 'operator_time',
+          align: 'center',
+          sortable: true
         },
         {
           title: '上次操作人',
-          key: 'operator'// 没找到
+          key: 'operator',
+          align: 'center',
+          sortable: true
         },
         {
           title: '操作',
           key: '',
           render: (h, params) => {
             return h('Button', {
+              on: {
+                click: () => {
+                  // console.log(params)
+                  this.modalOperate = true
+                  this.operatorPolicy(params.row)// 保存当前行数据
+                }
+              },
               attrs: {
-                href: './compBackups.html?id=' + params.row.id
+                // type: 'primary'
               }
             }, params.row.status === '已完成' ? '启用' : '停用')
           }
         }
       ],
+      modalOperate: false,
       backupsListData: [],
       add_instance_id: [],
       targetKeys1: this.getTargetKeys(),
@@ -201,6 +226,38 @@ export default {
     reloadMockData () {
       this.data1 = this.getMockData()
       this.targetKeys1 = this.getTargetKeys()
+    },
+    operatorPolicy (row) {
+      this.curRowData = row
+    },
+    handleSubmitOperator (curRowData) {
+      console.log(curRowData)
+      switch (curRowData.status) {
+        case '运行中':
+          this.$axios({
+            method: 'get',
+            url: 'http://10.99.1.135/api/alarm/stop_alarm/id/' + curRowData.id
+          }).then(response => {
+            console.log(response)
+            this.modalOperate = false
+            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+          })
+          break
+        case '已停用':
+          this.$axios({
+            method: 'get',
+            url: 'http://10.99.1.135/api/alarm/start_alarm/id/' + curRowData.id
+          }).then(response => {
+            console.log(response)
+            this.modalOperate = false
+            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+          })
+          break
+      }
+    },
+    handleCancelOperator (curRowData) {
+      console.log(curRowData)
+      this.modalOperate = false
     }
   },
   mounted () {

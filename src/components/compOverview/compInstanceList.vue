@@ -5,7 +5,7 @@
         <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
       </Col>
       <Col span="8">
-        <Button type="primary" @click="selectedInstanceData(searchText)">添加实例</Button>
+        <Button type="primary" @click="selectedInstanceData(searchText)">检索</Button>
       </Col>
     </Row>
     <!-- <Table height="600" border :data="instanceListDataBox.data" :columns="instanceListColumns"></Table> -->
@@ -47,7 +47,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './compInstance.html?id=' + params.row.id
+                href: './compInstance.html?id=' + params.row.id + '&token=' + this.$store.getters.getUserInfo.token
               }
             }, params.row.name)
           }
@@ -263,7 +263,6 @@ export default {
     }).then(response => {
       console.log(response)
       this.responseInstanceList = response
-      // this.instanceListData = response
       this.selectedInstanceData()
     })
   }

@@ -5,10 +5,10 @@
       <Header theme="dark" class="title">
         <Row>
           <Col span="8">
-            <a href="./index.html" v-if="responseSider.data.data.nav === '应用管理'" style="color: #fff">
+            <a :href="indexHref" v-if="responseSider.data.data.nav === '应用管理'" style="color: #fff">
               <h1 v-html="responseSider.data.data.nav"></h1>
             </a>
-            <a href="./index.html" v-if="responseSider.data.data.nav === '组件概览'" style="color: #fff">
+            <a :href="indexHref" v-if="responseSider.data.data.nav === '组件概览'" style="color: #fff">
               <h1 v-html="responseSider.data.data.nav"></h1>
             </a>
           </Col>
@@ -134,6 +134,9 @@ export default {
     comprecovelist
   },
   computed: {
+    indexHref () {
+      return `./index.html?token=${this.$store.getters.getUserInfo.token}`
+    },
     getResponseSider: {
       set () {},
       get () {
@@ -231,28 +234,30 @@ export default {
       }
     },
     navHref (subItem) {
-      if (subItem.role === 'appManitor') {
+      var role = this.$store.getters.getUserInfo.role
+      if (role === 2) {
         switch (subItem.name) {
           case '实例列表':
-            return './appInstanceList.html'
+            return './appInstanceList.html?token=' + this.$store.getters.getUserInfo.token
           case '告警策略':
-            return './appAlertList.html'
+            return './appAlertList.html?token=' + this.$store.getters.getUserInfo.token
           case '性能监控':
             return '#'
         }
       }
-      if (subItem.role === 'compOverview') {
+      if (role === 1) {
+        var user = this.$store.getters.getUserInfo
         switch (subItem.name) {
           case '实例列表':
-            return './compInstanceList.html'
+            return './compInstanceList.html?token=' + this.$store.getters.getUserInfo.token
           case '告警策略':
-            return './compAlertList.html'
+            return './compAlertList.html?token=' + this.$store.getters.getUserInfo.token
           case '性能监控':
             return '#'
           case '备份':
-            return './compBackupsList.html'
+            return './compBackupsList.html?token=' + this.$store.getters.getUserInfo.token
           case '恢复':
-            return './compRecoverList.html'
+            return './compRecoverList.html?token=' + this.$store.getters.getUserInfo.token
         }
       }
     },
@@ -273,6 +278,9 @@ export default {
       }).then(response => {
         this.$store.dispatch('setUser', response.data.data)
         this.requestNav()
+        /* 在扫码进入系统后首页url里一定有token时 start */
+        this.setToken()// set
+        /* 在扫码进入系统后首页url里一定有token时 end */
         // 前端存储token数据
         // this.saveDataAtFront()
         // this.getDataAtFront()
@@ -283,6 +291,17 @@ export default {
         // this.judgeToken()
       }).catch(error => {
         console.log(error)
+      })
+    },
+    // 请求导航的数据
+    requestNav () {
+      this.$axios({
+        method: 'get',
+        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
+        // url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
+      }).then(response => {
+        // console.log(response)
+        this.responseSider = response
       })
     },
     judgeToken () {
@@ -300,32 +319,30 @@ export default {
     getNewTokenAndRefresh () {
       this.$axios({
         url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user/token',
+        // url: 'http://infra.xesv5.com?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user/token'
         method: 'post',
         data: this.qs.stringify({
           uid: this.$store.getters.getUserInfo.uid
         })
       }).then(response => {
         // 保存新token
-        var obj = {
-          token: response.data.data.token,
-          tokenTime: new Date().getTime()
-        }
-        this.$store.commit('setToken', obj)
+        // var obj = {
+        //   token: response.data.data.token,
+        //   tokenTime: new Date().getTime()
+        // }
+        // this.$store.commit('setToken', obj)
+        this.setToken()
         var domain = this.getDomain()
         var href = domain + '/?token=' + this.$store.getters.getUserInfo.token
         window.location.href = href
       })
     },
-    // 请求导航的数据
-    requestNav () {
-      this.$axios({
-        method: 'get',
-        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
-        // url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
-      }).then(response => {
-        // console.log(response)
-        this.responseSider = response
-      })
+    setToken () {
+      var obj = {
+        token: this.getRequest().token,
+        tokenTime: new Date().getTime()
+      }
+      this.$store.commit('setToken', obj)
     },
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串

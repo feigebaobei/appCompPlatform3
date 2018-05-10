@@ -134,30 +134,41 @@ export default {
       alertListColumns: [
         {
           title: 'id',
-          key: 'id'
+          key: 'id',
+          align: 'center',
+          sortable: true
         },
         {
           title: '策略名称',
-          // key: 'policy_name',
+          align: 'center',
+          sortable: true,
+          // key: 'policy_name'
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './compAlertEdit.html?id=' + params.row.id
+                // href: './compAlertEdit.html?id=' + params.row.id
+                href: `./compAlertEdit.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
               }
             }, params.row.policy_name)
           }
         },
         {
           title: '策略类型',
-          key: 'policy_type'
+          key: 'policy_type',
+          align: 'center',
+          sortable: true
         },
         {
           title: '触发条件',
-          key: 'trigger_condition'
+          key: 'trigger_condition',
+          align: 'center',
+          sortable: true
         },
         {
           title: '所属应用',
-          key: 'application_name'
+          key: 'application_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '上次操作人',
@@ -165,11 +176,15 @@ export default {
         },
         {
           title: '告警群',
-          key: 'dingding_name'
+          key: 'dingding_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '状态',
-          key: 'status'
+          key: 'status',
+          align: 'center',
+          sortable: true
         },
         {
           title: '操作',

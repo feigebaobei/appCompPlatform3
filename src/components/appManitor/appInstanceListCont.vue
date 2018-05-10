@@ -2,10 +2,10 @@
   <div>
     <Row type="flex" justify="start" align="middle" :gutter="15">
       <Col span="10">
-        <Input type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
+        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
       </Col>
       <Col span="4">
-        <Button type="default" class="retrievalBtn">检索</Button>
+        <Button type="default" class="retrievalBtn" @click="selectInstanceListData(searchText)">检索</Button>
       </Col>
       <Col span="3" offset="6">
         <Button type="primary" @click="modalAddInstance = true" class="addInstance">添加实例</Button>
@@ -59,6 +59,7 @@ export default {
   name: 'appInstanceListCont',
   data () {
     return {
+      searchText: '',
       addInstance: 'null',
       modalAddInstance: false,
       instanceListColumns: [
@@ -66,6 +67,8 @@ export default {
           title: 'id',
           align: 'center',
           key: 'id',
+          width: 80,
+          fixed: 'left',
           sortable: true,
           sortType: 'desc'
         },
@@ -73,12 +76,14 @@ export default {
           title: '实例名称',
           align: 'center',
           // key: 'name',
-          width: 100,
+          width: 120,
+          fixed: 'left',
           sortable: true,
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './appInstance.html?id=' + params.row.id
+                // href: './appInstance.html?id=' + params.row.id + '&token=' + this.$store.getters.getUserInfo.token
+                href: `./appInstance.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
               }
             }, params.row.name)
           }
@@ -164,19 +169,25 @@ export default {
           title: '状态',
           align: 'center',
           key: 'status',
+          width: 80,
+          fixed: 'right',
           filters: [
             {
-              label: '已审核'
+              label: '申请中',
+              value: '申请中'
             },
             {
-              label: '已审核'
-            },
-            {
-              label: '已审核'
+              label: '使用中',
+              value: '使用中'
             }
           ],
           filterMultiple: false,
           filterMethod (value, row) {
+            if (value === '申请中') {
+              return row.status === '申请中'
+            } else if (value === '使用中') {
+              return row.status === '使用中'
+            }
           }
         }
       ],
@@ -215,16 +226,51 @@ export default {
         reason: [
           {required: true, message: '请输入申请事由', trigger: 'change'}
         ]
-      }
+      },
+      instanceListDataBox: []
     }
   },
   computed: {
     instanceListData: {
-      set () {},
-      get () {
-        var result = []
-        var data = this.responseInstanceList.data.data
+      set (data) {
+        this.instanceListDataBox = []
         if (!data.length) { return [] }
+        for (var i = 0, iLen = data.length; i < iLen; i++) {
+          var obj = {}
+          obj.application_name = data[i].application_name
+          obj.audit_text = data[i].audit_text
+          obj.conReal = data[i].conReal
+          obj.conPeak = data[i].conPeak
+          obj.conThreshold = data[i].conThreshold
+          obj.cpuReal = data[i].cpuReal
+          obj.cpuPeak = data[i].cpuPeak
+          obj.cpuThreshol = data[i].cpuThreshol
+          obj.id = data[i].id
+          obj.name = data[i].name
+          obj.opsReal = data[i].opsReal
+          obj.opsPeak = data[i].opsPeak
+          obj.opsThreshold = data[i].opsThreshold
+          obj.port = data[i].port
+          obj.status = data[i].status
+          obj.vip = data[i].vip
+          this.instanceListDataBox.push(obj)
+        }
+      },
+      get () {
+        return this.instanceListDataBox
+      }
+    }
+  },
+  methods: {
+    // 筛选实例列表表格数据 start
+    selectInstanceListData (name) {
+      this.instanceListData = this.search(this.responseInstanceList, name)
+    },
+    search (response, condition) {
+      var result = []
+      var data = response.data.data
+      if (!data.length) { return result }
+      if (!condition) {
         for (var i = 0, iLen = data.length; i < iLen; i++) {
           var obj = {}
           obj.application_name = data[i].application_name
@@ -244,13 +290,34 @@ export default {
           obj.status = data[i].status
           obj.vip = data[i].vip
           result.push(obj)
-          // console.log(result)
         }
-        return result
+      } else {
+        for (i = 0, iLen = data.length; i < iLen; i++) {
+          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
+            obj = {}
+            obj.application_name = data[i].application_name
+            obj.audit_text = data[i].audit_text
+            obj.conReal = data[i].conn_info.real
+            obj.conPeak = data[i].conn_info.peak
+            obj.conThreshold = data[i].conn_info.threshold
+            obj.cpuReal = data[i].cpu_info.real
+            obj.cpuPeak = data[i].cpu_info.peak
+            obj.cpuThreshol = data[i].cpu_info.threshold
+            obj.id = data[i].id
+            obj.name = data[i].name
+            obj.opsReal = data[i].ops_info.real
+            obj.opsPeak = data[i].ops_info.peak
+            obj.opsThreshold = data[i].ops_info.threshold
+            obj.port = data[i].port
+            obj.status = data[i].status
+            obj.vip = data[i].vip
+            result.push(obj)
+          }
+        }
       }
-    }
-  },
-  methods: {
+      return result
+    },
+    // 筛选实例列表表格数据 end
     handleSubmitAddInstance (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -296,12 +363,15 @@ export default {
     }
   },
   mounted () {
+    // 请求添加实例的表单模板数据
     this.addInstanceData()
+    // 请求实例列表数据
     this.$axios({
       url: 'http://www.cloud.com/api/redis/list/id/0',
       method: 'get'
     }).then(response => {
       this.responseInstanceList = response
+      this.selectInstanceListData()
     })
   }
 }

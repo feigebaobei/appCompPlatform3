@@ -4,10 +4,9 @@
     <a :href="link(item)">
       <h3 v-html="item.name" class="titleName"></h3>
     </a>
-    <p class="deptName">
-      <!-- <span v-html="item.department_name"></span> -->
+    <!-- <p class="deptName">
       <span class="monite" v-html="item.flag ? '管理' : ''"></span>
-    </p>
+    </p> -->
     <div class="content">
       <!-- <Badge count="3"> -->
       <!-- <a href="#" class="demo-badge" v-for="item in calcComptName" v-html="item"></a> -->
@@ -17,15 +16,15 @@
       <a href="#" class="badge" v-for="text in item.component_name" :key="text" v-html="text"></a>
     </div>
     <Row class="bottom">
-      <Col span="15">
+      <Col span="24">
         <!-- 部门名称 -->
         <span v-if="calcDepartment.length" v-for="text in calcDepartment" :key="text" v-html="text" style="margin: 0 5px;"></span>
       </Col>
-      <Col span="9">
+      <!-- <Col span="9">
         <a :href="link(item)">
           <Button>进入应用</Button>
         </a>
-      </Col>
+      </Col> -->
     </Row>
   </div>
 </template>
@@ -53,7 +52,8 @@ export default {
   },
   methods: {
     link (item) {
-      return './appDetail.html?id=' + item.id
+      // return './appDetail.html?id=' + item.id
+      return `./appDetail.html?id=${item.id}&token=${this.$store.getters.getUserInfo.token}`
     }
   }
 }

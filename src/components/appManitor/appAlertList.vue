@@ -122,30 +122,40 @@ export default {
       alertListColumns: [
         {
           title: 'id',
-          key: 'id'
+          key: 'id',
+          align: 'center',
+          sortable: true
         },
         {
           title: '策略名称',
+          align: 'center',
+          sortable: true,
           // key: 'policy_name',
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './appAlertEdit.html?id=' + params.row.id
+                href: './appAlertEdit.html?id=' + params.row.id + '&token=' + this.$store.getters.getUserInfo.token
               }
             }, params.row.policy_name)
           }
         },
         {
           title: '策略类型',
-          key: 'policy_type'
+          key: 'policy_type',
+          align: 'center',
+          sortable: true
         },
         {
           title: '触发条件',
-          key: 'trigger_condition'
+          key: 'trigger_condition',
+          align: 'center',
+          sortable: true
         },
         {
           title: '所属应用',
-          key: 'application_name'
+          key: 'application_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '上次操作人',
@@ -153,11 +163,33 @@ export default {
         },
         {
           title: '告警群',
-          key: 'dingding_name'
+          key: 'dingding_name',
+          align: 'center',
+          sortable: true
         },
         {
           title: '状态',
-          key: 'status'
+          key: 'status',
+          filters: [
+            {
+              label: '运行中',
+              value: '运行中'
+            },
+            {
+              label: '已停止',
+              value: '已停止'
+            }
+          ],
+          filterMultiple: false,
+          filterMethod (value, row) {
+            if (value === '运行中') {
+              return row.status === '运行中'
+            } else {
+              if (value === '已停止') {
+                return row.status === '已停止'
+              }
+            }
+          }
         },
         {
           title: '操作',
@@ -255,6 +287,7 @@ export default {
           theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
         }
       }
+      console.log(theRequest)
       return theRequest
     },
     getMetricId () {
@@ -279,9 +312,14 @@ export default {
         // console.log(obj)
         return obj
       }
+      console.log(metricIds)
+      console.log(operatorIds)
+      console.log(inputs)
+      console.log(periodIds)
       for (var i = 0, iLen = metricIds.length; i < iLen; i++) {
         if (operatorIds[i] !== undefined && inputs[i] !== undefined && periodIds[i] !== undefined) {
           // console.log('都不空')
+          obj.metricIds.push(metricIds[i])
           obj.operatorIds.push(operatorIds[i])
           obj.inputs.push(inputs[i])
           obj.periodIds.push(periodIds[i])
@@ -293,7 +331,7 @@ export default {
       return obj
     },
     handleSubmitAndAlert (name) {
-      console.log(this.formDataAddAlert)
+      // console.log(this.formDataAddAlert)
       // this.getAlertPolicy()
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -305,17 +343,19 @@ export default {
               type: this.formDataAddAlert.policyType,
               application_id: this.formDataAddAlert.app,
               target: this.formDataAddAlert.alertObj,
-              // metric_id: ['1', '2'],
-              // threshold: ['1', '2'],
-              // operator_id: ['1', '1'],
-              // period_id: ['1', '1'],
-              metric_id: this.getMetricId(),
-              threshold: this.getAlertPolicy().inputs,
-              operator_id: this.getAlertPolicy().operatorIds,
-              period_id: this.getAlertPolicy().periodIds,
-              // token: 'token',
+              // // metric_id: ['1', '2'],
+              // // threshold: ['1', '2'],
+              // // operator_id: ['1', '1'],
+              // // period_id: ['1', '1'],
+              // metric_id: this.formDataAddAlert.metric_id,
+              // metric_id: this.getAlertPolicy().metricIds,
+              // threshold: this.getAlertPolicy().inputs,
+              // operator_id: this.getAlertPolicy().operatorIds,
+              // period_id: this.getAlertPolicy().periodIds,
+              // // token: 'token',
+              // token: this.getRequest().token,
               token: this.getRequest().token,
-              instance_id: valid,
+              // instance_id: valid,
               dingding_name: this.formDataAddAlert.dingdingName
             })
           }).then(response => {

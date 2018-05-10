@@ -63,20 +63,20 @@ export default {
           key: 'tag_name',
           filters: [
             {
-              label: 'Greater than 25',
-              value: 1
+              label: '主',
+              value: '主'
             },
             {
-              label: 'Less than 25',
-              value: 2
+              label: '从',
+              value: '从'
             }
           ],
           filterMultiple: false,
           filterMethod (value, row) {
-            if (value === 1) {
-              return row.age > 25
-            } else if (value === 2) {
-              return row.age < 25
+            if (value === '主') {
+              return row.tag_name === '主'
+            } else if (value === '从') {
+              return row.tag_name === '从'
             }
           }
         },
@@ -112,18 +112,6 @@ export default {
     }
   },
   methods: {
-    // 应用id
-    // appId: function () {
-    //   var href = window.location.href
-    //   var reg = /\?id=(\d)*#?\/?/
-    //   var resultArr = reg.exec(href)
-    //   console.log(resultArr)
-    //   var idStr = resultArr[0]
-    //   console.log(idStr)
-    //   var id = idStr.slice(4, -2)
-    //   console.log(id)
-    //   return id
-    // },
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串
       var index = url.indexOf('?')
