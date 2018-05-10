@@ -8,9 +8,13 @@ const store = new Vuex.Store({
     userInfo: {
       uid: '',
       name: '',
-      department_name: 'development',
+      role: 1,
+      token: '',
+      tokenTime: '',
+      // department_name: 'development',
       // department_name: 'maintenance',
-      status: false// 表示是否等到用户信息
+      userStatus: false, // 表示是否等到用户信息
+      tokenStatus: false// 表示保存token信息
     }
   },
   getters: {
@@ -34,7 +38,15 @@ const store = new Vuex.Store({
       // console.log(payload)
       state.userInfo.uid = payload.uid
       state.userInfo.name = payload.name
-      state.userInfo.status = true
+      state.userInfo.role = payload.role
+      state.userInfo.userStatus = true
+      state.userInfo.token = payload.token
+      state.userInfo.tokenTime = payload.tokenTime
+      state.userInfo.tokenStatus = true
+    },
+    setToken: function (state, payload) {
+      state.userInfo.token = payload.token
+      state.userInfo.tokenTime = payload.tokenTime
     }
   },
   actions: {
@@ -43,6 +55,9 @@ const store = new Vuex.Store({
     },
     setUser: function ({commit}, payload) {
       commit('setUser', payload)
+    },
+    setToken: function ({commit}, payload) {
+      commit('setToken', payload)
     }
   }
 })

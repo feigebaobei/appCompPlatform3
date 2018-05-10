@@ -21,8 +21,7 @@
                     <Icon type="arrow-down-b"></Icon>
                 </a>
                 <DropdownMenu slot="list">
-                  <a href="http://api.service.100tal.com/sso/logout?path=/https://service.100tal.com/sso/login/324899092
-">
+                  <a href="http://api.service.100tal.com/sso/logout?path=/https://service.100tal.com/sso/login/324899092">
                     <DropdownItem>退出</DropdownItem>
                   </a>
                 </DropdownMenu>
@@ -265,9 +264,9 @@ export default {
         method: 'get',
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=' + this.getRequest().token
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=qwerty'
-        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
+        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
         // url: 'http://dev.infra.console.com/api/user'
-        url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
         // data: this.qs.stringify({
         //   token: this.getRequest().token
         // })
@@ -275,19 +274,54 @@ export default {
         this.$store.dispatch('setUser', response.data.data)
         this.requestNav()
         // 前端存储token数据
-        this.saveDataAtFront()
-        this.getDataAtFront()
+        // this.saveDataAtFront()
+        // this.getDataAtFront()
         // this.gotoSweep()
+        // if (this.$store.getters.getUserInfo.tokenStatus) {
+        // }
+        // token机制记得开发
+        // this.judgeToken()
       }).catch(error => {
         console.log(error)
+      })
+    },
+    judgeToken () {
+      var token = this.getDataAtFront()[0].token
+      if (!token) { // 不存在
+        // var domain = this.get
+        // this.refreshCurPage()
+        // 取新token并刷新
+        this.getNewTokenAndRefresh()
+      } else { // 存在
+        // var
+      }
+    },
+    // 取新token并刷新
+    getNewTokenAndRefresh () {
+      this.$axios({
+        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user/token',
+        method: 'post',
+        data: this.qs.stringify({
+          uid: this.$store.getters.getUserInfo.uid
+        })
+      }).then(response => {
+        // 保存新token
+        var obj = {
+          token: response.data.data.token,
+          tokenTime: new Date().getTime()
+        }
+        this.$store.commit('setToken', obj)
+        var domain = this.getDomain()
+        var href = domain + '/?token=' + this.$store.getters.getUserInfo.token
+        window.location.href = href
       })
     },
     // 请求导航的数据
     requestNav () {
       this.$axios({
         method: 'get',
-        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
-        url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
+        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
+        // url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
       }).then(response => {
         // console.log(response)
         this.responseSider = response
@@ -314,15 +348,16 @@ export default {
     },
     // 前端存储token数据
     saveDataAtFront () {
-      var date = new Date()
-      var data = [
-        {
-          'token': this.getRequest().token ? this.getRequest().token : '',
-          'dateTime': new Date().getTime()
-        }
-      ]
-      console.log(data)
-      window.localStorage.token = JSON.stringify(data)
+      // var date = new Date()
+      // var data = [
+      //   {
+      //     'token': this.getRequest().token ? this.getRequest().token : '',
+      //     'dateTime': new Date().getTime()
+      //   }
+      // ]
+      // console.log(data)
+      // window.localStorage.token = JSON.stringify(data)
+
     },
     getDataAtFront () {
       var obj = JSON.parse(window.localStorage.token)
@@ -340,10 +375,26 @@ export default {
       // test
       // console.log(this.getDataAtFront())
     },
-    refreshCurPage () {
+    getDomain () {
       var url = window.location.href
-      var index = url.indexOf('?')
-      var domain = url.slice(0, index)
+      var index = url.indexOf('/?')
+      if (index === -1) {
+        return url
+      } else {
+        var domain = url.slice(0, index)
+        console.log(domain)
+        return domain
+      }
+    },
+    refreshCurPage () {
+      // var url = window.location.href
+      // var index = url.indexOf('?')
+      // var domain = url.slice(0, index)
+      // console.log(domain)
+      var domain = this.getDomain()
+      var href = domain + '/?token=' + this.getDataAtFront()[0].token
+      console.log(href)
+      window.location.href = href
     }
   },
   mounted () {

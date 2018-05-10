@@ -1,6 +1,6 @@
 <template>
   <div>
-    <userInfoDefeat v-if="!userInfo.status"></userInfoDefeat>
+    <!-- <userInfoDefeat v-if="!userInfo.status"></userInfoDefeat> -->
     <Tabs type="card" v-if="userInfo.status">
       <TabPane :label="tabs[0]">
         <cardListvue :tab="tabs[0]">
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import userInfoDefeat from './userInfoDefeat.vue'
+// import userInfoDefeat from './userInfoDefeat.vue'
 import cardListvue from './cardListvue.vue'
 export default {
   name: 'tab',
@@ -92,19 +92,21 @@ export default {
     }
   },
   components: {
-    userInfoDefeat,
+    // userInfoDefeat,
     cardListvue
   },
   computed: {
     /* 根据用户身份，显示选项卡。 start */
     userInfo () {
+      console.log(this.$store.getters.getUserInfo)
       return this.$store.getters.getUserInfo
     },
     tabs () {
-      switch (this.userInfo.department_name) {
-        case 'development':
+      console.log(this.userInfo.role)
+      switch (this.userInfo.role) {
+        case '2':
           return ['我的应用', '其它应用']
-        case 'maintenance':
+        case '1':
           return ['概览', '审核管理']
       }
     }
