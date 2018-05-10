@@ -1,5 +1,5 @@
 <template>
-  <div class="layout">
+  <div class="layout" ref="layoutabs">
     <layout>
       <!-- 头部 start -->
       <Header theme="dark" class="title">
@@ -13,7 +13,7 @@
             </a>
           </Col>
           <Col span="8" offset='8' class="userbox">
-            <img :src="imgUrl" alt="头像" class="headPhoto">
+            <img :src="imgUrl" alt="头像" class="headPhoto" @click="updateDateTime">
             <Dropdown style="margin-left: 20px" placement="bottom-end" class="user">
                 <a href="#" style="color: #fff">
                     <!-- 姓名 -->
@@ -191,6 +191,9 @@ export default {
     }
   },
   methods: {
+    updateDateTime () {
+      console.log(new Date())
+    },
     getPosition () {
       var position = window.location.href
       // console.log(position)
@@ -261,15 +264,20 @@ export default {
         // method: 'post',
         method: 'get',
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=' + this.getRequest().token
-        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token='
+        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=qwerty'
+        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
         // url: 'http://dev.infra.console.com/api/user'
-        // url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
+        url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
         // data: this.qs.stringify({
         //   token: this.getRequest().token
         // })
       }).then(response => {
         this.$store.dispatch('setUser', response.data.data)
         this.requestNav()
+        // 前端存储token数据
+        this.saveDataAtFront()
+        this.getDataAtFront()
+        // this.gotoSweep()
       }).catch(error => {
         console.log(error)
       })
@@ -278,8 +286,8 @@ export default {
     requestNav () {
       this.$axios({
         method: 'get',
-        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
-        // url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
+        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
+        url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
       }).then(response => {
         // console.log(response)
         this.responseSider = response
@@ -303,11 +311,49 @@ export default {
       }
       console.log(theRequest)
       return theRequest
+    },
+    // 前端存储token数据
+    saveDataAtFront () {
+      var date = new Date()
+      var data = [
+        {
+          'token': this.getRequest().token ? this.getRequest().token : '',
+          'dateTime': new Date().getTime()
+        }
+      ]
+      console.log(data)
+      window.localStorage.token = JSON.stringify(data)
+    },
+    getDataAtFront () {
+      var obj = JSON.parse(window.localStorage.token)
+      // console.log(obj)
+      return obj
+    },
+    gotoSweep () {
+      window.location.href = 'http://www.baidu.com'
+    },
+    refreshDate () {
+      var obj = this.getDataAtFront()
+      // console.log(obj)
+      obj[0].dateTime = new Date().getTime()
+      window.localStorage.token = JSON.stringify(obj)
+      // test
+      // console.log(this.getDataAtFront())
+    },
+    refreshCurPage () {
+      var url = window.location.href
+      var index = url.indexOf('?')
+      var domain = url.slice(0, index)
     }
   },
   mounted () {
     // 请求用户信息和导航信息
     this.requestUserInfo()
+    // 刷新用户操作的时间
+    this.box = this.$refs.layoutabs
+    this.box.addEventListener('click', () => {
+      this.refreshDate()
+    }, false)
   }
 }
 

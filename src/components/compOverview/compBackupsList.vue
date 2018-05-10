@@ -11,46 +11,45 @@
           <FormItem label="策略名称" prop="name">
             <Input v-model="formDataCreateBackups.name" placeholder="请输入策略名称"></Input>
           </FormItem>
-          <FormItem label="策略类型" prop="type">
-            <Select v-model="formDataCreateBackups.type">
-              <!-- 没找到 -->
-              <!-- <Option v-for="item in formDataCreateBackups.data.data.application_group" :key="item.id" :value="item.name">{{item.name}}</Option> -->
+          <FormItem label="策略类型" prop="policy_type">
+            <Select v-model="formDataCreateBackups.policy_type">
+               <Option v-for="item in comBackupsData.policy_type" :key="item.id" :value="item.id">{{item.name}}</Option>
             </Select>
           </FormItem>
-          <FormItem label="所属应用" prop="app">
-            <Select v-model="formDataCreateBackups.app">
-              <Option v-for="item in responseCreateBackups.data.data.application_group" :key="item.id" :value="item.name" v-html="item.name"></Option>
+          <FormItem label="所属应用" prop="application_group">
+            <Select v-model="formDataCreateBackups.application_group">
+              <Option v-for="item in comBackupsData.application_group" :key="item.id" :value="item.id" v-html="item.name"></Option>
             </Select>
           </FormItem>
-          <FormItem label="备份对象">
+          <FormItem label="备份对象" prop="radio">
             <RadioGroup v-model="formDataCreateBackups.radio">
-              <!-- <Radio v-for="item in responseCreateBackups.data.data.target_group" :key="item.id" :label="item.id" v-html="item.name"></Radio> -->
+               <Radio v-for="item in comBackupsData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
             </RadioGroup>
           </FormItem>
           <Row v-if="formDataCreateBackups.radio === 2">
             <Col span="24">
-              <Transfer filterable="true" :data="data1" :target-keys="targetKeys1" :render-format="render1" @on-change="handleChange1"></Transfer>
+              <Transfer filterable :data="data1" :target-keys="targetKeys1" :render-format="render1" @on-change="handleChange1"></Transfer>
             </Col>
           </Row>
-          <!-- <FormItem label="备份周期" prop="time">
-            <RadioGroup v-model="formDataCreateBackups.data.data.time_group">
-              <Radio label="每天">每天</Radio>
-            </RadioGroup>
-          </FormItem> -->
           <Row style="margin: 0 0 24px 0;">
-            <Col>
+            <Col span="4" push="1">
             备份周期
             </Col>
-            <Col>
+            <Col span="4">
             每天
             </Col>
           </Row>
           <FormItem label="备份时间" prop="time">
             <Select v-model="formDataCreateBackups.time">
-              <!-- <Option v-for="(item, index) in formDataCreateBackups.data.data.time_group" :key="index" :value="item" v-html="item"></Option> -->
+               <Option v-for="(item, index) in comBackupsData.time_group" :key="index" :value="item" v-html="item"></Option>
             </Select>
           </FormItem>
+          <FormItem>
+            <Button type="primary" @click="handleSubmitAndAlert('formDataCreateBackups')">Submit</Button>
+            <Button type="ghost" @click="handleResetAndAlert('formDataCreateBackups')" style="margin-left: 8px">Reset</Button>
+          </FormItem>
         </Form>
+        <div slot="footer"></div>
       </Modal>
       </Col>
     </Row>
@@ -63,47 +62,48 @@ export default {
   name: 'compBackupsList',
   data () {
     return {
-      responseBackupsList: {
-        data: {
-          data: [],
-          message: '',
-          status: 0
-        },
-        status: 0
-      },
+      comBackupsData: '',
       modalCreateBackups: false,
       formDataCreateBackups: {
-        name: '23456',
-        app: '',
-        select2: '',
-        radio: 1,
-        radio2: '每天',
-        select3: ''
+        name: '',
+        application_group: '',
+        policy_type: '',
+        radio: '',
+        date: '每天'
       },
       formRuleCreateBackups: {
         name: [
           {required: true, message: '请输入策略名称', trigger: 'change'}
+        ],
+        application_group: [
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
+        ],
+        policy_type: [
+          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
+        ],
+        radio: [
+          {required: true, message: '请选择备份对象', pattern: /.+/, trigger: 'change'}
         ]
       },
       backupsListColumns: [
         {
           title: 'id',
-          key: 'instance_id'
+          key: 'id'
         },
         {
           title: '策略名称',
-          // key: 'policy',
+          key: '',
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './compBackups.html?id=' + params.row.instance_id
+                href: './compBackups.html?id=' + params.row.id
               }
-            }, params.row.policy)
+            }, params.row.name)
           }
         },
         {
           title: '策略类型',
-          key: 'type'
+          key: 'policy_type'
         },
         {
           title: '所属应用',
@@ -111,19 +111,15 @@ export default {
         },
         {
           title: '备份策略',
-          key: ''// 没找到
+          key: 'backup_type'// 没找到
         },
         {
           title: '备份时间',
-          key: 'next_time'
+          key: 'operator_time'
         },
         {
           title: '上次操作人',
-          key: ''// 没找到
-        },
-        {
-          title: '状态',
-          key: 'status'// 没找到
+          key: 'operator'// 没找到
         },
         {
           title: '操作',
@@ -131,69 +127,109 @@ export default {
           render: (h, params) => {
             return h('Button', {
               attrs: {
-                href: './compBackups.html?id=' + params.row.instance_id
+                href: './compBackups.html?id=' + params.row.id
               }
             }, params.row.status === '已完成' ? '启用' : '停用')
           }
         }
       ],
-      responseCreateBackups: {
-        data: {
-          data: {},
-          message: '',
-          status: 0
-        },
-        status: 0
-      }
+      backupsListData: [],
+      add_instance_id: [],
+      targetKeys1: this.getTargetKeys(),
+      data1: [
+        {key: '1', label: 'Content1', disabled: false},
+        {key: '2', label: 'Content2', disabled: false},
+        {key: '3', label: 'Content3', disabled: false}
+      ]
     }
   },
   components: {},
-  computed: {
-    backupsListData () {
-      var result = []
-      var data = this.responseBackupsList.data.data
-      if (!data.length) { return result }
-      for (var i = 0, iLen = data.length; i < iLen; i++) {
-        var obj = {}
-        obj.application_name = data[i].application_name
-        obj.instance_id = data[i].instance_id
-        obj.instance_name = data[i].instance_name
-        obj.next_time = data[i].next_time
-        obj.policy = data[i].policy
-        obj.size = data[i].size
-        obj.start_time = data[i].start_time
-        obj.status = data[i].status
-        obj.type = data[i].type
-        result.push(obj)
+  methods: {
+    handleSubmitAndAlert (name) {
+      this.$axios({
+        method: 'get',
+        url: `http://10.99.1.135/api/redis/get_instances/id/${this.formDataCreateBackups.application_group}`
+      }).then(res => {
+        for (let i of res.data.data) {
+          this.add_instance_id.push(i.id)
+        }
+      })
+      this.$axios({
+        method: 'post',
+        url: 'http://10.99.1.135/api/backup/add',
+        data: this.qs.stringify({
+          name: this.formDataCreateBackups.name,
+          type: this.formDataCreateBackups.policy_type,
+          application_id: this.formDataCreateBackups.application_group,
+          target: this.formDataCreateBackups.radio,
+          period: this.formDataCreateBackups.date,
+          // instance_id: this.add_instance_id
+          instance_id: 2 // 这是一个写死的id
+        })
+      }).then(res => {
+        this.$Message.success('操作成功！')
+        this.modalAddAlert = false
+        this.feedbackFormStatus(res.status === 200 && res.data.message === '操作成功')
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleResetAndAlert (name) {
+      this.$refs[name].resetFields()
+    },
+    getMockData () {
+      let mockData = []
+      for (let i = 1; i <= 20; i++) {
+        mockData.push({
+          key: i.toString(),
+          label: 'Content ' + i,
+          description: 'The desc of content  ' + i,
+          disabled: Math.random() * 3 < 1
+        })
       }
-      return result
+      return mockData
+    },
+    getTargetKeys () {
+      return this.getMockData().filter(() => Math.random() * 2 > 1).map(item => item.key)
+    },
+    handleChange1 (newTargetKeys) {
+      this.targetKeys1 = newTargetKeys
+    },
+    render1 (item) {
+      return item.label + ' - ' + item.description
+    },
+    reloadMockData () {
+      this.data1 = this.getMockData()
+      this.targetKeys1 = this.getTargetKeys()
     }
-    // formDataCreateBackups () {
-    //   var data = this.responseCreateBackups.data.data
-    //   console.log(data)
-    //   return {
-    //     name: data.name,
-    //     type: data.type
-    //   }
-    // }
   },
-  methods: {},
   mounted () {
     // 请求备份数据
     this.$axios({
-      url: 'http://10.99.1.135/api/backup/list/id/0',
-      method: 'get'
-    }).then(response => {
-      // console.log(response)
-      this.responseBackupsList = response
+      method: 'get',
+      url: 'http://10.99.1.135/api/backup/policy/list/id/0'
+    }).then(res => {
+      let backupsList = res.data.data
+      console.log('列表渲染数据', backupsList)
+      for (let i of backupsList) {
+        this.backupsListData.push({
+          id: i.id,
+          name: i.name,
+          policy_type: i.policy_type,
+          application_name: i.application_name,
+          backup_type: i.backup_type,
+          operator_time: i.operator_time,
+          operator: i.operator
+        })
+      }
     })
     // 添加备份数据
     this.$axios({
       url: 'http://10.99.1.135/api/backup/add_page/',
       method: 'get'
-    }).then(response => {
-      // console.log(response)
-      this.responseCreateBackups = response
+    }).then(res => {
+      this.comBackupsData = res.data.data
+      console.log('增加备份展示数据', this.comBackupsData)
     })
   }
 }

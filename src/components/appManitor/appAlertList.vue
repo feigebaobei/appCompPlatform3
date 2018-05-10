@@ -27,43 +27,26 @@
               </RadioGroup>
             </FormItem>
             <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer>
-            <Row>
-              <Col style="width: 80px;">
-                告警策略
-              </Col>
-              <Col>
-                <Row>
-                  <Col span="6">
-                    <FormItem label="">
-                      <Select v-model="formDataAddAlert.metric_id">
-                        <Option :value="item.id" v-for="item in add_page.metric_group" :key="item.id">{{item.name}}</Option>
-                      </Select>
-                    </FormItem>
-                  </Col>
-                  <Col span="5">
-                    <!--<FormItem label="">-->
-                      <Select v-model="formDataAddAlert.operator_id">
-                        <Option :value="item.id" v-for="item in add_page.operator_group" :key="item.id">{{item.name}}</Option>
-                      </Select>
-                    <!--</FormItem>-->
-                  </Col>
-                  <Col span="5">
-                    <!--<FormItem label="">-->
-                      <Input v-model="formDataAddAlert.input" placeholder=""></Input>
-                    <!--</FormItem>-->
-                  </Col>
-                  <Col span="8">
-                    <!--<FormItem label="">-->
-                      <Select v-model="formDataAddAlert.period_id">
-                        <Option :value="item.value" v-for="item in add_page.period_group" :key="item.id">{{item.full_name}}</Option>
-                      </Select>
-                    <!--</FormItem>-->
-                  </Col>
-                </Row>
-                <!-- placeholder -->
-                <!-- <multiplethreshold :item="item"></multiplethreshold> -->
-              </Col>
-            </Row>
+            <FormItem label="告警策略">
+              <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 10px 0">
+                <Col span="4">
+                  <span v-html="item.name"></span>
+                </Col>
+                <Col span="5">
+                  <Select v-model="formDataAddAlert.operator_id[index]" placeholder="请选择操作符">
+                    <Option :value="subItem.id" v-for="subItem in add_page.operator_group" :key="subItem.id">{{subItem.name}}</Option>
+                  </Select>
+                </Col>
+                <Col span="5">
+                  <Input v-model="formDataAddAlert.input[index]" placeholder="请输入阈值"></Input>
+                </Col>
+                <Col span="8">
+                  <Select v-model="formDataAddAlert.period_id[index]" placeholder="请选择周期">
+                    <Option :value="subItem.value" v-for="subItem in add_page.period_group" :key="subItem.id">{{subItem.full_name}}</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </FormItem>
             <FormItem label="设置告警群" prop="dingdingName">
               <Input v-model="formDataAddAlert.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
             </FormItem>
@@ -107,9 +90,9 @@ export default {
         dingdingName: '',
         metric_id: '',
         threshold: '',
-        operator_id: '',
-        period_id: '',
-        input: ''
+        operator_id: [],
+        period_id: [],
+        input: []
       },
       fromRuleAddAlert: {
         name: [
@@ -256,24 +239,82 @@ export default {
     }
   },
   methods: {
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
+    },
+    getMetricId () {
+      var metircGroup = this.add_page.metric_group
+      var arr = []
+      for (var i = 0, iLen = metircGroup.length; i < iLen; i++) {
+        arr.push(metircGroup[i].id)
+      }
+      return arr
+    },
+    getAlertPolicy () {
+      var metricIds = this.getMetricId()
+      var operatorIds = this.formDataAddAlert.operator_id
+      var inputs = this.formDataAddAlert.input
+      var periodIds = this.formDataAddAlert.period_id
+      var obj = {
+        operatorIds: [],
+        inputs: [],
+        periodIds: []
+      }
+      if (!operatorIds.length || !inputs.length || !periodIds.length) {
+        // console.log(obj)
+        return obj
+      }
+      for (var i = 0, iLen = metricIds.length; i < iLen; i++) {
+        if (operatorIds[i] !== undefined && inputs[i] !== undefined && periodIds[i] !== undefined) {
+          // console.log('都不空')
+          obj.operatorIds.push(operatorIds[i])
+          obj.inputs.push(inputs[i])
+          obj.periodIds.push(periodIds[i])
+        } else {
+          // console.log('空')
+        }
+      }
+      console.log(obj)
+      return obj
+    },
     handleSubmitAndAlert (name) {
       console.log(this.formDataAddAlert)
+      // this.getAlertPolicy()
       this.$refs[name].validate((valid) => {
         if (valid) {
-          // 这个接口会出错，后端正在调整。
           this.$axios({
             method: 'post',
             url: 'http://10.99.1.135/api/alarm/add',
             data: this.qs.stringify({
               name: this.formDataAddAlert.name,
               type: this.formDataAddAlert.policyType,
-              application_id: this.formDataAddAlert.app, // 应当没有
+              application_id: this.formDataAddAlert.app,
               target: this.formDataAddAlert.alertObj,
-              metric_id: ['1', '2'],
-              token: 'token',
-              threshold: ['1', '2'],
-              operator_id: ['1', '1'],
-              period_id: ['1', '1'],
+              // metric_id: ['1', '2'],
+              // threshold: ['1', '2'],
+              // operator_id: ['1', '1'],
+              // period_id: ['1', '1'],
+              metric_id: this.getMetricId(),
+              threshold: this.getAlertPolicy().inputs,
+              operator_id: this.getAlertPolicy().operatorIds,
+              period_id: this.getAlertPolicy().periodIds,
+              // token: 'token',
+              token: this.getRequest().token,
               instance_id: valid,
               dingding_name: this.formDataAddAlert.dingdingName
             })
@@ -350,12 +391,13 @@ export default {
       console.log('表格列表', response)
       this.responseAlertList = response
     })
+    // 创建告警策略的展示数据
     this.$axios({
       method: 'get',
       url: 'http://10.99.1.135/api/alarm/add_page'
     }).then(res => {
       this.add_page = res.data.data
-      console.log('对话框展示数据', this.add_page)
+      // console.log('对话框展示数据', this.add_page)
     })
   }
 }
