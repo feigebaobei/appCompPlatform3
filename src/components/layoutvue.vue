@@ -21,7 +21,7 @@
                     <Icon type="arrow-down-b"></Icon>
                 </a>
                 <DropdownMenu slot="list">
-                  <a href="http://api.service.100tal.com/sso/logout?path=/https://service.100tal.com/sso/login/324899092">
+                  <a href="http://api.service.100tal.com/sso/logout?path=https://service.100tal.com/sso/login/324899092">
                     <DropdownItem>退出</DropdownItem>
                   </a>
                 </DropdownMenu>
@@ -269,9 +269,9 @@ export default {
         method: 'get',
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=' + this.getRequest().token
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=qwerty'
-        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
+        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
         // url: 'http://dev.infra.console.com/api/user'
-        // url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
+        url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
         // data: this.qs.stringify({
         //   token: this.getRequest().token
         // })
@@ -297,8 +297,8 @@ export default {
     requestNav () {
       this.$axios({
         method: 'get',
-        url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
-        // url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
+        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/menus'
+        url: 'http://infra.xesv5.com/api/menus?token=' + this.getRequest().token
       }).then(response => {
         // console.log(response)
         this.responseSider = response
@@ -343,6 +343,17 @@ export default {
         tokenTime: new Date().getTime()
       }
       this.$store.commit('setToken', obj)
+    },
+    getNewToken () {
+      this.$axios({
+        url: 'http://infra.xesv5.com/api/user/token',
+        method: 'post',
+        data: this.qs.stringify({
+          uid: this.$store.getters.getUserInfo.uid
+        })
+      }).then(response => {
+        this.setToken
+      })
     },
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串

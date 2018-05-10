@@ -317,14 +317,17 @@ export default {
       console.log(inputs)
       console.log(periodIds)
       for (var i = 0, iLen = metricIds.length; i < iLen; i++) {
-        if (operatorIds[i] !== undefined && inputs[i] !== undefined && periodIds[i] !== undefined) {
-          // console.log('都不空')
+        console.log(operatorIds[i] !== undefined)
+        console.log(inputs[i])
+        console.log(periodIds[i])
+        if (operatorIds[i] !== undefined || inputs[i] !== undefined || periodIds[i] !== undefined) {
+          console.log('都不空')
+        } else {
           obj.metricIds.push(metricIds[i])
           obj.operatorIds.push(operatorIds[i])
           obj.inputs.push(inputs[i])
           obj.periodIds.push(periodIds[i])
-        } else {
-          // console.log('空')
+          console.log('空')
         }
       }
       console.log(obj)
@@ -347,10 +350,13 @@ export default {
               // // threshold: ['1', '2'],
               // // operator_id: ['1', '1'],
               // // period_id: ['1', '1'],
-              // metric_id: this.formDataAddAlert.metric_id,
+              metric_id: this.formDataAddAlert.metric_id,
+              operator_id: this.formDataAddAlert.operator_id,
+              threshold: this.formDataAddAlert.input,
+              period_id: this.formDataAddAlert.period_id,
               // metric_id: this.getAlertPolicy().metricIds,
-              // threshold: this.getAlertPolicy().inputs,
               // operator_id: this.getAlertPolicy().operatorIds,
+              // threshold: this.getAlertPolicy().inputs,
               // period_id: this.getAlertPolicy().periodIds,
               // // token: 'token',
               // token: this.getRequest().token,

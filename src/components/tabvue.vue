@@ -139,8 +139,8 @@ export default {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps',
-            // url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token,
+            // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps',
+            url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token,
             data: this.qs.stringify({
               token: this.getRequest().token,
               app_id: '',
