@@ -264,6 +264,26 @@ export default {
     // 请求用户信息
     // 再根据用户信息，请求导航信息
     requestUserInfo () {
+      /* 当没有用户信息时，强制跳转到扫码页 start */
+      // if (!this.$store.getters.getUserInfo.tokenStatus) {
+      //   this.$axios({
+      //     url: 'http://infra.xesv5.com/api/user/token',
+      //     method: 'post',
+      //     data: this.qs.stringify({
+      //       uid: this.$store.getters.getUserInfo.uid
+      //     })
+      //   }).then(response => {
+      //     this.setToken(response.data.data.token)
+      //     console.log(this.$store.getters.getUserInfo.token)
+      //     // window.location.href = 'https://service.100tal.com/sso/login/324899092'
+      //   })
+      // }
+      var token = this.getRequest().token ? this.getRequest().token : this.$store.getters.getUserInfo.token
+      if (!token) {
+        // console.log(this.$store.getters.getUserInfo.token)
+        window.location.href = 'https://service.100tal.com/sso/login/324899092'
+      }
+      /* 当没有用户信息时，强制跳转到扫码页 end */
       this.$axios({
         // method: 'post',
         method: 'get',
@@ -271,15 +291,34 @@ export default {
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user&token=qwerty'
         // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/user'
         // url: 'http://dev.infra.console.com/api/user'
-        url: 'http://infra.xesv5.com/api/user?token=' + this.getRequest().token
+        url: 'http://infra.xesv5.com/api/user?token=' + token
         // data: this.qs.stringify({
         //   token: this.getRequest().token
         // })
       }).then(response => {
         this.$store.dispatch('setUser', response.data.data)
+        this.setToken(token)
         this.requestNav()
+        var a = this.getRequest().token
+        /* 当用户输入url中无token时 start */
+        if (!a) {
+          this.$axios({
+            url: 'http://infra.xesv5.com/api/user/token',
+            method: 'post',
+            data: this.qs.stringify({
+              uid: this.$store.getters.getUserInfo.uid
+            })
+          }).then(response => {
+            var domain = this.getDomain
+            this.setToken(response.data.data.token)
+            var href = domain + '?token=' + this.$store.getters.getUserInfo.token
+            console.log(href)
+            window.location.href = href
+          })
+        }
+        /* 当用户输入url中无token时 end */
         /* 在扫码进入系统后首页url里一定有token时 start */
-        this.setToken()// set
+        // this.setToken()// set
         /* 在扫码进入系统后首页url里一定有token时 end */
         // 前端存储token数据
         // this.saveDataAtFront()
@@ -290,7 +329,8 @@ export default {
         // token机制记得开发
         // this.judgeToken()
       }).catch(error => {
-        console.log(error)
+        // console.log(error)
+        window.location.href = 'https://service.100tal.com/sso/login/324899092'
       })
     },
     // 请求导航的数据
@@ -337,9 +377,10 @@ export default {
         window.location.href = href
       })
     },
-    setToken () {
+    setToken (toke) {
       var obj = {
-        token: this.getRequest().token,
+        // token: this.getRequest().token,
+        token: toke,
         tokenTime: new Date().getTime()
       }
       this.$store.commit('setToken', obj)
@@ -352,7 +393,7 @@ export default {
           uid: this.$store.getters.getUserInfo.uid
         })
       }).then(response => {
-        this.setToken
+        // this.setToken
       })
     },
     getRequest () {
@@ -371,7 +412,7 @@ export default {
           theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
         }
       }
-      console.log(theRequest)
+      // console.log(theRequest)
       return theRequest
     },
     // 前端存储token数据

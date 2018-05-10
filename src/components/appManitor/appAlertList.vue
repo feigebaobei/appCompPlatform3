@@ -350,7 +350,7 @@ export default {
               // // threshold: ['1', '2'],
               // // operator_id: ['1', '1'],
               // // period_id: ['1', '1'],
-              metric_id: this.formDataAddAlert.metric_id,
+              metric_id: this.getMetricId(),
               operator_id: this.formDataAddAlert.operator_id,
               threshold: this.formDataAddAlert.input,
               period_id: this.formDataAddAlert.period_id,
@@ -361,7 +361,7 @@ export default {
               // // token: 'token',
               // token: this.getRequest().token,
               token: this.getRequest().token,
-              // instance_id: valid,
+              instance_id: this.getRequest().id,
               dingding_name: this.formDataAddAlert.dingdingName
             })
           }).then(response => {

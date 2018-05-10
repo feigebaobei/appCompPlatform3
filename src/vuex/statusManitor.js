@@ -9,7 +9,7 @@ const store = new Vuex.Store({
       uid: '',
       name: '',
       role: '',
-      token: '234',
+      token: '',
       tokenTime: '',
       // department_name: 'development',
       // department_name: 'maintenance',
@@ -47,6 +47,7 @@ const store = new Vuex.Store({
     setToken: function (state, payload) {
       state.userInfo.token = payload.token
       state.userInfo.tokenTime = payload.tokenTime
+      state.userInfo.tokenStatus = true
     }
   },
   actions: {
