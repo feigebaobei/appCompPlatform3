@@ -1,8 +1,13 @@
 <template>
   <div>
+    <Row>
+      <Col style="border-bottom: 1px solid #d8d8d8;">
+        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 实例列表</a></h2>
+      </Col>
+    </Row>
     <Row class="title">
       <Col span="22">
-        <h1>实例列表</h1>
+        <h1>实例信息</h1>
       </Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
@@ -60,25 +65,7 @@ export default {
         },
         {
           title: '实例属性',
-          key: 'tag_name',
-          filters: [
-            {
-              label: '主',
-              value: '主'
-            },
-            {
-              label: '从',
-              value: '从'
-            }
-          ],
-          filterMultiple: false,
-          filterMethod (value, row) {
-            if (value === '主') {
-              return row.tag_name === '主'
-            } else if (value === '从') {
-              return row.tag_name === '从'
-            }
-          }
+          key: 'tag_name'
         },
         {
           title: '创建时间',
@@ -131,9 +118,7 @@ export default {
       return theRequest
     },
     getInstanceData () {
-      // const url = 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/redis/detail/id/9'
-      const url = 'http://www.cloud.com/api/redis/detail/id/' + this.getRequest().id
-      // const url = 'http://www.cloud.com/api/redis/detail/id/9'
+      const url = 'http://infra.xesv5.com/api/redis/detail/id/' + this.getRequest().id + '?token=' + this.getRequest().token
       console.log(url)
       this.$axios.get(url).then(response => {
         console.log(response)

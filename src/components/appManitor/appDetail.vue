@@ -1,5 +1,10 @@
 <template>
   <div>
+    <Row>
+      <Col style="border-bottom: 1px solid #d8d8d8;">
+        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 我的应用</a></h2>
+      </Col>
+    </Row>
     <Row style="margin: 10px 0;">
       <Col span="20">
         <h1 v-html="responseDetail.data.data.name"></h1>
@@ -11,9 +16,9 @@
           <Form ref="formDataMoniter" :model="formDataMoniter" :rules="formruleMoniter" :label-width="80">
             <FormItem label="选择权限" prop="select">
               <Select v-model="formDataMoniter.select" placeholder="请选择权限种类">
-                <Option value="moniter">管理员</Option>
-                <Option value="handler">操作人员</Option>
-                <Option value="audience">查看人员</Option>
+                <Option value="999999">管理员</Option>
+                <Option value="1">操作人员</Option>
+                <Option value="2">查看人员</Option>
               </Select>
             </FormItem>
             <FormItem label="用户ID" prop="id">
@@ -53,8 +58,10 @@
     </Row>
     <hr class="hr">
     <Row>
-      <Col span="24" v-if="responseComp.data.data.length">
+      <Col span="24" v-if="responseComp.data.data.length" style="margin: 0 0 15px 0;">
         <Button v-for="item in responseComp.data.data" :key="item.component_id" v-html="item.component_name" class="comp"></Button>
+      </Col>
+      <Col>
         <Button type="primary" class="comp" @click="modalAddComp = true">添加组件</Button>
         <Modal v-model="modalAddComp" title="添加组件">
           <Form ref="formDataAddComp" :model="formDataAddComp" :rules="formRuleAddComp" :label-width="100">
@@ -107,7 +114,7 @@ export default {
       // moniter end
       responseComp: {
         data: {
-          data: {},
+          data: [],
           message: '',
           status: 0
         },
@@ -137,7 +144,7 @@ export default {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/privileges',
+            url: 'http://infra.xesv5.com/api/privileges?token=' + this.getRequest().token,
             data: {
               app_id: this.responseDetail.data.data.id,
               role_id: this.formDataMoniter.select,
@@ -146,7 +153,7 @@ export default {
           }).then(response => {
             // console.log(response)
             this.modalMoniter = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -190,7 +197,7 @@ export default {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/app-components',
+            url: 'http://infra.xesv5.com/api/app-components?token=' + this.getRequest().token,
             data: this.qs.stringify({
               app_id: this.getRequest().id,
               component_id: this.formDataAddComp.type
@@ -198,7 +205,9 @@ export default {
           }).then(response => {
             // console.log(response)
             this.modalAddComp = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            console.log(response.data)
+            console.log(response.data.status)
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -215,15 +224,16 @@ export default {
     // 请求应用详情数据
     this.$axios({
       method: 'get',
-      url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/1'
+      url: `http://infra.xesv5.com/api/apps/${this.getRequest().id}?token=${this.getRequest().token}`
     }).then(response => {
-      // console.log(response)
+      console.log('请求应用详情数据', response)
       this.responseDetail = response
     })
     // 请求与当前应用相关的组件
     this.$axios({
-      method: 'post',
-      url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/components',
+      method: 'get',
+      // url: `http://infra.xesv5.com/api/apps/components/${this.getRequest().id}?token=${this.getRequest().token}`,
+      url: `http://infra.xesv5.com/api/app-components/${this.getRequest().id}?token=${this.getRequest().token}`,
       data: this.qs.stringify({
         app_id: this.getRequest().id
       })

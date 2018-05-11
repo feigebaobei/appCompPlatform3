@@ -1,5 +1,10 @@
 <template>
   <div>
+    <Row>
+      <Col style="border-bottom: 1px solid #d8d8d8;">
+        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 实例列表</a></h2>
+      </Col>
+    </Row>
     <Row class="title">
       <Col span="22">
         <h1>实例列表</h1>
@@ -60,25 +65,25 @@ export default {
         },
         {
           title: '实例属性',
-          key: 'tag_name',
-          filters: [
-            {
-              label: 'Greater than 25',
-              value: 1
-            },
-            {
-              label: 'Less than 25',
-              value: 2
-            }
-          ],
-          filterMultiple: false,
-          filterMethod (value, row) {
-            if (value === 1) {
-              return row.age > 25
-            } else if (value === 2) {
-              return row.age < 25
-            }
-          }
+          key: 'tag_name'
+          // filters: [
+          //   {
+          //     label: 'Greater than 25',
+          //     value: 1
+          //   },
+          //   {
+          //     label: 'Less than 25',
+          //     value: 2
+          //   }
+          // ],
+          // filterMultiple: false,
+          // filterMethod (value, row) {
+          //   if (value === 1) {
+          //     return row.age > 25
+          //   } else if (value === 2) {
+          //     return row.age < 25
+          //   }
+          // }
         },
         {
           title: '创建时间',
@@ -134,7 +139,7 @@ export default {
   mounted () {
     // 请求实例信息
     this.$axios({
-      url: 'http://10.99.1.135/api/redis/detail/id/' + this.getRequest().id,
+      url: 'http://infra.xesv5.com/api/redis/detail/id/' + this.getRequest().id + '?token=' + this.getRequest().token,
       method: 'get'
     }).then(response => {
       // console.log(response)

@@ -23,7 +23,7 @@
               </Col>
               <Col span='12'>
                 <FormItem prop="time">
-                  <TimePicker type="time" placeholder="请选择小时" v-model="formDataAddRecover.time"></TimePicker>
+                  <TimePicker type="time" placeholder="请选择小时" v-model="formDataAddRecover.time" format="HH:mm"></TimePicker>
                 </FormItem>
               </Col>
             </Row>
@@ -153,7 +153,7 @@ export default {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://10.99.1.135/api/recover/add',
+            url: 'http://infra.xesv5.com/api/recover/add?token=' + this.getRequest().token,
             data: this.qs.stringify({
               source_ip: this.formDataAddRecover.ipOrigin,
               source_port: this.formDataAddRecover.portOrigin,
@@ -163,7 +163,7 @@ export default {
             })
           }).then(response => {
             console.log('打印数据', response)
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -186,13 +186,31 @@ export default {
     },
     getValue (value) {
       console.log(value)
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
     }
   },
   mounted () {
     // 请求恢复的表格数据
     this.$axios({
       method: 'get',
-      url: 'http://10.99.1.135/api/recover/list'
+      url: 'http://infra.xesv5.com/api/recover/list?token=' + this.getRequest().token
     }).then(res => {
       this.recoverList = res.data.data
       console.log('列表渲染数据', this.recoverList)

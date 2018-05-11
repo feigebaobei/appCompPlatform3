@@ -13,7 +13,7 @@
       <TabPane :label="tabs[0]">
         <cardListvue :tab="tabs[0]">
           <Row slot="addApp">
-            <Col style="text-align: right;">
+            <Col style="text-align: right;" v-if="role">
               <Button type="primary" @click="modalAddApp = true">添加应用</Button>
               <Modal v-model="modalAddApp" title="添加应用">
                 <Form ref="formDataAddApp" :model="formDataAddApp" :rules="formRuleAddApp" :label-width="80">
@@ -63,6 +63,7 @@ export default {
   name: 'tab',
   data () {
     return {
+      // role: this.$store.getters.getUserInfo.role === 2
       // tabs: this.tabArr()
       modalAddApp: false,
       formDataAddApp: {
@@ -105,6 +106,17 @@ export default {
     cardListvue
   },
   computed: {
+    role () {
+      var role = this.$store.getters.getUserInfo.role
+      switch (role) {
+        case 1:
+          return false
+        case 2:
+          return true
+        default:
+          return false
+      }
+    },
     /* 根据用户身份，显示选项卡。 start */
     userInfo () {
       // console.log(this.$store.getters.getUserInfo)
@@ -139,8 +151,7 @@ export default {
         if (valid) {
           this.$axios({
             method: 'post',
-            // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps',
-            url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token,
+            url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token,
             data: this.qs.stringify({
               token: this.getRequest().token,
               app_id: '',
@@ -159,7 +170,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalAddApp = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           })
         } else {
           this.$Message.error('不可为空')

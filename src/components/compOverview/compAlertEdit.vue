@@ -1,41 +1,33 @@
 <template>
   <div>
+    <Row>
+      <Col style="border-bottom: 1px solid #d8d8d8;">
+        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 告警策略</a></h2>
+      </Col>
+    </Row>
     <!-- appAlertEdit -->
     <Form ref="formDataAlertPolicy" :model="formDataAlertPolicy" :rules="formRuleAlertPolicy" :label-width="100">
       <FormItem label="策略名称" prop="name">
-        <Input v-model="formDataAlertPolicy.name" placeholder="请输入策略名称"></Input>
+        <Input v-model="formItem.name" placeholder="请输入策略名称" :v-html="formData.name"></Input>
       </FormItem>
       <FormItem label="策略类型" prop="policyType">
-        <Select v-model="formDataAlertPolicy.policyType" placeholder="请选择策略类型">
-          <Option value="redis">Redis基础监控</Option>
-          <Option value="codis">codis</Option>
-          <Option value="gateway">gateway</Option>
+        <Select v-model="formItem.policyType" placeholder="请选择策略类型">
+          <Option :value="item.id" v-for="item in formData.policy_type_group" :key="item.id">{{item.name}}</Option>
         </Select>
       </FormItem>
       <FormItem label="所属应用" prop="app">
-        <Select v-model="formDataAlertPolicy.app" placeholder="请选择所属应用">
-          <Option value="learn">学习中心</Option>
-          <Option value="learn1">学习中心1</Option>
-          <Option value="learn2">学习中心2</Option>
+        <Select v-model="formItem.app" placeholder="请选择所属应用">
+          <Option :value="item.id" v-for="item in formData.application_group" :key="item.id">{{item.name}}</Option>
         </Select>
       </FormItem>
       <FormItem label="告警对象" prop="alertObj">
-        <RadioGroup v-model="formDataAlertPolicy.alertObj">
-          <Radio label="1">全部实例</Radio>
-          <Radio label="2">部分实例</Radio>
+        <RadioGroup v-model="formItem.alertObj">
+          <Radio :label="item.id" v-for="item in formData.target_group" :key="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer>
-      <Row>
-        <Col style="width: 80px;">
-          告警策略
-        </Col>
-        <Col>
-          placeholder
-        </Col>
-      </Row>
+      <transfervue v-if="transferShow" :instancesId="formItem.app"></transfervue>
       <FormItem label="设置告警群" prop="dingdingName">
-        <Input v-model="formDataAlertPolicy.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+        <Input v-model="formItem.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
       </FormItem>
       <FormItem style="margin: 0 0 0 100px;">
         <Button type="primary" @click="handleSubmitAndPolicy('formDataAlertPolicy')">Submit</Button>
@@ -46,32 +38,33 @@
 </template>
 
 <script>
+import transfervue from '../transfer.vue'
 export default {
   name: 'appAlertEdit',
   data () {
     return {
-      // formDataAlertPolicy: {
-      //   name: '',
-      //   policyType: '',
-      //   app: '',
-      //   alertObj: '',
-      //   dingdingName: ''
-      // },
+      formItem: {
+        name: '',
+        policyType: '',
+        app: '',
+        alertObj: '',
+        dingdingName: ''
+      },
       formRuleAlertPolicy: {
         name: [
-          {required: true, message: '请输入策略名称', trigger: 'change'}
+          // {required: true, message: '请输入策略名称', trigger: 'blur'}
         ],
         policyType: [
-          {required: true, message: '请选择策略类型', trigger: 'change'}
+          // {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'blur'}
         ],
         app: [
-          {required: true, message: '请选择所属应用', trigger: 'change'}
+          // {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'blur'}
         ],
         alertObj: [
-          {required: true, message: '请选择告警对象', trigger: 'change'}
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'blur'}
         ],
         dingdingName: [
-          {required: true, message: '请输入告警策略名称', trigger: 'change'}
+          // {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'blur'}
         ]
       },
       responseAlertPolicy: {
@@ -81,13 +74,16 @@ export default {
           status: 0
         },
         status: 0
-      }
+      },
+      formData: ''
     }
   },
-  components: {},
+  components: {
+    transfervue
+  },
   computed: {
     transferShow () {
-      return this.formDataAlertPolicy.alertObj === '2'
+      return this.formItem.alertObj === 2
     },
     formDataAlertPolicy () {
       if (!this.responseAlertPolicy.data.data) {
@@ -130,7 +126,7 @@ export default {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://10.99.1.135/api/alarm/edit',
+            url: 'http://infra.xesv5.com/api/alarm/edit?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formDataAlertPolicy.name,
               type: this.formDataAlertPolicy.policyType,
@@ -148,7 +144,7 @@ export default {
             })
           }).then(response => {
             console.log(response)
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -192,11 +188,21 @@ export default {
     // 请求原始数据
     this.$axios({
       method: 'get',
-      url: 'http://10.99.1.135/api/alarm/edit_page/id/' + this.getRequest().id
-      // url: 'http://10.99.1.135/api/alarm/edit_page/id/10'
+      url: 'http://infra.xesv5.com/api/alarm/edit_page/id/' + this.getRequest().id + '?token=' + this.getRequest().token
     }).then(response => {
       console.log(response)
       this.responseAlertPolicy = response
+    })
+    // 编辑数据内容
+    this.$axios({
+      method: 'get',
+      url: 'http://infra.xesv5.com/api/alarm/edit_page/id/' + this.getRequest().id + '?token=' + this.getRequest().token
+    }).then(res => {
+      this.formData = res.data.data
+      this.formItem.name = this.formData.name
+      this.formItem.policyType = this.formData.application_id
+      this.formItem.app = this.formData.application_id
+      this.formItem.alertObj = this.formData.application_id
     })
   }
 }

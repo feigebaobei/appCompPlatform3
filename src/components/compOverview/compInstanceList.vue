@@ -138,22 +138,33 @@ export default {
           fixed: 'right',
           filters: [
             {
-              label: '申请中',
-              value: '申请中'
+              label: '未审核',
+              value: '未审核'
             },
             {
-              label: '使用中',
-              value: '使用中'
+              label: '软件安装中',
+              value: '软件安装中'
+            },
+            {
+              label: '已审核',
+              value: '已审核'
+            },
+            {
+              label: '已驳回',
+              value: '已驳回'
             }
           ],
           filterMultiple: false,
           filterMethod (value, row) {
-            if (value === '申请中') {
-              return row.status === '申请中'
-            } else {
-              if (value === '使用中') {
-                return row.status === '使用中'
-              }
+            switch (value) {
+              case '未审核':
+                return row.status === '未审核'
+              case '软件安装中':
+                return row.status === '软件安装中'
+              case '已审核':
+                return row.status === '已审核'
+              case '已驳回':
+                return row.status === '已驳回'
             }
           }
         }
@@ -253,13 +264,31 @@ export default {
         }
       }
       return result
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
     }
   },
   mounted () {
     // 请求表格数据
     this.$axios({
       method: 'get',
-      url: 'http://10.99.1.135/api/redis/list/id/0'
+      url: 'http://infra.xesv5.com/api/redis/list/id/0?token=' + this.getRequest().token
     }).then(response => {
       console.log(response)
       this.responseInstanceList = response

@@ -13,31 +13,37 @@
             </FormItem>
             <FormItem label="策略类型" prop="policyType">
               <Select v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
-                <Option value="redis">Redis基础监控</Option>
-                <Option value="codis">codis</Option>
-                <Option value="gateway">gateway</Option>
+                <Option :value="item.id" v-for="item in add_page.policy_type_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="所属应用" prop="app">
               <Select v-model="formDataAddAlert.app" placeholder="请选择所属应用">
-                <Option value="learn">学习中心</Option>
-                <Option value="learn1">学习中心1</Option>
-                <Option value="learn2">学习中心2</Option>
+                <Option :value="item.id" v-for="item in add_page.application_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="告警对象" prop="alertObj">
               <RadioGroup v-model="formDataAddAlert.alertObj">
-                <Radio label="1">全部实例</Radio>
-                <Radio label="2">部分实例</Radio>
+                <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
               </RadioGroup>
             </FormItem>
-            <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer>
-            <Row>
-              <Col style="width: 80px;">
-                告警策略
+            <!-- <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer> -->
+            <transfervue v-if="transferShow" :instancesId="formDataAddAlert.app"></transfervue>
+            <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 10px 0">
+              <Col span="4">
+                <span v-html="item.name"></span>
               </Col>
-              <Col>
-                placeholder
+              <Col span="5">
+                <Select v-model="formDataAddAlert.operator_id[index]" placeholder="请选择操作符">
+                  <Option :value="subItem.id" v-for="subItem in add_page.operator_group" :key="subItem.id">{{subItem.name}}</Option>
+                </Select>
+              </Col>
+              <Col span="5">
+                <Input v-model="formDataAddAlert.input[index]" placeholder="请输入阈值"></Input>
+              </Col>
+              <Col span="8">
+                <Select v-model="formDataAddAlert.period_id[index]" placeholder="请选择周期">
+                  <Option :value="subItem.value" v-for="subItem in add_page.period_group" :key="subItem.id">{{subItem.full_name}}</Option>
+                </Select>
               </Col>
             </Row>
             <FormItem label="设置告警群" prop="dingdingName">
@@ -68,10 +74,14 @@
 </template>
 
 <script>
+import transfervue from '../transfer.vue'
 export default {
   name: 'compAlertList',
   data () {
     return {
+      add_page: {},
+      alertListData: [],
+      // instancesId: this.,
       responseAlertList: {
         data: {
           data: [],
@@ -87,23 +97,26 @@ export default {
         policyType: '',
         app: '',
         alertObj: '',
-        dingdingName: ''
+        dingdingName: '',
+        operator_id: [],
+        input: [],
+        period_id: []
       },
       fromRuleAddAlert: {
         name: [
-          {required: true, message: '请输入策略名称', trigger: 'change'}
+          // {required: true, message: '请输入策略名称', trigger: 'change'}
         ],
         policyType: [
-          {required: true, message: '请选择策略类型', trigger: 'change'}
+          // {required: true, message: '请选择策略类型', trigger: 'change'}
         ],
         app: [
-          {required: true, message: '请选择所属应用', trigger: 'change'}
+          // {required: true, message: '请选择所属应用', trigger: 'change'}
         ],
         alertObj: [
-          {required: true, message: '请选择告警对象', trigger: 'change'}
+          // {required: true, message: '请选择告警对象', trigger: 'change'}
         ],
         dingdingName: [
-          {required: true, message: '请输入告警策略名称', trigger: 'change'}
+          // {required: true, message: '请输入告警策略名称', trigger: 'change'}
         ]
       },
       /* 创建告警策略 end */
@@ -147,7 +160,7 @@ export default {
             return h('a', {
               attrs: {
                 // href: './compAlertEdit.html?id=' + params.row.id
-                href: `./compAlertEdit.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
+                href: `./compAlertEdit.html?id=${params.row.id}&token=${this.getRequest().token}`
               }
             }, params.row.policy_name)
           }
@@ -193,7 +206,7 @@ export default {
             return h('Button', {
               on: {
                 click: () => {
-                  // console.log(params)
+                  console.log(params)
                   this.modalOperate = true
                   this.operatorPolicy(params.row)// 保存当前行数据
                 }
@@ -210,57 +223,77 @@ export default {
       curRowData: {}
     }
   },
-  components: {},
+  components: {
+    transfervue
+  },
   computed: {
-    alertListData () {
-      var result = []
-      var data = this.responseAlertList.data.data
-      if (!data.length) { return result }
-      for (var i = 0, iLen = data.length; i < iLen; i++) {
-        var obj = {}
-        obj.application_name = data[i].application_name
-        obj.dingding_name = data[i].dingding_name
-        obj.id = data[i].id
-        obj.metric = data[i].metric
-        obj.operator = data[i].operator
-        obj.policy_name = data[i].policy_name
-        obj.policy_type = data[i].policy_type
-        obj.status = data[i].status
-        obj.threshold = data[i].threshold
-        obj.trigger_condition = data[i].trigger_condition
-        result.push(obj)
-      }
-      return result
-    },
+    // alertListData () {
+    //   var result = []
+    //   var data = this.responseAlertList.data.data
+    //   if (!data.length) { return result }
+    //   for (var i = 0, iLen = data.length; i < iLen; i++) {
+    //     var obj = {}
+    //     obj.application_name = data[i].application_name
+    //     obj.dingding_name = data[i].dingding_name
+    //     obj.id = data[i].id
+    //     obj.metric = data[i].metric
+    //     obj.operator = data[i].operator
+    //     obj.policy_name = data[i].policy_name
+    //     obj.policy_type = data[i].policy_type
+    //     obj.status = data[i].status
+    //     obj.threshold = data[i].threshold
+    //     obj.trigger_condition = data[i].trigger_condition
+    //     result.push(obj)
+    //   }
+    //   return result
+    // },
     transferShow () {
-      return this.formDataAddAlert.alertObj === '2'
+      return this.formDataAddAlert.alertObj === 2
     }
   },
   methods: {
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
+    },
     handleSubmitAndAlert (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
           // 这个接口会出错，后端正在调整。
           this.$axios({
             method: 'post',
-            url: 'http://10.99.1.135/api/alarm/add',
+            url: 'http://infra.xesv5.com/api/alarm/add?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formDataAddAlert.name,
               type: this.formDataAddAlert.policyType,
               application_id: this.formDataAddAlert.app, // 应当没有
-              target: 'all',
-              metric_id: ['', ''],
-              token: 'token',
-              threshold: ['', ''],
-              operator_id: ['', ''],
-              period_id: ['', ''],
+              target: this.formDataAddAlert.alertObj,
+              metric_id: this.add_page.metric_group,
+              token: this.getRequest().token,
+              threshold: '',
+              operator_id: this.formDataAddAlert.operator_id,
+              period_id: this.formDataAddAlert.period_id,
               instance_id: '',
               dingding_name: this.formDataAddAlert.dingdingName
             })
           }).then(response => {
             console.log(response)
             this.modalAddAlert = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -290,6 +323,7 @@ export default {
     // 穿梭框 end
     operatorPolicy (row) {
       this.curRowData = row
+      console.log('当前行', this.curRowData)
     },
     handleSubmitOperator (curRowData) {
       console.log(curRowData)
@@ -297,21 +331,21 @@ export default {
         case '运行中':
           this.$axios({
             method: 'get',
-            url: 'http://10.99.1.135/api/alarm/stop_alarm/id/' + curRowData.id
+            url: 'http://infra.xesv5.com/api/alarm/stop_alarm/id/' + curRowData.id + '?token=' + this.getRequest().token
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           })
           break
         case '已停用':
           this.$axios({
             method: 'get',
-            url: 'http://10.99.1.135/api/alarm/start_alarm/id/' + curRowData.id
+            url: 'http://infra.xesv5.com/api/alarm/start_alarm/id/' + curRowData.id + '?token=' + this.getRequest().token
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           })
           break
       }
@@ -323,12 +357,36 @@ export default {
   },
   mounted () {
     // 请求告警列表信息
+    // this.$axios({
+    //   method: 'get',
+    //   url: 'http://infra.xesv5.com/api/alarm/list/id/0?token=' + this.getRequest().token
+    // }).then(response => {
+    //   console.log(response)
+    //   this.responseAlertList = response
+    // })
+    const url = `http://infra.xesv5.com/api/alarm/list/id/0?token=${this.getRequest().token}`
+    this.$axios.get(url).then(res => {
+      console.log(res.data.data)
+      for (let i of res.data.data) {
+        this.alertListData.push({
+          application_name: i.application_name,
+          dingding_name: i.dingding_name,
+          id: i.id,
+          operator: i.operator,
+          policy_name: i.policy_name,
+          policy_type: i.policy_type,
+          status: i.status,
+          trigger_condition: i.trigger_condition
+        })
+      }
+    })
+    // 创建告警策略的展示数据
     this.$axios({
       method: 'get',
-      url: 'http://10.99.1.135/api/alarm/list/id/0'
-    }).then(response => {
-      console.log(response)
-      this.responseAlertList = response
+      url: 'http://infra.xesv5.com/api/alarm/add_page?token=' + this.getRequest().token
+    }).then(res => {
+      this.add_page = res.data.data
+      // console.log('对话框展示数据', this.add_page)
     })
   }
 }

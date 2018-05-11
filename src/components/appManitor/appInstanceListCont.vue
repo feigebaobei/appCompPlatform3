@@ -13,6 +13,9 @@
         <Modal v-model="modalAddInstance" title="添加实例">
           <!--表单 start-->
           <Form ref="formDataAddInstance" :model="formDataAddInstance" :rules="formRuleAddInstance" :label-width="100">
+            <FormItem label="实例名称" prop="name">
+                <Input v-model="formDataAddInstance.name" type="text" placeholder="请输入实例名称"></Input>
+            </FormItem>
             <FormItem label="架构类型" prop="version">
               <RadioGroup v-model="formDataAddInstance.version">
                 <Radio v-for="item in addInstance.arch_type" :key="item.id" :label="item.id">{{item.name}}</Radio>
@@ -28,7 +31,7 @@
             </FormItem>
             <FormItem label="实例规格" prop="rule">
               <Select v-model="formDataAddInstance.rule" placeholder="请选择实例规格">
-                <Option :value="item.name" v-for="item in addInstance.mem_type" :key="item.id"></Option>
+                <Option :value="item.id" v-for="item in addInstance.mem_type" :key="item.id" v-html="item.name"></Option>
               </Select>
             </FormItem>
             <FormItem label="所属应用" prop="app">
@@ -80,6 +83,9 @@ export default {
           fixed: 'left',
           sortable: true,
           render: (h, params) => {
+            // console.log(params)
+            // console.log(params.row)
+            // console.log(params.row.name)
             return h('a', {
               attrs: {
                 // href: './appInstance.html?id=' + params.row.id + '&token=' + this.$store.getters.getUserInfo.token
@@ -171,22 +177,36 @@ export default {
           key: 'status',
           width: 80,
           fixed: 'right',
+          // filters: this.selectTableStatus(),
           filters: [
             {
               label: '申请中',
               value: '申请中'
             },
             {
+              label: '软件安装中',
+              value: '软件安装中'
+            },
+            {
               label: '使用中',
               value: '使用中'
+            },
+            {
+              label: '已驳回',
+              value: '已驳回'
             }
           ],
           filterMultiple: false,
           filterMethod (value, row) {
-            if (value === '申请中') {
-              return row.status === '申请中'
-            } else if (value === '使用中') {
-              return row.status === '使用中'
+            switch (value) {
+              case '软件安装中':
+                return row.status === '软件安装中'
+              case '使用中':
+                return row.status === '使用中'
+              case '申请中':
+                return row.status === '申请中'
+              case '已驳回':
+                return row.status === '已驳回'
             }
           }
         }
@@ -200,6 +220,7 @@ export default {
         status: 0
       },
       formDataAddInstance: {
+        name: '',
         version: '',
         capacity: '',
         duplicate: '',
@@ -208,23 +229,38 @@ export default {
         reason: ''
       },
       formRuleAddInstance: {
+        name: [
+          // {required: true, message: '请输入实例名称', trigger: 'change'}
+        ],
         version: [
-          {required: true, message: '请选择版本', pattern: /.+/, trigger: 'change'}
+          // {required: true, message: '请选择版本', pattern: /.+/, trigger: 'change'}
         ],
         capacity: [
-          {required: true, message: '请输入容量', trigger: 'change'}
+          // {
+          //   required: true,
+          //   message: '请输入容量',
+          //   trigger: function (rule, value, callback) {
+          //     var regPos = /^\d+(\.\d+)?$/ // 非负浮点数
+          //     var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/ // 负浮点数
+          //     if (regPos.test(value) || regNeg.test(value)) {
+          //       return true
+          //     } else {
+          //       return false
+          //     }
+          //   }
+          // }
         ],
         duplicate: [
-          {required: true, message: '请选择副本', pattern: /.+/, trigger: 'change'}
+          // {required: true, message: '请选择副本', pattern: /.+/, trigger: 'change'}
         ],
         rule: [
-          {required: true, message: '请选择实例规则', trigger: 'change'}
+          // {required: true, message: '请选择实例规格', pattern: /.+/, trigger: 'change'}
         ],
         app: [
-          {required: true, message: '请选择所属应用', trigger: 'change'}
+          // {required: true, message: '请选择所属应用', trigger: 'change'}
         ],
         reason: [
-          {required: true, message: '请输入申请事由', trigger: 'change'}
+          // {required: true, message: '请输入申请事由', trigger: 'change'}
         ]
       },
       instanceListDataBox: []
@@ -253,6 +289,14 @@ export default {
           obj.port = data[i].port
           obj.status = data[i].status
           obj.vip = data[i].vip
+          // obj.application_name = data[i].application_name
+          // obj.dingding_name = data[i].dingding_name
+          // obj.id = data[i].id
+          // obj.operator = data[i].operator
+          // obj.policy_name = data[i].policy_name
+          // obj.policy_type = data[i].policy_type
+          // obj.status = data[i].status
+          // obj.trigger_condition = data[i].trigger_condition
           this.instanceListDataBox.push(obj)
         }
       },
@@ -262,6 +306,15 @@ export default {
     }
   },
   methods: {
+    // selectTableStatus () {
+    //   var role = this.$store.getters.getUserInfo.role
+    //   switch (role) {
+    //     case 1:// 运维
+    //       return ['软件安装中', '使用中']
+    //     case 2:// 开发
+    //       return ['软件安装中', '已审核', '已驳回']
+    //   }
+    // },
     // 筛选实例列表表格数据 start
     selectInstanceListData (name) {
       this.instanceListData = this.search(this.responseInstanceList, name)
@@ -322,7 +375,8 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$axios({
-            url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/redis/add',
+            // url: 'http://infra.xesv5.com/api/redis/add?token=' + this.$store.getters.getUserInfo.token,
+            url: 'http://infra.xesv5.com/api/redis/add?token=' + this.getRequest().token,
             method: 'post',
             data: {
               'name': name,
@@ -334,7 +388,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalAddInstance = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -356,19 +410,39 @@ export default {
       }
     },
     addInstanceData () {
-      let url = 'http://www.cloud.com/api/redis/add_page'
+      // let url = 'http://infra.xesv5.com/api/redis/add_page?token=' + this.$store.getters.getUserInfo.token
+      let url = 'http://infra.xesv5.com/api/redis/add_page?token=' + this.getRequest().token
       this.$axios.get(url).then((res) => {
         this.addInstance = res.data.data
       })
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
     }
   },
   mounted () {
+    // console.log(this.$store.getters.getUserInfo.token)
     // 请求添加实例的表单模板数据
     this.addInstanceData()
     // 请求实例列表数据
     this.$axios({
-      url: 'http://www.cloud.com/api/redis/list/id/0',
-      method: 'get'
+      method: 'get',
+      url: 'http://infra.xesv5.com/api/redis/list/id/0?token=' + this.getRequest().token
     }).then(response => {
       this.responseInstanceList = response
       this.selectInstanceListData()

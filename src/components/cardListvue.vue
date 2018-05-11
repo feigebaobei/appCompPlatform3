@@ -75,8 +75,10 @@ export default {
     requestMyApp () {
       this.$axios({
         method: 'get',
-        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
-        url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps/mine?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token
+        url: `http://infra.xesv5.com/api/apps?token=${this.getRequest().token}`
       }).then(response => {
         // console.log(response)
         this.responseMyApp = response
@@ -85,8 +87,10 @@ export default {
     requestElseApp () {
       this.$axios({
         method: 'get',
-        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
-        url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token
+        url: `http://infra.xesv5.com/api/apps?type=${1}&token=${this.getRequest().token}`
       }).then(response => {
         // console.log(response)
         this.responseElseApp = response
@@ -95,8 +99,10 @@ export default {
     requestOverview () {
       this.$axios({
         method: 'get',
-        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
-        url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps/mine?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token
+        url: `http://infra.xesv5.com/api/apps?token=${this.getRequest().token}`
       }).then(response => {
         // console.log(response)
         this.responseOverview = response
@@ -105,8 +111,11 @@ export default {
     requestAudit () {
       this.$axios({
         method: 'get',
-        // url: 'http://api.console.doc/server/index.php?g=Web&c=Mock&o=simple&projectID=2&uri=/api/apps/mine'
-        url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps/mine'
+        // url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token
+        // url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token
+        url: `http://infra.xesv5.com/api/apps?type=${1}&token=${this.getRequest().token}`
       }).then(response => {
         // console.log(response)
         this.responseAudit = response

@@ -45,9 +45,12 @@ const store = new Vuex.Store({
       state.userInfo.tokenStatus = true
     },
     setToken: function (state, payload) {
+      // console.log('mutations setToken')
       state.userInfo.token = payload.token
       state.userInfo.tokenTime = payload.tokenTime
       state.userInfo.tokenStatus = true
+      // console.log(state.userInfo)
+      // console.log(state.userInfo.token)
     }
   },
   actions: {
@@ -58,6 +61,7 @@ const store = new Vuex.Store({
       commit('setUser', payload)
     },
     setToken: function ({commit}, payload) {
+      // console.log('actions setToken')
       commit('setToken', payload)
     }
   }

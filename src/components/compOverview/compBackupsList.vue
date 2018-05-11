@@ -5,8 +5,8 @@
       <h1>备份策略</h1>
       </Col>
       <Col span="2">
-      <Button type="primary" @click="modalCreateBackups = true">申请备份策略</Button>
-      <Modal v-model="modalCreateBackups" title="创建备份" :styles="{top: '20px'}">
+      <Button type="primary" @click="modalCreateBackups = true">创建备份策略</Button>
+      <Modal v-model="modalCreateBackups" title="创建备份" :styles="{top: '20px'}" width="720">
         <Form :model="formDataCreateBackups" :label-width="80">
           <FormItem label="策略名称" prop="name">
             <Input v-model="formDataCreateBackups.name" placeholder="请输入策略名称"></Input>
@@ -26,18 +26,10 @@
                <Radio v-for="item in comBackupsData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
             </RadioGroup>
           </FormItem>
-          <Row v-if="formDataCreateBackups.radio === 2">
-            <Col span="24">
-              <Transfer filterable :data="data1" :target-keys="targetKeys1" :render-format="render1" @on-change="handleChange1"></Transfer>
-            </Col>
-          </Row>
+          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.application_group" @modifyTransferData="modifyTransferData"></transfervue>
           <Row style="margin: 0 0 24px 0;">
-            <Col span="4" push="1">
-            备份周期
-            </Col>
-            <Col span="4">
-            每天
-            </Col>
+            <Col span="4" push="1">备份周期</Col>
+            <Col span="4">每天</Col>
           </Row>
           <FormItem label="备份时间" prop="time">
             <Select v-model="formDataCreateBackups.time">
@@ -54,10 +46,21 @@
       </Col>
     </Row>
     <Table border stripe height="800" :columns="backupsListColumns" :data="backupsListData"></Table>
+    <Modal v-model="modalOperate" title="请确定">
+      <p>您要{{curRowData.status === '已停用' ? '启用' : '停用'}}告警策略 监控CPU 吗？</p>
+      <Row style="margin: 25px 0 0 0;">
+        <Col style="text-align: right;">
+          <Button type="primary" @click="handleSubmitOperator(curRowData)">确定</Button>
+          <Button type="ghost" @click="handleCancelOperator(curRowData)">取消</Button>
+        </Col>
+      </Row>
+      <div slot="footer"></div>
+    </Modal>
   </div>
 </template>
 
 <script>
+import transfervue from '../transfer.vue'
 export default {
   name: 'compBackupsList',
   data () {
@@ -69,20 +72,21 @@ export default {
         application_group: '',
         policy_type: '',
         radio: '',
-        date: '每天'
+        date: '每天',
+        instanceIds: [] // 部分实例的id
       },
       formRuleCreateBackups: {
         name: [
           {required: true, message: '请输入策略名称', trigger: 'change'}
         ],
         application_group: [
-          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
+          // {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
         policy_type: [
-          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
+          // {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
         ],
         radio: [
-          {required: true, message: '请选择备份对象', pattern: /.+/, trigger: 'change'}
+          // {required: true, message: '请选择备份对象', pattern: /.+/, trigger: 'change'}
         ]
       },
       backupsListColumns: [
@@ -103,7 +107,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './compBackups.html?id=' + params.row.id + '&token' + this.$store.getters.getUserInfo.token
+                href: './compBackups.html?id=' + params.row.id + '&token=' + this.getRequest().token
               }
             }, params.row.name)
           }
@@ -138,6 +142,12 @@ export default {
           align: 'center',
           sortable: true
         },
+        // {
+        //   title: '状态',
+        //   key: 'operator',
+        //   align: 'center',
+        //   sortable: true
+        // },
         {
           title: '操作',
           key: '',
@@ -165,23 +175,23 @@ export default {
         {key: '1', label: 'Content1', disabled: false},
         {key: '2', label: 'Content2', disabled: false},
         {key: '3', label: 'Content3', disabled: false}
-      ]
+      ],
+      curRowData: {}
     }
   },
-  components: {},
+  components: {
+    transfervue
+  },
+  computed: {
+    transferShow () {
+      return this.formDataCreateBackups.radio === 2
+    }
+  },
   methods: {
     handleSubmitAndAlert (name) {
       this.$axios({
-        method: 'get',
-        url: `http://10.99.1.135/api/redis/get_instances/id/${this.formDataCreateBackups.application_group}`
-      }).then(res => {
-        for (let i of res.data.data) {
-          this.add_instance_id.push(i.id)
-        }
-      })
-      this.$axios({
         method: 'post',
-        url: 'http://10.99.1.135/api/backup/add',
+        url: 'http://infra.xesv5.com/api/backup/add?token=' + this.getRequest().token,
         data: this.qs.stringify({
           name: this.formDataCreateBackups.name,
           type: this.formDataCreateBackups.policy_type,
@@ -189,12 +199,13 @@ export default {
           target: this.formDataCreateBackups.radio,
           period: this.formDataCreateBackups.date,
           // instance_id: this.add_instance_id
-          instance_id: 2 // 这是一个写死的id
+          instance_id: this.formDataCreateBackups.instanceIds
         })
       }).then(res => {
-        this.$Message.success('操作成功！')
-        this.modalAddAlert = false
-        this.feedbackFormStatus(res.status === 200 && res.data.message === '操作成功')
+        // this.$Message.success('操作成功！')
+        console.log(res)
+        this.modalCreateBackups = false
+        this.feedbackFormStatus(res.data.data.status === 0)
       }).catch(error => {
         console.log(error)
       })
@@ -232,25 +243,25 @@ export default {
     },
     handleSubmitOperator (curRowData) {
       console.log(curRowData)
-      switch (curRowData.status) {
+      switch (curRowData.status_name) {
         case '运行中':
           this.$axios({
             method: 'get',
-            url: 'http://10.99.1.135/api/alarm/stop_alarm/id/' + curRowData.id
+            url: 'http://infra.xesv5.com/api/alarm/stop_alarm/id/' + curRowData.id + '?token=' + this.getRequest().token
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           })
           break
         case '已停用':
           this.$axios({
             method: 'get',
-            url: 'http://10.99.1.135/api/alarm/start_alarm/id/' + curRowData.id
+            url: 'http://infra.xesv5.com/api/alarm/start_alarm/id/' + curRowData.id + '?token=' + this.getRequest().token
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.status === 200 && response.data.message === '操作成功')
+            this.feedbackFormStatus(response.data.status === 0)
           })
           break
       }
@@ -258,13 +269,43 @@ export default {
     handleCancelOperator (curRowData) {
       console.log(curRowData)
       this.modalOperate = false
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
+    },
+    // 回馈提交状态
+    feedbackFormStatus (bool) {
+      if (bool) {
+        this.$Message.success('操作成功！')
+      } else {
+        this.$Message.error('操作失败！')
+      }
+    },
+    // modifyTransferData
+    modifyTransferData (params) {
+      this.formDataCreateBackups.instanceIds = params
     }
   },
   mounted () {
     // 请求备份数据
     this.$axios({
       method: 'get',
-      url: 'http://10.99.1.135/api/backup/policy/list/id/0'
+      url: 'http://infra.xesv5.com/api/backup/policy/list/id/0?token=' + this.getRequest().token
     }).then(res => {
       let backupsList = res.data.data
       console.log('列表渲染数据', backupsList)
@@ -276,13 +317,15 @@ export default {
           application_name: i.application_name,
           backup_type: i.backup_type,
           operator_time: i.operator_time,
+          status: i.status,
+          status_name: i.status_name,
           operator: i.operator
         })
       }
     })
     // 添加备份数据
     this.$axios({
-      url: 'http://10.99.1.135/api/backup/add_page/',
+      url: 'http://infra.xesv5.com/api/backup/add_page/?token=' + this.getRequest().token,
       method: 'get'
     }).then(res => {
       this.comBackupsData = res.data.data
