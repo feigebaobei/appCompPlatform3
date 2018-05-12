@@ -2,7 +2,7 @@
   <div>
     <Row class="title">
       <Col span="22">
-      <h1>恢复</h1>
+        <h1>恢复</h1>
       </Col>
       <Col span="2">
       <Button type="primary" @click="modalAddRecover = true">添加恢复</Button>
@@ -230,5 +230,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.title {
+  margin: 0 0 25px 0;
+}
 </style>

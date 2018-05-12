@@ -7,7 +7,7 @@
       <Col span="2">
       <Button type="primary" @click="modalCreateBackups = true">创建备份策略</Button>
       <Modal v-model="modalCreateBackups" title="创建备份" :styles="{top: '20px'}" width="720">
-        <Form :model="formDataCreateBackups" :label-width="80">
+        <Form ref="formDataCreateBackups" :model="formDataCreateBackups" :rules="formRuleCreateBackups" :label-width="80">
           <FormItem label="策略名称" prop="name">
             <Input v-model="formDataCreateBackups.name" placeholder="请输入策略名称"></Input>
           </FormItem>
@@ -80,13 +80,13 @@ export default {
           {required: true, message: '请输入策略名称', trigger: 'change'}
         ],
         application_group: [
-          // {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
         policy_type: [
-          // {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
+          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
         ],
         radio: [
-          // {required: true, message: '请选择备份对象', pattern: /.+/, trigger: 'change'}
+          {required: true, message: '请选择备份对象', pattern: /.+/, trigger: 'change'}
         ]
       },
       backupsListColumns: [
@@ -189,25 +189,31 @@ export default {
   },
   methods: {
     handleSubmitAndAlert (name) {
-      this.$axios({
-        method: 'post',
-        url: 'http://infra.xesv5.com/api/backup/add?token=' + this.getRequest().token,
-        data: this.qs.stringify({
-          name: this.formDataCreateBackups.name,
-          type: this.formDataCreateBackups.policy_type,
-          application_id: this.formDataCreateBackups.application_group,
-          target: this.formDataCreateBackups.radio,
-          period: this.formDataCreateBackups.date,
-          // instance_id: this.add_instance_id
-          instance_id: this.formDataCreateBackups.instanceIds
-        })
-      }).then(res => {
-        // this.$Message.success('操作成功！')
-        console.log(res)
-        this.modalCreateBackups = false
-        this.feedbackFormStatus(res.data.data.status === 0)
-      }).catch(error => {
-        console.log(error)
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$axios({
+            method: 'post',
+            url: 'http://infra.xesv5.com/api/backup/add?token=' + this.getRequest().token,
+            data: this.qs.stringify({
+              name: this.formDataCreateBackups.name,
+              type: this.formDataCreateBackups.policy_type,
+              application_id: this.formDataCreateBackups.application_group,
+              target: this.formDataCreateBackups.radio,
+              period: this.formDataCreateBackups.time,
+              // instance_id: this.add_instance_id
+              instance_id: this.formDataCreateBackups.instanceIds
+            })
+          }).then(res => {
+            // this.$Message.success('操作成功！')
+            console.log(res)
+            this.modalCreateBackups = false
+            this.feedbackFormStatus(res.data.data.status === 0)
+          }).catch(error => {
+            console.log(error)
+          })
+        } else {
+          this.feedbackFormStatus(false)
+        }
       })
     },
     handleResetAndAlert (name) {
