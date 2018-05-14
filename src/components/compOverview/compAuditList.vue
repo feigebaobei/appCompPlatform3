@@ -80,7 +80,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: `./compAuditEdit.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
+                href: `./compAuditEdit.html?id=${params.row.id}&operator=${params.row.audit_text === '审核' ? 'audit' : 'midify'}&token=${this.$store.getters.getUserInfo.token}`
               }
             }, '审核')
           }
