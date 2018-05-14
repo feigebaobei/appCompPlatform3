@@ -51,7 +51,7 @@
 <script>
 // import userInfoDefeat from './userInfoDefeat.vue'
 import cardListvue from './cardListvue.vue'
-import auditmanage from './components/auditmanage.vue'
+import auditmanage from './compOverview/compAuditList.vue'
 export default {
   name: 'tab',
   data () {

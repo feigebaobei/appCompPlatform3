@@ -76,8 +76,8 @@ export default {
   props: ['item'],
   data () {
     return {
-      panelTitle: ['Redis', 'Codis'],
-      token: this.$store.getters.getUserInfo.token
+      panelTitle: ['Redis', 'Codis']
+      // token: this.$store.getters.getUserInfo.token
     }
   },
   computed: {
@@ -98,28 +98,46 @@ export default {
     }
   },
   watch: {
-    token (val, oldVal) {
-      console.log(val)
-      console.log(oldVal)
-      return val
-    }
+    // token (val, oldVal) {
+    //   console.log(val)
+    //   console.log(oldVal)
+    //   return val
+    // }
   },
   methods: {
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
+    },
     linkApp (item) {
       // return './appDetail.html?id=' + item.id
-      return `./appDetail.html?id=${item.id}&token=${this.$store.getters.getUserInfo.token}`
+      return `./appDetail.html?id=${item.id}&token=${this.getRequest().token}`
     },
     linkAbnormalInstance (item) {
-      return `./appInstanceList.html?token=${token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
+      return `./appInstanceList.html?token=${this.getRequest().token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
     },
     linkNormalInstance (item) {
-      return `./appInstanceList.html?token=${token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
+      return `./appInstanceList.html?token=${this.getRequest().token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
     },
     linkAbnormalApp (item) {
-      return `./appInstanceList.html?token=${token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
+      return `./appInstanceList.html?token=${this.getRequest().token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
     },
     linkNormalApp (item) {
-      return `./appInstanceList.html?token=${token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
+      return `./appInstanceList.html?token=${this.getRequest().token}` // 应该在vuex里设置参数，然后在新页面时使用这个参数。
     }
   }
 }

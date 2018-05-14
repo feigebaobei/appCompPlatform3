@@ -17,7 +17,7 @@ export default {
   name: 'auditmanage',
   data () {
     return {
-      searchText: ''
+      searchText: '',
       /* table start */
       responseInstanceList: {
         data: {
@@ -26,7 +26,7 @@ export default {
           status: 0
         },
         status: 0
-      }
+      },
       instanceListColumns: [],
       instanceListDataBox: []
       /* table end */
@@ -56,7 +56,7 @@ export default {
       }
       if (!condition) {
         //  不筛选
-      } else { 
+      } else {
         //  筛选
       }
       return result
