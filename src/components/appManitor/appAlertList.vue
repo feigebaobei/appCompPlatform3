@@ -12,13 +12,16 @@
               <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
             </FormItem>
             <FormItem label="策略类型" prop="policyType">
-              <Select v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
+              <Select v-if="add_page.policy_type_group" v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
                 <Option :value="item.id" v-for="item in add_page.policy_type_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="所属应用" prop="app">
               <Select v-model="formDataAddAlert.app" placeholder="请选择所属应用">
                 <Option :value="item.id" v-for="item in add_page.application_group" :key="item.id">{{item.name}}</Option>
+                <!-- <Option value='1'>1</Option>
+                <Option value='2'>2</Option>
+                <Option value='3'>3</Option> -->
               </Select>
             </FormItem>
             <FormItem label="告警对象" prop="alertObj">
@@ -86,16 +89,9 @@ import transfervue from '../transfer.vue'
 export default {
   name: 'compAlertList',
   data () {
-    // const notEmpty = (rule, value, callback) => {
-    //   console.log(rule)
-    //   console.log(value)
-    //   console.log(callback)
-    //   if (!value) {
-    //     return callback(new Error('请选择策略类型'))
-    //   }
-    // }
     return {
-      add_page: '',
+      add_page: {},
+      alertListData: [],
       // instancesId: this.,
       responseAlertList: {
         data: {
@@ -107,6 +103,23 @@ export default {
       },
       /* 创建告警策略 start */
       modalAddAert: false,
+      formPropAddAlert: [
+        {
+          operator: 'cpuOperater',
+          threshold: 'cpuThreshold',
+          period: 'cpuPeriod'
+        },
+        {
+          operator: 'connOperater',
+          threshold: 'connThreshold',
+          period: 'connPeriod'
+        },
+        {
+          operator: 'opsOperater',
+          threshold: 'opsThreshold',
+          period: 'opsPeriod'
+        }
+      ],
       formDataAddAlert: {
         name: '',
         policyType: '',
@@ -122,20 +135,59 @@ export default {
       fromRuleAddAlert: {
         name: [
           {required: true, message: '请输入策略名称', trigger: 'change'}
+          // {validator: this.validateName, trigger: 'change'}
         ],
         policyType: [
           {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
-          // {validator: notEmpty, trigger: 'change'}
+          // {validator: this.validatePolicyType, trigger: 'change'}
         ],
         app: [
           {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validateApp, trigger: 'change'}
         ],
         alertObj: [
           {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validateAlertObj, trigger: 'change'}
+        ],
+        cpuOperater: [
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          {validator: this.cpuOperater, trigger: 'change'}
+        ],
+        cpuThreshold: [
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          {validator: this.cpuThreshold, trigger: 'change'}
+        ],
+        cpuPeriod: [
+          {validator: this.cpuPeriod, trigger: 'change'}
+        ],
+        connOperater: [
+          {validator: this.connOperater, trigger: 'change'}
+        ],
+        connThreshold: [
+          {validator: this.connThreshold, trigger: 'change'}
+        ],
+        connPeriod: [
+          {validator: this.connPeriod, trigger: 'change'}
+        ],
+        opsOperater: [
+          {validator: this.opsOperater, trigger: 'change'}
+        ],
+        opsThreshold: [
+          {validator: this.opsThreshold, trigger: 'change'}
+        ],
+        opsPeriod: [
+          {validator: this.opsPeriod, trigger: 'change'}
         ],
         dingdingName: [
-          {required: true, message: '请输入告警策略名称', trigger: 'change'}
+          {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
+      },
+      validateAddAlert: {
+        name: false,
+        policyType: false,
+        app: false,
+        alertObj: false,
+        dingdingName: false
       },
       /* 创建告警策略 end */
       // 穿梭框 start
@@ -178,7 +230,7 @@ export default {
             return h('a', {
               attrs: {
                 // href: './compAlertEdit.html?id=' + params.row.id
-                href: `./appAlertEdit.html?id=${params.row.id}&token=${this.getRequest().token}`
+                href: `./compAlertEdit.html?id=${params.row.id}&token=${this.getRequest().token}`
               }
             }, params.row.policy_name)
           }
@@ -224,7 +276,7 @@ export default {
             return h('Button', {
               on: {
                 click: () => {
-                  // console.log(params)
+                  console.log(params)
                   this.modalOperate = true
                   this.operatorPolicy(params.row)// 保存当前行数据
                 }
@@ -238,8 +290,7 @@ export default {
       ],
       // 穿梭框 end
       modalOperate: false,
-      curRowData: {},
-      alertListData: []
+      curRowData: {}
     }
   },
   components: {
@@ -251,22 +302,160 @@ export default {
     }
   },
   methods: {
-    // selectInstanceListData (name) {
-    //   this.instanceListData = this.search(this.responseInstanceList, name)
-    // },
+    cpuOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[0]
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    cpuThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[0]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    cpuPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[0]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    connOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[1]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    connThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[1]
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    connPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[1]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    opsOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[2]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    opsThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[2]
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    opsPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[2]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    getRequest () {
+      var url = window.location.href // 获取url中"?"符后的字串
+      var index = url.indexOf('?')
+      var theRequest = {}
+      var trail = url.slice(-2, url.length)
+      if (trail === '#/') {
+        url = url.slice(0, url.length - 2)
+      }
+      if (index !== -1) {
+        var requestStr = url.slice(index, url.length)
+        requestStr = requestStr.slice(1, requestStr.length)
+        var requestArr = requestStr.split('&')
+        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
+          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
+        }
+      }
+      return theRequest
+    },
     handleSubmitAndAlert (name) {
-      console.log(this.formDataAddAlert)
+      console.log('formDataAddAlert', this.formDataAddAlert)
+      // var arr = this.metricMethod(this.add_page.metric_group)
+      // console.log(arr)
+      this.metricMethod(this.add_page.metric_group)
       this.$refs[name].validate((valid) => {
+        console.log(valid)
         if (valid) {
           this.$axios({
-            url: 'http://infra.xesv5.com/api/alarm/add?token=' + this.getRequest().token,
             method: 'post',
+            url: 'http://infra.xesv5.com/api/alarm/add?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formDataAddAlert.name,
               type: this.formDataAddAlert.policyType,
-              application_id: this.formDataAddAlert.app, // 应当没有
+              application_id: this.formDataAddAlert.app,
               target: this.formDataAddAlert.alertObj,
-              token: 'token',
+              token: this.getRequest().token,
               metric_id: this.formDataAddAlert.metric_id,
               operator_id: this.formDataAddAlert.operator_id,
               threshold: this.formDataAddAlert.threshold,
@@ -282,9 +471,58 @@ export default {
             console.log(error)
           })
         } else {
-          this.$Message.error('不可为空')
+          this.$Message.error('不可为空!')
         }
       })
+    },
+    metricMethod (metricGroup) {
+      var arr = []
+      for (var i = 0, iLen = metricGroup.length; i < iLen; i++) {
+        arr.push(metricGroup[i].id)
+      }
+      this.formDataAddAlert.metric_id = arr
+      console.log(this.formDataAddAlert.metric_id)
+    },
+    operatorIdMethod () {
+      var arr = []
+      for (var i = 0, iLen = this.formDataAddAlert.metric_id.length; i < iLen; i++) {
+        var index = this.formDataAddAlert.metric_id[i] - 1
+        var a = this.formDataAddAlert.operator_id[index]
+        console.log(a)
+        arr.push(a)
+      }
+      return arr
+    },
+    thresholdMethod () {
+      var arr = []
+      for (var i = 0, iLen = this.formDataAddAlert.metric_id.length; i < iLen; i++) {
+        var index = this.formDataAddAlert.metric_id[i] - 1
+        var a = this.formDataAddAlert.threshold[index]
+        console.log(a)
+        arr.push(a)
+      }
+      return arr
+    },
+    periodIdMethod () {
+      var arr = []
+      for (var i = 0, iLen = this.formDataAddAlert.metric_id.length; i < iLen; i++) {
+        var index = this.formDataAddAlert.metric_id[i] - 1
+        var a = this.formDataAddAlert.period_id[index]
+        console.log(a)
+        arr.push(a)
+      }
+      return arr
+    },
+    arrUnique () {
+      var res = []
+      var json = {}
+      for (var i = 0; i < this.length; i++) {
+        if (!json[this[i]]) {
+          res.push(this[i])
+          json[this[i]] = 1
+        }
+      }
+      return res
     },
     handleResetAndAlert (name) {
       this.$refs[name].resetFields()
@@ -307,6 +545,7 @@ export default {
     // 穿梭框 end
     operatorPolicy (row) {
       this.curRowData = row
+      console.log('当前行', this.curRowData)
     },
     handleSubmitOperator (curRowData) {
       console.log(curRowData)
@@ -337,31 +576,12 @@ export default {
       console.log(curRowData)
       this.modalOperate = false
     },
-    getRequest () {
-      var url = window.location.href // 获取url中"?"符后的字串
-      var index = url.indexOf('?')
-      var theRequest = {}
-      var trail = url.slice(-2, url.length)
-      if (trail === '#/') {
-        url = url.slice(0, url.length - 2)
-      }
-      if (index !== -1) {
-        var requestStr = url.slice(index, url.length)
-        requestStr = requestStr.slice(1, requestStr.length)
-        var requestArr = requestStr.split('&')
-        for (var i = 0, iLen = requestArr.length; i < iLen; i++) {
-          theRequest[requestArr[i].split('=')[0]] = requestArr[i].split('=')[1]
-        }
-      }
-      return theRequest
-    },
     // modifyTransferData
     modifyTransferData (params) {
       console.log('params', params)
       this.formDataAddAlert.instance_id = params
     }
   },
-  // created () {
   mounted () {
     const url = `http://infra.xesv5.com/api/alarm/list/id/0?token=${this.getRequest().token}`
     this.$axios.get(url).then(res => {
@@ -385,7 +605,8 @@ export default {
       url: 'http://infra.xesv5.com/api/alarm/add_page?token=' + this.getRequest().token
     }).then(res => {
       this.add_page = res.data.data
-      // console.log('对话框展示数据', this.add_page)
+      this.formDataAddAlert.metric_id = this.metricMethod(this.add_page.metric_group)
+      console.log('对话框展示数据', this.add_page)
     })
   }
 }

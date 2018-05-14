@@ -22,9 +22,7 @@
       </FormItem>
       <FormItem label="告警对象" prop="alertObj">
         <RadioGroup v-model="formDataAddAlert.alertObj">
-          <span @on-change="emptyInstance">
-            <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
-          </span>
+          <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
       <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" @modifyTransferData="modifyTransferData"></transfervue>
@@ -264,7 +262,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -304,7 +303,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -344,7 +344,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -369,12 +370,6 @@ export default {
     modifyTransferData (params) {
       console.log('params', params)
       this.formDataAddAlert.instance_id = params
-    },
-    emptyInstance (a, b, c) {
-      console.log(a)
-      console.log(b)
-      console.log(c)
-      this.formDataAddAlert.instance_id = []
     }
   },
   mounted () {

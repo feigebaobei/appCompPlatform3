@@ -182,13 +182,6 @@ export default {
           {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
       },
-      validateAddAlert: {
-        name: false,
-        policyType: false,
-        app: false,
-        alertObj: false,
-        dingdingName: false
-      },
       /* 创建告警策略 end */
       // 穿梭框 start
       transferData: [
@@ -304,10 +297,6 @@ export default {
   methods: {
     cpuOperater (rule, value, callback) {
       value = this.formDataAddAlert.operator_id[0]
-      // console.log(this.formDataAddAlert)
-      // console.log(rule)
-      console.log(value)
-      // console.log(callback)
       if (value === '' || value === undefined) {
         callback(new Error('请选择操作符'))
       } else {
@@ -321,7 +310,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -361,7 +351,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -401,7 +392,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -441,9 +433,6 @@ export default {
       return theRequest
     },
     handleSubmitAndAlert (name) {
-      console.log('formDataAddAlert', this.formDataAddAlert)
-      // var arr = this.metricMethod(this.add_page.metric_group)
-      // console.log(arr)
       this.metricMethod(this.add_page.metric_group)
       this.$refs[name].validate((valid) => {
         console.log(valid)

@@ -262,7 +262,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -302,7 +303,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -342,7 +344,8 @@ export default {
         callback(new Error('请输入阈值'))
       } else {
         // callback()
-        var reg = /^\+?[0-9].?[0-9]*$/
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[1-9]\d*$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -362,6 +365,11 @@ export default {
       } else {
         callback()
       }
+    },
+    // modifyTransferData
+    modifyTransferData (params) {
+      console.log('params', params)
+      this.formDataAddAlert.instance_id = params
     }
   },
   mounted () {
