@@ -48,25 +48,25 @@ export default {
         },
         {
           title: '申请部门',
-          key: 'id',
+          key: 'department_name',
           align: 'center',
           width: 80
         },
         {
-          title: 'id',
-          key: 'id',
+          title: '申请人',
+          key: 'proposer',
           align: 'center',
           width: 80
         },
         {
-          title: 'id',
-          key: 'id',
+          title: '申请类型',
+          key: 'apply_typy',
           align: 'center',
           width: 80
         },
         {
-          title: 'id',
-          key: 'id',
+          title: '状态',
+          key: 'status',
           align: 'center',
           width: 80
         },
@@ -101,7 +101,7 @@ export default {
           obj.apply_id = data[i].apply_id
           obj.apply_typy = data[i].apply_typy
           obj.audit_text = data[i].audit_text
-          obj.department = data[i].department
+          obj.department_name = data[i].department_name
           obj.id = data[i].id
           obj.name = data[i].name
           obj.port = data[i].port
@@ -112,18 +112,20 @@ export default {
         }
       },
       get () {
+        console.log('this.instanceListDataBox', this.instanceListDataBox)
         return this.instanceListDataBox
       }
     }
   },
   methods: {
     selectInstanceListData (condition) {
-      console.log('condition')
+      console.log('condition', condition)
       this.instanceListData = this.search(this.responseInstanceList, condition)
     },
     search (response, condition) {
       var result = []
       var data = response.data.data
+      console.log(data)
       if (!data.length) { return result }
       if (!condition) {
         //  不筛选
@@ -134,7 +136,7 @@ export default {
           obj.apply_id = data[i].apply_id
           obj.apply_typy = data[i].apply_typy
           obj.audit_text = data[i].audit_text
-          obj.department = data[i].department
+          obj.department_name = data[i].department_name
           obj.id = data[i].id
           obj.name = data[i].name
           obj.port = data[i].port
@@ -147,22 +149,23 @@ export default {
         for (i = 0, iLen = data.length; i < iLen; i++) {
           if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
             obj = {}
-          obj.application_id = data[i].application_id
-          obj.application_name = data[i].application_name
-          obj.apply_id = data[i].apply_id
-          obj.apply_typy = data[i].apply_typy
-          obj.audit_text = data[i].audit_text
-          obj.department = data[i].department
-          obj.id = data[i].id
-          obj.name = data[i].name
-          obj.port = data[i].port
-          obj.proposer = data[i].proposer
-          obj.status = data[i].status
-          obj.vip = data[i].vip
+            obj.application_id = data[i].application_id
+            obj.application_name = data[i].application_name
+            obj.apply_id = data[i].apply_id
+            obj.apply_typy = data[i].apply_typy
+            obj.audit_text = data[i].audit_text
+            obj.department_name = data[i].department_name
+            obj.id = data[i].id
+            obj.name = data[i].name
+            obj.port = data[i].port
+            obj.proposer = data[i].proposer
+            obj.status = data[i].status
+            obj.vip = data[i].vip
             result.push(obj)
           }
         }
       }
+      console.log(result)
       return result
     },
     getRequest () {
