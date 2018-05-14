@@ -78,7 +78,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: `./appInstance.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
+                href: `./compAuditEdit.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
               }
             }, '审核')
           }
@@ -98,19 +98,14 @@ export default {
           var obj = {}
           obj.application_id = data[i].application_id
           obj.application_name = data[i].application_name
+          obj.apply_id = data[i].apply_id
+          obj.apply_typy = data[i].apply_typy
           obj.audit_text = data[i].audit_text
-          obj.conPeak = data[i].conPeak
-          obj.conReal = data[i].conReal
-          obj.conThreshold = data[i].conThreshold
-          obj.cpuPeak = data[i].cpuPeak
-          obj.cpuReal = data[i].cpuReal
-          obj.cpuReal = data[i].cpuReal
+          obj.department = data[i].department
           obj.id = data[i].id
           obj.name = data[i].name
-          obj.opsPeak = data[i].opsPeak
-          obj.opsReal = data[i].opsReal
-          obj.opsThreshold = data[i].opsThreshold
           obj.port = data[i].port
+          obj.proposer = data[i].proposer
           obj.status = data[i].status
           obj.vip = data[i].vip
           this.instanceListDataBox.push(obj)
@@ -136,19 +131,14 @@ export default {
           var obj = {}
           obj.application_id = data[i].application_id
           obj.application_name = data[i].application_name
+          obj.apply_id = data[i].apply_id
+          obj.apply_typy = data[i].apply_typy
           obj.audit_text = data[i].audit_text
-          obj.conPeak = data[i].conn_info.peak
-          obj.conReal = data[i].conn_info.real
-          obj.conThreshold = data[i].conn_info.threshold
-          obj.cpuPeak = data[i].cpu_info.peak
-          obj.cpuReal = data[i].cpu_info.real
-          obj.cpuReal = data[i].cpu_info.threshold
+          obj.department = data[i].department
           obj.id = data[i].id
           obj.name = data[i].name
-          obj.opsPeak = data[i].ops_info.peak
-          obj.opsReal = data[i].ops_info.real
-          obj.opsThreshold = data[i].ops_info.threshold
           obj.port = data[i].port
+          obj.proposer = data[i].proposer
           obj.status = data[i].status
           obj.vip = data[i].vip
           result.push(obj)
@@ -157,23 +147,18 @@ export default {
         for (i = 0, iLen = data.length; i < iLen; i++) {
           if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
             obj = {}
-            obj.application_id = data[i].application_id
-            obj.application_name = data[i].application_name
-            obj.audit_text = data[i].audit_text
-            obj.conPeak = data[i].conn_info.peak
-            obj.conReal = data[i].conn_info.real
-            obj.conThreshold = data[i].conn_info.threshold
-            obj.cpuPeak = data[i].cpu_info.peak
-            obj.cpuReal = data[i].cpu_info.real
-            obj.cpuReal = data[i].cpu_info.threshold
-            obj.id = data[i].id
-            obj.name = data[i].name
-            obj.opsPeak = data[i].ops_info.peak
-            obj.opsReal = data[i].ops_info.real
-            obj.opsThreshold = data[i].ops_info.threshold
-            obj.port = data[i].port
-            obj.status = data[i].status
-            obj.vip = data[i].vip
+          obj.application_id = data[i].application_id
+          obj.application_name = data[i].application_name
+          obj.apply_id = data[i].apply_id
+          obj.apply_typy = data[i].apply_typy
+          obj.audit_text = data[i].audit_text
+          obj.department = data[i].department
+          obj.id = data[i].id
+          obj.name = data[i].name
+          obj.port = data[i].port
+          obj.proposer = data[i].proposer
+          obj.status = data[i].status
+          obj.vip = data[i].vip
             result.push(obj)
           }
         }
@@ -203,7 +188,7 @@ export default {
     // 请求表格数据
     this.$axios({
       method: 'get',
-      url: 'http://infra.xesv5.com/api/redis/list/id/0?token=' + this.getRequest().token
+      url: 'http://infra.xesv5.com/api/redis/audit_list?token=' + this.getRequest().token
     }).then(response => {
       console.log(response)
       this.responseInstanceList = response
