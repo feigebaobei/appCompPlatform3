@@ -14,11 +14,7 @@
       <Col span="4"><h6>实例id</h6></Col>
       <Col span="8" v-model="auditEdit.id"></Col>
       <Col span="4"><h6>实例名称</h6></Col>
-<<<<<<< HEAD
-      <Col span="8" v-html="formDataAudit"></Col>
-=======
       <Col span="8" v-model="auditEdit.name"></Col>
->>>>>>> f1e2b8c1cf0e4236247f1f51210ac25d4e1c5027
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>组件类型</h6></Col>
@@ -28,7 +24,6 @@
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请人</h6></Col>
-<<<<<<< HEAD
       <Col span="8" v-html=""></Col>
       <Col span="4"><h6>申请部门</h6></Col>
       <Col span="8" v-html=""></Col>
@@ -38,17 +33,6 @@
       <Col span="8" v-html=""></Col>
       <Col span="4"><h6>申请时间</h6></Col>
       <Col span="8" v-html=""></Col>
-=======
-      <Col span="8" v-model="auditEdit.proposer"></Col>
-      <Col span="4"><h6>申请类型</h6></Col>
-      <Col span="8" v-model="auditEdit.apply_name"></Col>
-    </Row>
-    <Row type="flex" justify="center" class="code-row-bg">
-      <Col span="4"><h6>申请部门</h6></Col>
-      <Col span="8" v-model="auditEdit.department_name"></Col>
-      <Col span="4"><h6>申请时间</h6></Col>
-      <Col span="8" v-model="auditEdit.create_time"></Col>
->>>>>>> f1e2b8c1cf0e4236247f1f51210ac25d4e1c5027
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请理由</h6></Col>
@@ -59,12 +43,6 @@
         <h1>审核意见</h1>
       </Col>
     </Row>
-<<<<<<< HEAD
-    <Form ref="formDataAudit" :model="formDataAudit" :rules="fromRuleMoniter" :label-width="80">
-      <FormItem label="VIP">
-        <Input v-model="formDataAudit.vip"></Input>
-      </FormItem>
-=======
     <Form ref="formItem" :model="formItem" :label-width="80" :rules="ruleValidate">
       <FormItem>
         <RadioGroup v-model="formItem.status">
@@ -104,7 +82,6 @@
           <Button type="primary" @click="handleSubmit('formItem')">Submit</Button>
         </FormItem>
       </Card>
->>>>>>> f1e2b8c1cf0e4236247f1f51210ac25d4e1c5027
     </Form>
   </div>
 </template>
@@ -114,18 +91,6 @@ export default {
   name: 'auditEdit',
   data () {
     return {
-<<<<<<< HEAD
-      // auditList: [],
-      formDataAudit: {
-        data: {
-          data: {},
-          message: '',
-          status: 0
-        },
-        status: 0
-      },
-      auditField: {}
-=======
       auditEdit: '',
       formItem: {
         id: this.auditEdit.id,
@@ -173,7 +138,6 @@ export default {
           {validator: this.validateNumber, trigger: 'change'}
         ]
       ]
->>>>>>> f1e2b8c1cf0e4236247f1f51210ac25d4e1c5027
     }
   },
   components: {},
@@ -264,19 +228,6 @@ export default {
     }
   },
   created () {
-<<<<<<< HEAD
-    const url = `http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?tiken=${this.getRequest().token}`
-    // this.$axios.get(url).then(res => {
-    //   this.auditList = res.data.data
-    // })
-    this.$axios({
-      methods: 'get',
-      url: url
-    }).then(response => {
-      console.log(response)
-      this.formDataAudit = response
-    })
-=======
     var operator = this.getRequest().operator
     switch (operator) {
       case 'audit':
@@ -302,8 +253,6 @@ export default {
         })
       break
     }
-    
->>>>>>> f1e2b8c1cf0e4236247f1f51210ac25d4e1c5027
   }
 }
 </script>
