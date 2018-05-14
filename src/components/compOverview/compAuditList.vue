@@ -195,7 +195,7 @@ export default {
       method: 'get',
       url: 'http://infra.xesv5.com/api/redis/audit_list?token=' + this.getRequest().token
     }).then(response => {
-      console.log(response)
+      // console.log(response)
       this.responseInstanceList = response
       this.selectInstanceListData()
     })

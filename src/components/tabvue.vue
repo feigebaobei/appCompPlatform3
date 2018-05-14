@@ -41,7 +41,7 @@
         </cardListvue>
       </TabPane>
       <TabPane :label="tabs[1]">
-        <cardListvue :tab="tabs[1]" v-if="tab === '其它应用'"></cardListvue>
+        <cardListvue :tab="tabs[1]" v-if="tabs[1] === '其它应用'"></cardListvue>
         <auditmanage v-else></auditmanage>
       </TabPane>
     </Tabs>
