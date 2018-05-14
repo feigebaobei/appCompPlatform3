@@ -43,7 +43,7 @@
         <h1>审核意见</h1>
       </Col>
     </Row>
-    <Form :model="formItem" :label-width="80">
+    <Form ref="formItem" :model="formItem" :label-width="80" :rules="ruleValidate">
       <FormItem>
         <RadioGroup v-model="formItem.status">
           <Radio v-for="item in auditEdit.op_status" :key="item.id" :label="item.id">{{item.name}}</Radio>
@@ -61,16 +61,16 @@
             <Input v-model="formItem.hostname_master"></Input>
         </FormItem>
         <FormItem label="slave1 ip">
-            <Input v-model="formItem.slave_ip[0]"></Input>
+            <Input v-model="formItem.slave_ip1"></Input>
         </FormItem>
         <FormItem label="hostname1">
-            <Input v-model="formItem.hostname[0]"></Input>
+            <Input v-model="formItem.hostname1"></Input>
         </FormItem>
         <FormItem label="slave2 ip">
-            <Input v-model="formItem.slave_ip[1]"></Input>
+            <Input v-model="formItem.slave_ip2"></Input>
         </FormItem>
         <FormItem label="hostname2">
-            <Input v-model="formItem.hostname[1]"></Input>
+            <Input v-model="formItem.hostname2"></Input>
         </FormItem>
         <FormItem label="port">
             <Input v-model="formItem.port"></Input>
@@ -97,13 +97,47 @@ export default {
         vip: '',
         master_ip: '',
         port: '',
-        slave_ip: [],
+        slave_ip1: '',
+        slave_ip2: '',
         status: '',
-        bind_cpu: '',
         hostname_master: '',
-        hostname: [],
+        hostname1: '',
+        hostname2: '',
         cpu_kernel: ''
-      }
+      },
+      ruleValidate: [
+        vip: [
+          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validateIp, trigger: 'change'}
+        ],
+        master_ip: [
+          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validateIp, trigger: 'change'}
+        ],
+        port: [
+          { required: true, message: '请输入port', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validatePort, trigger: 'change'}
+        ],
+        slave_ip: [
+          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validateIp, trigger: 'change'}
+        ],
+        status: [
+          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' }
+        ],
+        hostname_master: [
+          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validatePort, trigger: 'change'}
+        ],
+        hostname: [
+          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validatePort, trigger: 'change'}
+        ],
+        cpu_kernel: [
+          { required: true, message: '请输入cpu核数', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validateNumber, trigger: 'change'}
+        ]
+      ]
     }
   },
   components: {},
@@ -115,7 +149,17 @@ export default {
           this.$axios({
             method: 'post',
             url: 'http://infra.xesv5.com/api/redis/audit?token=' + this.getRequest().token,
-            data: this.qs.stringify(this.formItem)
+            data: this.qs.stringify({
+              id: this.formItem.id,
+              vip: this.formItem.vip,
+              master_ip: this.formItem.master_ip,
+              port: this.formItem.port,
+              slave_ip: [this.formItem.slave_ip1, this.formItem.slave_ip2]
+              status: this.formItem.status,
+              hostname_master: this.formItem.hostname_master,
+              hostname: [this.formItem.hostname1, this.formItem.hostname2]
+              cpu_kernel: this.formItem.cpu_kernel
+            })
           }).then(res => {
             console.log(res)
             this.feedbackFormStatus(res.data.data.status === 0)
@@ -135,6 +179,35 @@ export default {
         this.$Message.error('操作失败！')
       }
     },
+    /* 验证 start */
+    validateIp (rule, value, callback) {
+      console.log(value)
+      var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+      if (reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确格式的ip'))
+      }
+    },
+    validateNumber (rule, value, callback) {
+      console.log(value)
+      var reg = /^[+]{0,1}(\d+)$/
+      if (reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确格式的port'))
+      }
+    },
+    validatePort (rule, value, callback) {
+      console.log(value)
+      var reg = /^([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/
+      if (reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确格式的port'))
+      }
+    },
+    /* 验证 end */
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串
       var index = url.indexOf('?')
@@ -166,7 +239,17 @@ export default {
       case 'midify':
         const url = `http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?tiken=${this.getRequest().token}`
         this.$axios.get(url).then(res => {
-          this.auditEdit = res.data.data
+        this.auditEdit = res.data.data
+        this.formItem.vip = this.auditEdit.vip,
+        this.formItem.master_ip = this.auditEdit.master_ip,
+        this.formItem.port = this.auditEdit.port,
+        this.formItem.slave_ip[0] = this.auditEdit.slave_ip[0],
+        this.formItem.slave_ip[1] = this.auditEdit.slave_ip[1],
+        this.formItem.status = this.auditEdit.status,
+        this.formItem.hostname_master = this.auditEdit.hostname_master,
+        this.formItem.hostname[0] = this.auditEdit.hostname[0],
+        this.formItem.hostname[1] = this.auditEdit.hostname[1],
+        this.formItem.cpu_kernel = this.auditEdit.cpu_kernel
         })
       break
     }

@@ -311,7 +311,7 @@ export default {
       } else {
         // callback()
         // var reg = /^\+?[0-9].?[0-9]*$/
-        var reg = /^[1-9]\d*$/
+        var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -352,7 +352,7 @@ export default {
       } else {
         // callback()
         // var reg = /^\+?[0-9].?[0-9]*$/
-        var reg = /^[1-9]\d*$/
+        var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
@@ -393,7 +393,7 @@ export default {
       } else {
         // callback()
         // var reg = /^\+?[0-9].?[0-9]*$/
-        var reg = /^[1-9]\d*$/
+        var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
         if (reg.test(value)) {
           if (value < 0) {
             callback(new Error('请输入大于0的数字'))
