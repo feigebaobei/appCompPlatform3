@@ -294,7 +294,7 @@ export default {
         //   token: this.getRequest().token
         // })
       }).then(response => {
-        console.log(response)
+        // console.log(response)
         this.$store.dispatch('setUser', response.data.data)
         // console.log('token', token)
         this.setToken(token)
@@ -341,7 +341,7 @@ export default {
         method: 'get',
         url: 'http://infra.xesv5.com/api/menus?token=' + this.$store.getters.getUserInfo.token
       }).then(response => {
-        console.log(response)
+        // console.log(response)
         this.responseSider = response
       })
     },

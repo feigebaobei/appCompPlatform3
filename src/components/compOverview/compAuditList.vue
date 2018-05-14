@@ -21,7 +21,10 @@ export default {
       /* table start */
       responseInstanceList: {
         data: {
-          data: {},
+          data: {
+            extraData: {},
+            list: []
+          },
           message: '',
           status: 0
         },
@@ -49,8 +52,7 @@ export default {
         {
           title: '申请部门',
           key: 'department_name',
-          align: 'center',
-          width: 80
+          align: 'center'
         },
         {
           title: '申请人',
@@ -60,9 +62,9 @@ export default {
         },
         {
           title: '申请类型',
-          key: 'apply_typy',
+          key: 'apply_type',
           align: 'center',
-          width: 80
+          width: 100
         },
         {
           title: '状态',
@@ -99,7 +101,7 @@ export default {
           obj.application_id = data[i].application_id
           obj.application_name = data[i].application_name
           obj.apply_id = data[i].apply_id
-          obj.apply_typy = data[i].apply_typy
+          obj.apply_type = data[i].apply_type
           obj.audit_text = data[i].audit_text
           obj.department_name = data[i].department_name
           obj.id = data[i].id
@@ -124,7 +126,7 @@ export default {
     },
     search (response, condition) {
       var result = []
-      var data = response.data.data
+      var data = response.data.data.list
       console.log(data)
       if (!data.length) { return result }
       if (!condition) {
@@ -134,7 +136,7 @@ export default {
           obj.application_id = data[i].application_id
           obj.application_name = data[i].application_name
           obj.apply_id = data[i].apply_id
-          obj.apply_typy = data[i].apply_typy
+          obj.apply_type = data[i].apply_type
           obj.audit_text = data[i].audit_text
           obj.department_name = data[i].department_name
           obj.id = data[i].id
@@ -152,7 +154,7 @@ export default {
             obj.application_id = data[i].application_id
             obj.application_name = data[i].application_name
             obj.apply_id = data[i].apply_id
-            obj.apply_typy = data[i].apply_typy
+            obj.apply_type = data[i].apply_type
             obj.audit_text = data[i].audit_text
             obj.department_name = data[i].department_name
             obj.id = data[i].id
