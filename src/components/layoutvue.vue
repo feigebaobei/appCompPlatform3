@@ -69,6 +69,7 @@
           <compbackups v-if="nav === 'compBackups'"></compbackups>
           <comprecovelist v-if="nav === 'compRecoverList'"></comprecovelist>
           <compauditlist v-if="nav === 'compAuditList'"></compauditlist>
+          <compauditedit v-if="nav === 'compAuditEdit'"></compauditedit>
           <!-- 加载相应的组件 end -->
         </Layout>
         <!-- main end -->
@@ -92,6 +93,7 @@ import compbackupsedit from './compOverview/compBackupsEdit.vue'
 import compbackups from './compOverview/compBackups.vue'
 import comprecovelist from './compOverview/compRecoverList.vue'
 import compauditlist from './compOverview/compAuditList.vue'
+import compauditedit from './compOverview/compAuditEdit.vue'
 export default {
   name: 'layoutvue',
   props: ['nav'],
@@ -125,7 +127,8 @@ export default {
     compbackupslist,
     compbackupsedit,
     compbackups,
-    comprecovelist
+    comprecovelist,
+    compauditedit
   },
   computed: {
     indexHref () {

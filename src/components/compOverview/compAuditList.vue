@@ -48,25 +48,25 @@ export default {
         },
         {
           title: '申请部门',
-          key: 'id',
+          key: 'department_name',
           align: 'center',
           width: 80
         },
         {
-          title: 'id',
-          key: 'id',
+          title: '申请人',
+          key: 'proposer',
           align: 'center',
           width: 80
         },
         {
-          title: 'id',
-          key: 'id',
+          title: '申请类型',
+          key: 'apply_typy',
           align: 'center',
           width: 80
         },
         {
-          title: 'id',
-          key: 'id',
+          title: '状态',
+          key: 'status',
           align: 'center',
           width: 80
         },
@@ -78,7 +78,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: `./appInstance.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
+                href: `./compAuditEdit.html?id=${params.row.id}&token=${this.$store.getters.getUserInfo.token}`
               }
             }, '审核')
           }
@@ -98,37 +98,34 @@ export default {
           var obj = {}
           obj.application_id = data[i].application_id
           obj.application_name = data[i].application_name
+          obj.apply_id = data[i].apply_id
+          obj.apply_typy = data[i].apply_typy
           obj.audit_text = data[i].audit_text
-          obj.conPeak = data[i].conPeak
-          obj.conReal = data[i].conReal
-          obj.conThreshold = data[i].conThreshold
-          obj.cpuPeak = data[i].cpuPeak
-          obj.cpuReal = data[i].cpuReal
-          obj.cpuReal = data[i].cpuReal
+          obj.department_name = data[i].department_name
           obj.id = data[i].id
           obj.name = data[i].name
-          obj.opsPeak = data[i].opsPeak
-          obj.opsReal = data[i].opsReal
-          obj.opsThreshold = data[i].opsThreshold
           obj.port = data[i].port
+          obj.proposer = data[i].proposer
           obj.status = data[i].status
           obj.vip = data[i].vip
           this.instanceListDataBox.push(obj)
         }
       },
       get () {
+        console.log('this.instanceListDataBox', this.instanceListDataBox)
         return this.instanceListDataBox
       }
     }
   },
   methods: {
     selectInstanceListData (condition) {
-      console.log('condition')
+      console.log('condition', condition)
       this.instanceListData = this.search(this.responseInstanceList, condition)
     },
     search (response, condition) {
       var result = []
       var data = response.data.data
+      console.log(data)
       if (!data.length) { return result }
       if (!condition) {
         //  不筛选
@@ -136,19 +133,14 @@ export default {
           var obj = {}
           obj.application_id = data[i].application_id
           obj.application_name = data[i].application_name
+          obj.apply_id = data[i].apply_id
+          obj.apply_typy = data[i].apply_typy
           obj.audit_text = data[i].audit_text
-          obj.conPeak = data[i].conn_info.peak
-          obj.conReal = data[i].conn_info.real
-          obj.conThreshold = data[i].conn_info.threshold
-          obj.cpuPeak = data[i].cpu_info.peak
-          obj.cpuReal = data[i].cpu_info.real
-          obj.cpuReal = data[i].cpu_info.threshold
+          obj.department_name = data[i].department_name
           obj.id = data[i].id
           obj.name = data[i].name
-          obj.opsPeak = data[i].ops_info.peak
-          obj.opsReal = data[i].ops_info.real
-          obj.opsThreshold = data[i].ops_info.threshold
           obj.port = data[i].port
+          obj.proposer = data[i].proposer
           obj.status = data[i].status
           obj.vip = data[i].vip
           result.push(obj)
@@ -159,25 +151,21 @@ export default {
             obj = {}
             obj.application_id = data[i].application_id
             obj.application_name = data[i].application_name
+            obj.apply_id = data[i].apply_id
+            obj.apply_typy = data[i].apply_typy
             obj.audit_text = data[i].audit_text
-            obj.conPeak = data[i].conn_info.peak
-            obj.conReal = data[i].conn_info.real
-            obj.conThreshold = data[i].conn_info.threshold
-            obj.cpuPeak = data[i].cpu_info.peak
-            obj.cpuReal = data[i].cpu_info.real
-            obj.cpuReal = data[i].cpu_info.threshold
+            obj.department_name = data[i].department_name
             obj.id = data[i].id
             obj.name = data[i].name
-            obj.opsPeak = data[i].ops_info.peak
-            obj.opsReal = data[i].ops_info.real
-            obj.opsThreshold = data[i].ops_info.threshold
             obj.port = data[i].port
+            obj.proposer = data[i].proposer
             obj.status = data[i].status
             obj.vip = data[i].vip
             result.push(obj)
           }
         }
       }
+      console.log(result)
       return result
     },
     getRequest () {
@@ -203,7 +191,7 @@ export default {
     // 请求表格数据
     this.$axios({
       method: 'get',
-      url: 'http://infra.xesv5.com/api/redis/list/id/0?token=' + this.getRequest().token
+      url: 'http://infra.xesv5.com/api/redis/audit_list?token=' + this.getRequest().token
     }).then(response => {
       console.log(response)
       this.responseInstanceList = response

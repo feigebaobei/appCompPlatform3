@@ -24,11 +24,14 @@
            <Radio v-for="item in editData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <transfervue v-show="transferShow" :instancesId="formItem.application_group" @modifyTransferData="modifyTransferData"></transfervue>
-      <Row style="margin: 0 0 24px 0;">
+      <transfervue v-show="transferShow" :instancesId="formItem.target_group" @modifyTransferData="modifyTransferData"></transfervue>
+      <!-- <Row style="margin: 0 0 24px 0;">
         <Col span="4">备份周期</Col>
         <Col span="4">每天</Col>
-      </Row>
+      </Row> -->
+      <FormItem label="备份周期">
+        <span>每天</span>
+      </FormItem>
       <FormItem label="备份时间" prop="time_group">
         <Select v-model="formItem.time_group">
            <Option v-for="item in editData.time_group" :key="item.id" :value="item.id" v-html="item.name"></Option>
