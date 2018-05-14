@@ -65,16 +65,20 @@ export default {
       },
       formRuleAddRecover: {
         ipOrigin: [
-          {required: true, message: '请输入源ip', trigger: 'change'}
+          {required: true, message: '请输入正确格式的ip', trigger: 'change'},
+          {validator: this.validateIp, trigger: 'change'}
         ],
         portOrigin: [
-          {required: true, message: '请输入源port', trigger: 'change'}
+          {required: true, message: '请输入源port', trigger: 'change'},
+          {validator: this.validatePort, trigger: 'change'}
         ],
         ipDest: [
-          {required: true, message: '请输入目的ip', trigger: 'change'}
+          {required: true, message: '请输入正确格式的ip', trigger: 'change'},
+          {validator: this.validateIp, trigger: 'change'}
         ],
         portDest: [
-          {required: true, message: '请输入目的port', trigger: 'change'}
+          {required: true, message: '请输入目的port', trigger: 'change'},
+          {validator: this.validatePort, trigger: 'change'}
         ],
         date: [
           {required: true, message: '请选择日期', pattern: /.+/, trigger: 'change'}
@@ -144,6 +148,26 @@ export default {
   },
   components: {},
   methods: {
+    /* 验证 start */
+    validateIp (rule, value, callback) {
+      console.log(value)
+      var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
+      if (reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确格式的ip'))
+      }
+    },
+    validatePort (rule, value, callback) {
+      console.log(value)
+      var reg = /^([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/
+      if (reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请输入正确格式的port'))
+      }
+    },
+    /* 验证 end */
     /* 添加恢复 start */
     handleSubmitAddRecover (name) {
       let dateTime = this.formDataAddRecover.date + this.formDataAddRecover.time

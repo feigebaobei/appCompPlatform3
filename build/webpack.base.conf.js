@@ -35,6 +35,7 @@ module.exports = {
     compAlertList: './src/pages/redis/compOverview/alertList.js',
     compAlertEdit: './src/pages/redis/compOverview/alertEdit.js',
     compBackupsList: './src/pages/redis/compOverview/backupsList.js',
+    compBackupsEdit: './src/pages/redis/compOverview/backupsEdit.js',
     compBackups: './src/pages/redis/compOverview/backups.js',
     compRecoverList: './src/pages/redis/compOverview/recoverList.js'
   },

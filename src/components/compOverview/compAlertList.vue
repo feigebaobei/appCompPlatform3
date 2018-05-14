@@ -12,13 +12,16 @@
               <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
             </FormItem>
             <FormItem label="策略类型" prop="policyType">
-              <Select v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
+              <Select v-if="add_page.policy_type_group" v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
                 <Option :value="item.id" v-for="item in add_page.policy_type_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="所属应用" prop="app">
               <Select v-model="formDataAddAlert.app" placeholder="请选择所属应用">
                 <Option :value="item.id" v-for="item in add_page.application_group" :key="item.id">{{item.name}}</Option>
+                <!-- <Option value='1'>1</Option>
+                <Option value='2'>2</Option>
+                <Option value='3'>3</Option> -->
               </Select>
             </FormItem>
             <FormItem label="告警对象" prop="alertObj">
@@ -27,25 +30,33 @@
               </RadioGroup>
             </FormItem>
             <!-- <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer> -->
-            <transfervue v-if="transferShow" :instancesId="formDataAddAlert.app"></transfervue>
-            <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 10px 0">
-              <Col span="4">
-                <span v-html="item.name"></span>
-              </Col>
-              <Col span="5">
-                <Select v-model="formDataAddAlert.operator_id[index]" placeholder="请选择操作符">
-                  <Option :value="subItem.id" v-for="subItem in add_page.operator_group" :key="subItem.id">{{subItem.name}}</Option>
-                </Select>
-              </Col>
-              <Col span="5">
-                <Input v-model="formDataAddAlert.input[index]" placeholder="请输入阈值"></Input>
-              </Col>
-              <Col span="8">
-                <Select v-model="formDataAddAlert.period_id[index]" placeholder="请选择周期">
-                  <Option :value="subItem.value" v-for="subItem in add_page.period_group" :key="subItem.id">{{subItem.full_name}}</Option>
-                </Select>
-              </Col>
-            </Row>
+            <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" @modifyTransferData="modifyTransferData"></transfervue>
+            <FormItem label="告警策略">
+              <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 20px 0">
+                <Col span="3">
+                  <span v-html="item.name"></span>
+                </Col>
+                <Col span="5">
+                  <FormItem :prop="formPropAddAlert[index].operator">
+                    <Select v-model="formDataAddAlert.operator_id[index]" placeholder="请选择操作符">
+                      <Option :value="subItem.id" v-for="subItem in add_page.operator_group" :key="subItem.id">{{subItem.name}}</Option>
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col span="5">
+                  <FormItem :prop="formPropAddAlert[index].threshold">
+                    <Input v-model="formDataAddAlert.threshold[index]" placeholder="请输入阈值"></Input>
+                  </FormItem>
+                </Col>
+                <Col span="8">
+                  <FormItem :prop="formPropAddAlert[index].period">
+                    <Select v-model="formDataAddAlert.period_id[index]" placeholder="请选择周期">
+                      <Option :value="subItem.id" v-for="subItem in add_page.period_group" :key="subItem.id">{{subItem.full_name}}</Option>
+                    </Select>
+                  </FormItem>
+                </Col>
+              </Row>
+            </FormItem>
             <FormItem label="设置告警群" prop="dingdingName">
               <Input v-model="formDataAddAlert.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
             </FormItem>
@@ -92,32 +103,91 @@ export default {
       },
       /* 创建告警策略 start */
       modalAddAert: false,
+      formPropAddAlert: [
+        {
+          operator: 'cpuOperater',
+          threshold: 'cpuThreshold',
+          period: 'cpuPeriod'
+        },
+        {
+          operator: 'connOperater',
+          threshold: 'connThreshold',
+          period: 'connPeriod'
+        },
+        {
+          operator: 'opsOperater',
+          threshold: 'opsThreshold',
+          period: 'opsPeriod'
+        }
+      ],
       formDataAddAlert: {
         name: '',
         policyType: '',
         app: '',
         alertObj: '',
-        dingdingName: '',
+        instance_id: [],
+        metric_id: [],
         operator_id: [],
-        input: [],
-        period_id: []
+        threshold: [],
+        period_id: [],
+        dingdingName: ''
       },
       fromRuleAddAlert: {
         name: [
-          // {required: true, message: '请输入策略名称', trigger: 'change'}
+          {required: true, message: '请输入策略名称', trigger: 'change'}
+          // {validator: this.validateName, trigger: 'change'}
         ],
         policyType: [
-          // {required: true, message: '请选择策略类型', trigger: 'change'}
+          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validatePolicyType, trigger: 'change'}
         ],
         app: [
-          // {required: true, message: '请选择所属应用', trigger: 'change'}
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validateApp, trigger: 'change'}
         ],
         alertObj: [
-          // {required: true, message: '请选择告警对象', trigger: 'change'}
+          {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validateAlertObj, trigger: 'change'}
+        ],
+        cpuOperater: [
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          {validator: this.cpuOperater, trigger: 'change'}
+        ],
+        cpuThreshold: [
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          {validator: this.cpuThreshold, trigger: 'change'}
+        ],
+        cpuPeriod: [
+          {validator: this.cpuPeriod, trigger: 'change'}
+        ],
+        connOperater: [
+          {validator: this.connOperater, trigger: 'change'}
+        ],
+        connThreshold: [
+          {validator: this.connThreshold, trigger: 'change'}
+        ],
+        connPeriod: [
+          {validator: this.connPeriod, trigger: 'change'}
+        ],
+        opsOperater: [
+          {validator: this.opsOperater, trigger: 'change'}
+        ],
+        opsThreshold: [
+          {validator: this.opsThreshold, trigger: 'change'}
+        ],
+        opsPeriod: [
+          {validator: this.opsPeriod, trigger: 'change'}
         ],
         dingdingName: [
-          // {required: true, message: '请输入告警策略名称', trigger: 'change'}
+          {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
+      },
+      validateAddAlert: {
+        name: false,
+        policyType: false,
+        app: false,
+        alertObj: false,
+        dingdingName: false
       },
       /* 创建告警策略 end */
       // 穿梭框 start
@@ -227,31 +297,131 @@ export default {
     transfervue
   },
   computed: {
-    // alertListData () {
-    //   var result = []
-    //   var data = this.responseAlertList.data.data
-    //   if (!data.length) { return result }
-    //   for (var i = 0, iLen = data.length; i < iLen; i++) {
-    //     var obj = {}
-    //     obj.application_name = data[i].application_name
-    //     obj.dingding_name = data[i].dingding_name
-    //     obj.id = data[i].id
-    //     obj.metric = data[i].metric
-    //     obj.operator = data[i].operator
-    //     obj.policy_name = data[i].policy_name
-    //     obj.policy_type = data[i].policy_type
-    //     obj.status = data[i].status
-    //     obj.threshold = data[i].threshold
-    //     obj.trigger_condition = data[i].trigger_condition
-    //     result.push(obj)
-    //   }
-    //   return result
-    // },
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
     }
   },
   methods: {
+    cpuOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[0]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    cpuThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[0]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        var reg = /^\+?[0-9].?[0-9]*$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    cpuPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[0]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    connOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[1]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    connThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[1]
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        var reg = /^\+?[0-9].?[0-9]*$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    connPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[1]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    opsOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[2]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    opsThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[2]
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        var reg = /^\+?[0-9].?[0-9]*$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    opsPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[2]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串
       var index = url.indexOf('?')
@@ -271,28 +441,32 @@ export default {
       return theRequest
     },
     handleSubmitAndAlert (name) {
+      console.log('formDataAddAlert', this.formDataAddAlert)
+      // var arr = this.metricMethod(this.add_page.metric_group)
+      // console.log(arr)
+      this.metricMethod(this.add_page.metric_group)
       this.$refs[name].validate((valid) => {
+        console.log(valid)
         if (valid) {
-          // 这个接口会出错，后端正在调整。
           this.$axios({
             method: 'post',
             url: 'http://infra.xesv5.com/api/alarm/add?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formDataAddAlert.name,
               type: this.formDataAddAlert.policyType,
-              application_id: this.formDataAddAlert.app, // 应当没有
+              application_id: this.formDataAddAlert.app,
               target: this.formDataAddAlert.alertObj,
-              metric_id: this.add_page.metric_group,
               token: this.getRequest().token,
-              threshold: '',
+              metric_id: this.formDataAddAlert.metric_id,
               operator_id: this.formDataAddAlert.operator_id,
+              threshold: this.formDataAddAlert.threshold,
               period_id: this.formDataAddAlert.period_id,
-              instance_id: '',
+              instance_id: this.formDataAddAlert.instance_id.join(','),
               dingding_name: this.formDataAddAlert.dingdingName
             })
           }).then(response => {
             console.log(response)
-            this.modalAddAlert = false
+            this.modalAddAert = false
             this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
@@ -301,6 +475,55 @@ export default {
           this.$Message.error('不可为空!')
         }
       })
+    },
+    metricMethod (metricGroup) {
+      var arr = []
+      for (var i = 0, iLen = metricGroup.length; i < iLen; i++) {
+        arr.push(metricGroup[i].id)
+      }
+      this.formDataAddAlert.metric_id = arr
+      console.log(this.formDataAddAlert.metric_id)
+    },
+    operatorIdMethod () {
+      var arr = []
+      for (var i = 0, iLen = this.formDataAddAlert.metric_id.length; i < iLen; i++) {
+        var index = this.formDataAddAlert.metric_id[i] - 1
+        var a = this.formDataAddAlert.operator_id[index]
+        console.log(a)
+        arr.push(a)
+      }
+      return arr
+    },
+    thresholdMethod () {
+      var arr = []
+      for (var i = 0, iLen = this.formDataAddAlert.metric_id.length; i < iLen; i++) {
+        var index = this.formDataAddAlert.metric_id[i] - 1
+        var a = this.formDataAddAlert.threshold[index]
+        console.log(a)
+        arr.push(a)
+      }
+      return arr
+    },
+    periodIdMethod () {
+      var arr = []
+      for (var i = 0, iLen = this.formDataAddAlert.metric_id.length; i < iLen; i++) {
+        var index = this.formDataAddAlert.metric_id[i] - 1
+        var a = this.formDataAddAlert.period_id[index]
+        console.log(a)
+        arr.push(a)
+      }
+      return arr
+    },
+    arrUnique () {
+      var res = []
+      var json = {}
+      for (var i = 0; i < this.length; i++) {
+        if (!json[this[i]]) {
+          res.push(this[i])
+          json[this[i]] = 1
+        }
+      }
+      return res
     },
     handleResetAndAlert (name) {
       this.$refs[name].resetFields()
@@ -353,6 +576,11 @@ export default {
     handleCancelOperator (curRowData) {
       console.log(curRowData)
       this.modalOperate = false
+    },
+    // modifyTransferData
+    modifyTransferData (params) {
+      console.log('params', params)
+      this.formDataAddAlert.instance_id = params
     }
   },
   mounted () {
@@ -366,7 +594,7 @@ export default {
     // })
     const url = `http://infra.xesv5.com/api/alarm/list/id/0?token=${this.getRequest().token}`
     this.$axios.get(url).then(res => {
-      console.log(res.data.data)
+      // console.log(res.data.data)
       for (let i of res.data.data) {
         this.alertListData.push({
           application_name: i.application_name,
@@ -386,7 +614,10 @@ export default {
       url: 'http://infra.xesv5.com/api/alarm/add_page?token=' + this.getRequest().token
     }).then(res => {
       this.add_page = res.data.data
-      // console.log('对话框展示数据', this.add_page)
+      this.formDataAddAlert.metric_id = this.metricMethod(this.add_page.metric_group)
+      // console.log(this.formDataAddAlert)
+      // console.log(this.formDataAddAlert.metric_id)
+      console.log('对话框展示数据', this.add_page)
     })
   }
 }

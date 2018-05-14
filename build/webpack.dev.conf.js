@@ -131,6 +131,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       chunks: ['compBackupsList']
     }),
     new HtmlWebpackPlugin({
+      filename: 'compBackupsEdit.html',
+      template: './template/compOverview/compBackupsEdit.html',
+      inject: true,
+      chunks: ['compBackupsEdit']
+    }),
+    new HtmlWebpackPlugin({
       filename: 'compBackups.html',
       template: './template/compOverview/compBackups.html',
       inject: true,

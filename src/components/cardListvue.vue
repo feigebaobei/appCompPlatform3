@@ -1,7 +1,6 @@
 <template>
   <div>
     <slot name='addApp'></slot>
-    <!-- <p>{{tab}} {{isRenderMyApp}}</p> -->
     <cardvue v-if='isRenderMyApp' v-for="item in responseMyApp.data.data" :key="item.id" :item="item">
     </cardvue>
     <cardvue v-if='isRenderElseApp' v-for="item in responseElseApp.data.data" :key="item.id" :item="item"></cardvue>
@@ -102,7 +101,7 @@ export default {
         // url: 'http://infra.xesv5.com/api/apps/mine'
         // url: 'http://infra.xesv5.com/api/apps/mine?token=' + this.getRequest().token
         // url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token
-        url: `http://infra.xesv5.com/api/apps?token=${this.getRequest().token}`
+        url: `http://infra.xesv5.com/api/redis/general_data?token=${this.getRequest().token}`
       }).then(response => {
         // console.log(response)
         this.responseOverview = response
@@ -115,7 +114,7 @@ export default {
         // url: 'http://infra.xesv5.com/api/apps/others?token=' + this.getRequest().token
         // url: 'http://infra.xesv5.com/api/apps?token=' + this.$store.getters.getUserInfo.token
         // url: 'http://infra.xesv5.com/api/apps?token=' + this.getRequest().token
-        url: `http://infra.xesv5.com/api/apps?type=${1}&token=${this.getRequest().token}`
+        url: `http://infra.xesv5.com/api/redis/general_data?type=${1}&token=${this.getRequest().token}`
       }).then(response => {
         // console.log(response)
         this.responseAudit = response

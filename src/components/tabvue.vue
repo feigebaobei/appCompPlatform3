@@ -1,14 +1,5 @@
 <template>
   <div>
-    <!-- <userInfoDefeat v-if="!userInfo.status"></userInfoDefeat> -->
-    <!-- {{tabs}}
-    <hr>
-    {{testData}} -->
-    <!-- {{tabs()}}
-    <hr>
-    {{tabs()[0]}}
-    <hr>
-    {{tabs()[1]}} -->
     <Tabs type="card" v-if="userInfo.userStatus">
       <TabPane :label="tabs[0]">
         <cardListvue :tab="tabs[0]">
@@ -50,7 +41,8 @@
         </cardListvue>
       </TabPane>
       <TabPane :label="tabs[1]">
-        <cardListvue :tab="tabs[1]"></cardListvue>
+        <cardListvue :tab="tabs[1]" v-if="tab === '其它应用'"></cardListvue>
+        <auditmanage v-else></auditmanage>
       </TabPane>
     </Tabs>
   </div>
@@ -59,12 +51,11 @@
 <script>
 // import userInfoDefeat from './userInfoDefeat.vue'
 import cardListvue from './cardListvue.vue'
+import auditmanage from './components/auditmanage.vue'
 export default {
   name: 'tab',
   data () {
     return {
-      // role: this.$store.getters.getUserInfo.role === 2
-      // tabs: this.tabArr()
       modalAddApp: false,
       formDataAddApp: {
         name: '',
@@ -98,12 +89,12 @@ export default {
           {required: true, message: '请输入申请原因', trigger: 'change'}
         ]
       }
-      // tabs: this.setTabs()
     }
   },
   components: {
     // userInfoDefeat,
-    cardListvue
+    cardListvue,
+    auditmanage
   },
   computed: {
     role () {
@@ -119,12 +110,10 @@ export default {
     },
     /* 根据用户身份，显示选项卡。 start */
     userInfo () {
-      // console.log(this.$store.getters.getUserInfo)
       return this.$store.getters.getUserInfo
     },
     tabs () {
       var b = this.userInfo.role
-      // console.log(b)
       switch (b) {
         case 2:
           return ['我的应用', '其它应用']
@@ -135,16 +124,6 @@ export default {
     /* 根据用户身份，显示选项卡。 end */
   },
   methods: {
-    // setTabs () {
-    //   var a = this.$store.getters.getUserInfo.role
-    //   console.log(a)
-    //   switch (a) {
-    //     case 2:
-    //       return ['我的应用', '其它应用']
-    //     case 1:
-    //       return ['概览', '审核管理']
-    //   }
-    // },
     // 添加应用
     handleSubmitAddApp (name) {
       this.$refs[name].validate((valid) => {

@@ -61,6 +61,7 @@ module.exports = {
     compAlertList: path.resolve(__dirname, '../dist/compAlertList.html'),
     compAlertEdit: path.resolve(__dirname, '../dist/compAlertEdit.html'),
     compBackupsList: path.resolve(__dirname, '../dist/compBackupsList.html'),
+    compBackupsEdit: path.resolve(__dirname, '../dist/compBackupsEdit.html'),
     compBackups: path.resolve(__dirname, '../dist/compBackups.html'),
     compRecoverList: path.resolve(__dirname, '../dist/compRecoverList.html'),
 

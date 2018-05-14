@@ -18,7 +18,7 @@
         <DatePicker type="date" placeholder="--结束时间--" style="width: 200px" format="yyyy年MM月dd日" @on-change="selectInstanceListData"></DatePicker>
       </Col> -->
       <Col span='14'>
-        <DatePicker type="daterange" placeholder="请选择时间范围" style="width: 250px" format="yyyy-MM-dd" @on-change="selectInstanceListData"></DatePicker>
+        <DatePicker type="daterange" placeholder="请输入搜索的时间范围" style="width: 250px" format="yyyy-MM-dd" @on-change="selectInstanceListData"></DatePicker>
       </Col>
       <Col span="10">
         <!-- <span v-html="预计下次备份时间:"></span> -->

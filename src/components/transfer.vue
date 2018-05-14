@@ -1,5 +1,13 @@
 <template>
   <div class='transfer'>
+    <Row style="margin: 0 0 15px 0; text-align: center;">
+      <Col span="12">
+        <span>源列表</span>
+      </Col>
+      <Col span="12">
+        <span>目标列表</span>
+      </Col>
+    </Row>
     <Transfer filterable filter-placeholder="实例名称/实例id" :titles="listTitle" :list-style='listStyle' :data='transferData' :target-keys='transferTargetKey' :render-format='transferRender' @on-change='transferHandleChange' style='margin: 0 0 24px 80px;'></Transfer>
   </div>
 </template>
@@ -55,9 +63,9 @@ export default {
     requestData () {
       const url = `http://infra.xesv5.com/api/redis/get_instances/id/${this.instancesId}?token=${this.getRequest().token}`
       this.$axios.get(url).then(res => {
-        console.log(res.data.data)
+        // console.log(res.data.data)
         for (let i of res.data.data) {
-          console.log(res)
+          // console.log(res)
           this.transferData.push({
             key: i.id,
             label: `${i.name.slice(0, 10)}&nbsp;&nbsp;&nbsp;&nbsp;${i.id}&nbsp;&nbsp;&nbsp;&nbsp;${i.vip}`,
@@ -68,6 +76,7 @@ export default {
     }
   },
   created () {
+    console.log('应用id', this.instancesId)
     if (this.instancesId !== '') {
       this.requestData()
     }

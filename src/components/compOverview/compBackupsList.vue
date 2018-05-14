@@ -11,9 +11,9 @@
           <FormItem label="策略名称" prop="name">
             <Input v-model="formDataCreateBackups.name" placeholder="请输入策略名称"></Input>
           </FormItem>
-          <FormItem label="策略类型" prop="policy_type">
-            <Select v-model="formDataCreateBackups.policy_type">
-               <Option v-for="item in comBackupsData.policy_type" :key="item.id" :value="item.id">{{item.name}}</Option>
+          <FormItem label="策略类型" prop="policy_type_group">
+            <Select v-model="formDataCreateBackups.policy_type_group">
+               <Option v-for="item in comBackupsData.policy_type_group" :key="item.id" :value="item.id">{{item.name}}</Option>
             </Select>
           </FormItem>
           <FormItem label="所属应用" prop="application_group">
@@ -70,7 +70,7 @@ export default {
       formDataCreateBackups: {
         name: '',
         application_group: '',
-        policy_type: '',
+        policy_type_group: '',
         radio: '',
         date: '每天',
         instanceIds: [] // 部分实例的id
@@ -82,7 +82,7 @@ export default {
         application_group: [
           {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
-        policy_type: [
+        policy_type_group: [
           {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
         ],
         radio: [
@@ -114,7 +114,7 @@ export default {
         },
         {
           title: '策略类型',
-          key: 'policy_type',
+          key: 'policy_type_group',
           align: 'center',
           sortable: true
         },
@@ -142,12 +142,17 @@ export default {
           align: 'center',
           sortable: true
         },
-        // {
-        //   title: '状态',
-        //   key: 'operator',
-        //   align: 'center',
-        //   sortable: true
-        // },
+        {
+          title: '查看',
+          align: 'center',
+          render: (h, params) => {
+            return h('a', {
+              attrs: {
+                href: './compBackupsEdit.html?id=' + params.row.id + '&token=' + this.getRequest().token
+              }
+            }, '查看')
+          }
+        },
         {
           title: '操作',
           key: '',
@@ -196,12 +201,12 @@ export default {
             url: 'http://infra.xesv5.com/api/backup/add?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formDataCreateBackups.name,
-              type: this.formDataCreateBackups.policy_type,
+              type: this.formDataCreateBackups.policy_type_group,
               application_id: this.formDataCreateBackups.application_group,
               target: this.formDataCreateBackups.radio,
               period: this.formDataCreateBackups.time,
               // instance_id: this.add_instance_id
-              instance_id: this.formDataCreateBackups.instanceIds
+              instance_id: this.formDataCreateBackups.instanceIds.join(',')
             })
           }).then(res => {
             // this.$Message.success('操作成功！')
@@ -319,7 +324,7 @@ export default {
         this.backupsListData.push({
           id: i.id,
           name: i.name,
-          policy_type: i.policy_type,
+          policy_type_group: i.policy_type_group,
           application_name: i.application_name,
           backup_type: i.backup_type,
           operator_time: i.operator_time,

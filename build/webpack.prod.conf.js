@@ -224,6 +224,18 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunks: ['manifest', 'vendor', 'compBackupsList']
     }),
     new HtmlWebpackPlugin({
+      filename: config.build.compBackupsEdit,
+      template: './template/compOverview/compBackupsEdit.html',
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      },
+      chunksSortMode: 'dependency',
+      chunks: ['manifest', 'vendor', 'compBackupsEdit']
+    }),
+    new HtmlWebpackPlugin({
       filename: config.build.compBackups,
       template: './template/compOverview/compBackups.html',
       inject: true,

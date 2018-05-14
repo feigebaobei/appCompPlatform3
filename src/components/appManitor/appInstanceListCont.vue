@@ -36,7 +36,7 @@
             </FormItem>
             <FormItem label="所属应用" prop="app">
               <Select v-model="formDataAddInstance.app" placeholder="请选择所属应用">
-                <Option :value="item.name" v-for="item in addInstance.application_group" :key="item.id">{{item.name}}</Option>
+                <Option :value="item.id" v-for="item in addInstance.application_group" :key="item.id">{{item.name}}</Option>
               </Select>
             </FormItem>
             <FormItem label="申请事由" prop="reason">
@@ -230,37 +230,26 @@ export default {
       },
       formRuleAddInstance: {
         name: [
-          // {required: true, message: '请输入实例名称', trigger: 'change'}
+          {required: true, message: '请输入实例名称', trigger: 'change'}
         ],
         version: [
-          // {required: true, message: '请选择版本', pattern: /.+/, trigger: 'change'}
+          {required: true, message: '请选择版本', pattern: /.+/, trigger: 'change'}
         ],
         capacity: [
-          // {
-          //   required: true,
-          //   message: '请输入容量',
-          //   trigger: function (rule, value, callback) {
-          //     var regPos = /^\d+(\.\d+)?$/ // 非负浮点数
-          //     var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/ // 负浮点数
-          //     if (regPos.test(value) || regNeg.test(value)) {
-          //       return true
-          //     } else {
-          //       return false
-          //     }
-          //   }
-          // }
+          {required: true, message: '请选择副本', pattern: /.+/, trigger: 'change'},
+          {validator: this.validateCapacity, trigger: 'change'}
         ],
         duplicate: [
-          // {required: true, message: '请选择副本', pattern: /.+/, trigger: 'change'}
+          {required: true, message: '请选择副本', pattern: /.+/, trigger: 'change'}
         ],
         rule: [
-          // {required: true, message: '请选择实例规格', pattern: /.+/, trigger: 'change'}
+          {required: true, message: '请选择实例规格', pattern: /.+/, trigger: 'change'}
         ],
         app: [
-          // {required: true, message: '请选择所属应用', trigger: 'change'}
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
         reason: [
-          // {required: true, message: '请输入申请事由', trigger: 'change'}
+          {required: true, message: '请输入申请事由', trigger: 'change'}
         ]
       },
       instanceListDataBox: []
@@ -306,16 +295,20 @@ export default {
     }
   },
   methods: {
-    // selectTableStatus () {
-    //   var role = this.$store.getters.getUserInfo.role
-    //   switch (role) {
-    //     case 1:// 运维
-    //       return ['软件安装中', '使用中']
-    //     case 2:// 开发
-    //       return ['软件安装中', '已审核', '已驳回']
-    //   }
-    // },
-    // 筛选实例列表表格数据 start
+    // 验证
+    validateCapacity (rule, value, callback) {
+      console.log(value)
+      var reg = /^\+?[0-9].?[0-9]*$/
+      if (reg.test(value)) {
+        if (value < 0) {
+          callback(new Error('请输入大于0的数字'))
+        } else {
+          callback()
+        }
+      } else {
+        callback(new Error('请输入大于0的数字'))
+      }
+    },
     selectInstanceListData (name) {
       this.instanceListData = this.search(this.responseInstanceList, name)
     },
@@ -379,8 +372,8 @@ export default {
             url: 'http://infra.xesv5.com/api/redis/add?token=' + this.getRequest().token,
             method: 'post',
             data: {
-              'name': name,
-              'application_id': valid,
+              'name': this.formDataAddInstance.name,
+              'application_id': this.formDataAddInstance.app,
               'arch_type': this.formDataAddInstance.version,
               'node_type': this.formDataAddInstance.duplicate,
               'mem_type': this.formDataAddInstance.rule

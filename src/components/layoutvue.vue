@@ -65,8 +65,10 @@
           <compalertlist v-if="nav === 'compAlertList'"></compalertlist>
           <compalertedit v-if="nav === 'compAlertEdit'"></compalertedit>
           <compbackupslist v-if="nav === 'compBackupsList'"></compbackupslist>
+          <compbackupsedit v-if="nav === 'compBackupsEdit'"></compbackupsedit>
           <compbackups v-if="nav === 'compBackups'"></compbackups>
           <comprecovelist v-if="nav === 'compRecoverList'"></comprecovelist>
+          <compauditlist v-if="nav === 'compAuditList'"></compauditlist>
           <!-- 加载相应的组件 end -->
         </Layout>
         <!-- main end -->
@@ -86,8 +88,10 @@ import compinstance from './compOverview/compInstance.vue'
 import compalertlist from './compOverview/compAlertList.vue'
 import compalertedit from './compOverview/compAlertEdit.vue'
 import compbackupslist from './compOverview/compBackupsList.vue'
+import compbackupsedit from './compOverview/compBackupsEdit.vue'
 import compbackups from './compOverview/compBackups.vue'
 import comprecovelist from './compOverview/compRecoverList.vue'
+import compauditlist from './compOverview/compAuditList.vue'
 export default {
   name: 'layoutvue',
   props: ['nav'],
@@ -119,6 +123,7 @@ export default {
     compalertlist,
     compalertedit,
     compbackupslist,
+    compbackupsedit,
     compbackups,
     comprecovelist
   },
