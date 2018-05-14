@@ -4,7 +4,7 @@
     <cardvue v-if='isRenderMyApp' v-for="item in responseMyApp.data.data" :key="item.id" :item="item">
     </cardvue>
     <cardvue v-if='isRenderElseApp' v-for="item in responseElseApp.data.data" :key="item.id" :item="item"></cardvue>
-    <cardvue v-if='isRenderOverview' v-for="item in responseOverview.data.data" :key="item.id" :item="item"></cardvue>
+    <!-- <cardvue v-if='isRenderOverview' v-for="item in responseOverview.data.data" :key="item.id" :item="item"></cardvue> -->
     <cardvue v-if='isRenderAudit' v-for="item in responseAudit.data.data" :key="item.id" :item="item"></cardvue>
   </div>
 </template>

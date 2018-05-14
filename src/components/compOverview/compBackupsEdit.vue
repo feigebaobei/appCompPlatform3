@@ -6,38 +6,38 @@
       </Col>
     </Row>
     <Form ref="formItem" :model="formItem" :rules="formItems" :label-width="80">
-          <FormItem label="策略名称" prop="name">
-            <Input v-model="formItem.name" placeholder="请输入策略名称"></Input>
-          </FormItem>
-          <FormItem label="策略类型" prop="policy_type">
-            <Select v-model="formItem.policy_type">
-               <Option v-for="item in editData.policy_type" :key="item.id" :value="item.id">{{item.name}}</Option>
-            </Select>
-          </FormItem>
-          <FormItem label="所属应用" prop="application_group">
-            <Select v-model="formItem.application_group">
-              <Option v-for="item in editData.application_group" :key="item.id" :value="item.id" v-html="item.name"></Option>
-            </Select>
-          </FormItem>
-          <FormItem label="备份对象" prop="target_group">
-            <RadioGroup v-model="formItem.target_group">
-               <Radio v-for="item in editData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
-            </RadioGroup>
-          </FormItem>
-          <transfervue v-show="transferShow" :instancesId="formItem.application_group" @modifyTransferData="modifyTransferData"></transfervue>
-          <Row style="margin: 0 0 24px 0;">
-            <Col span="4" push="1">备份周期</Col>
-            <Col span="4">每天</Col>
-          </Row>
-          <FormItem label="备份时间" prop="time">
-            <Select v-model="formItem.time">
-               <Option v-for="(item, index) in editData.time_group" :key="index" :value="item" v-html="item"></Option>
-            </Select>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" @click="handleSubmitAndAlert('formItem')">Submit</Button>
-          </FormItem>
-        </Form>
+      <FormItem label="策略名称" prop="name">
+        <Input v-model="formItem.name" placeholder="请输入策略名称"></Input>
+      </FormItem>
+      <FormItem label="策略类型" prop="policy_type_group">
+        <Select v-model="formItem.policy_type_group">
+           <Option v-for="item in editData.policy_type_group" :key="item.id" :value="item.id">{{item.name}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="所属应用" prop="application_group">
+        <Select v-model="formItem.application_group">
+          <Option v-for="item in editData.application_group" :key="item.id" :value="item.id" v-html="item.name"></Option>
+        </Select>
+      </FormItem>
+      <FormItem label="备份对象" prop="target_group">
+        <RadioGroup v-model="formItem.target_group">
+           <Radio v-for="item in editData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
+        </RadioGroup>
+      </FormItem>
+      <transfervue v-show="transferShow" :instancesId="formItem.application_group" @modifyTransferData="modifyTransferData"></transfervue>
+      <Row style="margin: 0 0 24px 0;">
+        <Col span="4">备份周期</Col>
+        <Col span="4">每天</Col>
+      </Row>
+      <FormItem label="备份时间" prop="time_group">
+        <Select v-model="formItem.time_group">
+           <Option v-for="item in editData.time_group" :key="item.id" :value="item.id" v-html="item.name"></Option>
+        </Select>
+      </FormItem>
+      <FormItem>
+        <Button type="primary" @click="handleSubmitAndAlert('formItem')">Submit</Button>
+      </FormItem>
+    </Form>
   </div>
 </template>
 
@@ -49,12 +49,13 @@ export default {
       editData: '',
       formItem: {
         name: '',
-        policy_type: '',
+        policy_type_group: '',
         application_group: '',
         target_group: '',
         time_group: '',
         instance_id: ''
       },
+      // 表单验证
       formItems: {
         name: [
           {required: true, message: '请输入策略名称', trigger: 'change'}
@@ -62,7 +63,7 @@ export default {
         application_group: [
           {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
         ],
-        policy_type: [
+        policy_type_group: [
           {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
         ],
         target_group: [
@@ -75,8 +76,13 @@ export default {
     }
   },
   components: {},
-  computed: {},
+  computed: {
+    transferShow () {
+      return this.formItem.target_group === 2
+    }
+  },
   methods: {
+    // 编辑提交
     handleSubmitAndAlert (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -85,11 +91,11 @@ export default {
             url: 'http://infra.xesv5.com//api/backup/edit?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formItem.name,
-              type: this.formItem.policy_type,
-              application_id: this.formItem.application_id,
+              type: this.formItem.policy_type_group,
+              application_id: this.formItem.application_group,
               target: this.formItem.target_group,
               period: this.formItem.period,
-              instance_id: this.formItem.instance_id,
+              instance_id: this.formItem.instance_id.join(','),
               id: this.getRequest().id
             })
           }).then(res => {
@@ -130,6 +136,10 @@ export default {
         }
       }
       return theRequest
+    },
+    // modifyTransferData
+    modifyTransferData (params) {
+      this.formDataCreateBackups.instanceIds = params
     }
   },
   created () {
@@ -140,9 +150,9 @@ export default {
       this.formItem.name = this.editData.name
       this.formItem.application_group = this.editData.application_id
       this.formItem.period = this.editData.period
-      this.formItem.policy_type = this.editData.policy_type
+      this.formItem.policy_type_group = this.editData.policy_type
       this.formItem.instance_id = this.editData.instance_id
-      this.formItem.target_type = this.editData.target_type
+      this.formItem.target_group = this.editData.target_type
     })
   }
 }

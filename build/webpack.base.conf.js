@@ -37,7 +37,8 @@ module.exports = {
     compBackupsList: './src/pages/redis/compOverview/backupsList.js',
     compBackupsEdit: './src/pages/redis/compOverview/backupsEdit.js',
     compBackups: './src/pages/redis/compOverview/backups.js',
-    compRecoverList: './src/pages/redis/compOverview/recoverList.js'
+    compRecoverList: './src/pages/redis/compOverview/recoverList.js',
+    compAuditEdit: './src/pages/redis/compOverview/auditEdit.js'
   },
   output: {
     path: config.build.assetsRoot,

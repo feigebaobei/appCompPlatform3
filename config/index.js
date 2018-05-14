@@ -64,6 +64,7 @@ module.exports = {
     compBackupsEdit: path.resolve(__dirname, '../dist/compBackupsEdit.html'),
     compBackups: path.resolve(__dirname, '../dist/compBackups.html'),
     compRecoverList: path.resolve(__dirname, '../dist/compRecoverList.html'),
+    compAuditEdit: path.resolve(__dirname, '../dist/compAuditEdit.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),

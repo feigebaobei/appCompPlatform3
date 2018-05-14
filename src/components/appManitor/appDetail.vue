@@ -67,9 +67,10 @@
           <Form ref="formDataAddComp" :model="formDataAddComp" :rules="formRuleAddComp" :label-width="100">
             <FormItem label="组件类型" prop="type">
               <Select v-model="formDataAddComp.type" placeholder="请选择组件类型">
-                <Option value="redis">redis</Option>
-                <Option value="codis">codis</Option>
-                <Option value="gateway">gateway</Option>
+                <Option value="1">redis</Option>
+                <Option value="2">kafka</Option>
+                <Option value="3">上线发布</Option>
+                <Option value="4">日志中心</Option>
               </Select>
             </FormItem>
             <FormItem>

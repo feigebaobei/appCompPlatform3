@@ -148,6 +148,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       inject: true,
       chunks: ['compRecoverList']
     }),
+    new HtmlWebpackPlugin({
+      filename: 'compAuditEdit.html',
+      template: './template/compOverview/compAuditEdit.html',
+      inject: true,
+      chunks: ['compAuditEdit']
+    }),
     // copy custom static assets
     new CopyWebpackPlugin([
       {
