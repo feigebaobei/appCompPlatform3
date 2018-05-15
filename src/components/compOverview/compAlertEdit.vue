@@ -396,14 +396,14 @@ export default {
       this.formDataAddAlert.policyType = this.add_page.policy_type
       this.formDataAddAlert.app = this.add_page.application_id
       this.formDataAddAlert.alertObj = this.add_page.target_type
-      for (let i = 0; i < this.add_page.instance_group.length; i++) {
+      for (var i = 0; i < this.add_page.instance_group.length; i++) {
         arr.push(this.add_page.instance_group[i].instance_id)
       }
       this.formDataAddAlert.instance_id = arr
-      for (let i = 0; i < this.add_page.metric_info.length; i++) {
-        this.formDataAddAlert.operator_id[i] = this.add_page.metric_info[i].operator
-        this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
-        this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
+      for (var j = 0; j < this.add_page.metric_info.length; j++) {
+        this.formDataAddAlert.operator_id[j] = this.add_page.metric_info[j].operator
+        this.formDataAddAlert.threshold[j] = this.add_page.metric_info[j].threshold
+        this.formDataAddAlert.period_id[j] = this.add_page.metric_info[j].period
       }
       this.formDataAddAlert.dingdingName = this.add_page.dingding_name
     })
