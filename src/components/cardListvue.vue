@@ -255,11 +255,11 @@ export default {
     selectMyAppListData (condition) {
       console.log('selectMyAppListData')
       this.myAppBox = this.search(this.responseMyApp, condition)
-      console.log(this.myAppBox)
+      // console.log(this.myAppBox)
       // console.log(this.searchTextMyApp)
       // this.appInstanceList.myApp.searchText = this.searchTextMyApp
       // 把数据保存到vuex
-      this.$store.dispatch('setPageInfoAILCurTab', {curTab: this.searchTextMyApp})
+      // this.$store.dispatch('setPageInfoAILCurTab', {curTab: this.searchTextMyApp})
       // 从vuex保存到localStorage
       this.frontStore()
     },
@@ -275,7 +275,7 @@ export default {
     },
     search (response, condition) {
       var result = []
-      console.log(response)
+      // console.log(response)
       var data = response.data.data
       if (!data.length) { return [] }
       if (!condition) {
@@ -288,7 +288,7 @@ export default {
           }
         }
       }
-      console.log(result)
+      // console.log(result)
       return result
     },
     frontStore () {
@@ -305,9 +305,12 @@ export default {
       // console.log(window.localStorage.appInstanceList)
       // console.log(window.localStorage.compInstanceList)
       var pageInfo = this.$store.getters.getPageInfo
+      console.log(pageInfo)
       pageInfo.appInstanceList.searchTextMyApp = this.searchTextMyApp
       this.$store.dispatch('setPageInfo', pageInfo)
+      console.log(this.$store.getters.getPageInfo)
       window.localStorage.pageInfo = pageInfo
+      console.log(window.localStorage.pageInfo)
     },
     /* 搜索 end */
     // 各请求方法

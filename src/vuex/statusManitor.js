@@ -38,7 +38,7 @@ const store = new Vuex.Store({
     },
     getPageInfo: function (state) {
       return state.pageInfo
-    }
+    },
     getPageInfoAIL: function (state) {
       return state.pageInfo.appInstanceList
     }
@@ -70,7 +70,7 @@ const store = new Vuex.Store({
       console.log(payload)
       state.pageInfo = payload
       console.log(state.pageInfo)
-    }
+    },
     setPageInfoAIL: function (state, payload) {
       state.pageInfo.appInstanceList.curTab = payload.curTab
       state.pageInfo.appInstanceList.searchTextMyApp = payload.searchTextMyApp
@@ -95,7 +95,7 @@ const store = new Vuex.Store({
     },
     setPageInfo: function ({commit}, payload) {
       commit('setPageInfo', payload)
-    }
+    },
     setPageInfoAIL: function ({commit}, payload) {
       commit('setPageInfoAIL', payload)
     },
