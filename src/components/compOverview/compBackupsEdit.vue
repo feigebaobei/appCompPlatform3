@@ -95,13 +95,19 @@ export default {
   methods: {
     // 编辑提交
     handleSubmitAndAlert (name) {
-      console.log('1', this.formItem)
+      console.log(this.formItem.name)
+      console.log(this.formItem.policy_type_group)
+      console.log(this.formItem.application_group)
+      console.log(this.formItem.target_group)
+      console.log(this.formItem.time_group)
+      console.log(this.formItem.instance_id.join(','))
+      console.log(this.getRequest().id)
+      // ----
       this.$refs[name].validate((valid) => {
         if (valid) {
-        console.log('2', this.formItem)
           this.$axios({
             method: 'post',
-            url: 'http://infra.xesv5.com//api/backup/edit?token=' + this.getRequest().token,
+            url: 'http://infra.xesv5.com/api/backup/edit?token=' + this.getRequest().token,
             data: this.qs.stringify({
               name: this.formItem.name,
               type: this.formItem.policy_type_group,
@@ -153,7 +159,7 @@ export default {
     },
     // modifyTransferData
     modifyTransferData (params) {
-      this.formDataCreateBackups.instanceIds = params
+      this.formDataCreateBackups.instance_id = params
     }
   },
   created () {
@@ -163,11 +169,10 @@ export default {
       this.editData = res.data.data
       this.formItem.name = this.editData.name
       this.formItem.application_group = this.editData.application_id
-      this.formItem.period = this.editData.period
       this.formItem.policy_type_group = this.editData.policy_type
       this.formItem.instance_id = this.editData.instance_id
       this.formItem.target_group = this.editData.target_type
-      this.formItem.time_group = parseInt(this.editData.period)
+      this.formItem.time_group = this.editData.period
     })
   }
 }
