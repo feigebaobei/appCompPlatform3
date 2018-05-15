@@ -17,7 +17,12 @@ const store = new Vuex.Store({
       tokenStatus: false// 表示保存token信息
     },
     pageInfo: {
-      appInstanceList: {}
+      appInstanceList: {
+        curTab: '',
+        searchTextMyApp: '',
+        searchTextElseApp: ''
+      },
+      appInstance: {}
     }
   },
   getters: {
@@ -30,6 +35,9 @@ const store = new Vuex.Store({
     getUserInfo: function (state) {
       // console.log(state.userInfo)
       return state.userInfo
+    },
+    getPageInfoAIL: function (state) {
+      return state.pageInfo.appInstanceList
     }
   },
   mutations: {
@@ -54,6 +62,16 @@ const store = new Vuex.Store({
       state.userInfo.tokenStatus = true
       // console.log(state.userInfo)
       // console.log(state.userInfo.token)
+    },
+    setPageInfoAIL: function (state, payload) {
+      state.pageInfo.appInstanceList.curTab = payload.curTab
+      state.pageInfo.appInstanceList.searchTextMyApp = payload.searchTextMyApp
+      state.pageInfo.appInstanceList.searchTextElseApp = payload.searchTextElseApp
+      console.log(state.pageInfo.appInstanceList)
+    },
+    setPageInfoAILCurTab: function (state, payload) {
+      state.pageInfo.appInstanceList.curTab = payload.curTab
+      console.log(state.pageInfo.appInstanceList)
     }
   },
   actions: {
@@ -66,6 +84,12 @@ const store = new Vuex.Store({
     setToken: function ({commit}, payload) {
       // console.log('actions setToken')
       commit('setToken', payload)
+    },
+    setPageInfoAIL: function ({commit}, payload) {
+      commit('setPageInfoAIL', payload)
+    },
+    setPageInfoAILCurTab: function ({commit}, payload) {
+      commit('setPageInfoAILCurTab', payload)
     }
   }
 })
