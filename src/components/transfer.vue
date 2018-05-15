@@ -66,6 +66,7 @@ export default {
       const url = `http://infra.xesv5.com/api/redis/get_instances/id/${this.instancesId}?token=${this.getRequest().token}`
       this.$axios.get(url).then(res => {
         // console.log(res.data.data)
+        this.transferData = []
         for (let i of res.data.data) {
           // console.log(res)
           this.transferData.push({

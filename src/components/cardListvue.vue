@@ -304,7 +304,9 @@ export default {
       // window.localStorage.compInstanceList = compInstanceListStr
       // console.log(window.localStorage.appInstanceList)
       // console.log(window.localStorage.compInstanceList)
-      var pageInfo = this.$store.getters.getPageInfoAIL
+      var pageInfo = this.$store.getters.getPageInfo
+      pageInfo.appInstanceList.searchTextMyApp = this.searchTextMyApp
+      this.$store.dispatch('setPageInfo', pageInfo)
       window.localStorage.pageInfo = pageInfo
     },
     /* 搜索 end */
