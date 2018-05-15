@@ -16,7 +16,7 @@
           <Form ref="formDataMoniter" :model="formDataMoniter" :rules="formruleMoniter" :label-width="80">
             <FormItem label="选择权限" prop="select">
               <Select v-model="formDataMoniter.select" placeholder="请选择权限种类">
-                <Option value="999999">管理员</Option>
+                <!-- <Option value="999999">管理员</Option> -->
                 <Option value="1">操作人员</Option>
                 <Option value="2">查看人员</Option>
               </Select>
