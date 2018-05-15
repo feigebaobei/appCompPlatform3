@@ -12,31 +12,31 @@
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>实例id</h6></Col>
-      <Col span="8" v-model="auditEdit.id"></Col>
+      <Col span="8" v-html="auditEdit.id"></Col>
       <Col span="4"><h6>实例名称</h6></Col>
-      <Col span="8" v-model="auditEdit.name"></Col>
+      <Col span="8" v-html="auditEdit.name"></Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>组件类型</h6></Col>
-      <Col span="8" v-model="auditEdit.component_name"></Col>
+      <Col span="8" v-html="auditEdit.component_name"></Col>
       <Col span="4"><h6>所属应用</h6></Col>
-      <Col span="8" v-model="auditEdit.application_name"></Col>
+      <Col span="8" v-html="auditEdit.application_name"></Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请人</h6></Col>
-      <Col span="8" v-html=""></Col>
+      <Col span="8" v-html="auditEdit.proposer"></Col>
       <Col span="4"><h6>申请部门</h6></Col>
-      <Col span="8" v-html=""></Col>
+      <Col span="8" v-html="auditEdit.department_name"></Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请类型</h6></Col>
-      <Col span="8" v-html=""></Col>
+      <Col span="8" v-html="auditEdit.apply_type"></Col>
       <Col span="4"><h6>申请时间</h6></Col>
-      <Col span="8" v-html=""></Col>
+      <Col span="8" v-html="auditEdit.create_time"></Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请理由</h6></Col>
-      <Col span="20" v-model="auditEdit.remark"></Col>
+      <Col span="20" v-html="auditEdit.remark"></Col>
     </Row>
     <Row style="margin: 15px 0 15px 0;">
       <Col span="22">
@@ -105,39 +105,39 @@ export default {
         hostname2: '',
         cpu_kernel: ''
       },
-      ruleValidate: [
+      ruleValidate: {
         vip: [
-          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validateIp, trigger: 'change'}
         ],
         master_ip: [
-          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validateIp, trigger: 'change'}
         ],
         port: [
-          { required: true, message: '请输入port', pattern: /.+/, trigger: 'blur' },
+          { required: true, message: '请输入正确格式port', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
         slave_ip: [
-          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validateIp, trigger: 'change'}
         ],
         status: [
-          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' }
+          { required: true, message: '请选择操作结果', pattern: /.+/, trigger: 'blur' }
         ],
         hostname_master: [
-          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
         hostname: [
-          { required: true, message: '请输入ip', pattern: /.+/, trigger: 'blur' },
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
         cpu_kernel: [
           { required: true, message: '请输入cpu核数', pattern: /.+/, trigger: 'blur' },
           {validator: this.validateNumber, trigger: 'change'}
         ]
-      ]
+      }
     }
   },
   components: {},
@@ -154,10 +154,10 @@ export default {
               vip: this.formItem.vip,
               master_ip: this.formItem.master_ip,
               port: this.formItem.port,
-              slave_ip: [this.formItem.slave_ip1, this.formItem.slave_ip2]
+              slave_ip: [this.formItem.slave_ip1, this.formItem.slave_ip2],
               status: this.formItem.status,
               hostname_master: this.formItem.hostname_master,
-              hostname: [this.formItem.hostname1, this.formItem.hostname2]
+              hostname: [this.formItem.hostname1, this.formItem.hostname2],
               cpu_kernel: this.formItem.cpu_kernel
             })
           }).then(res => {
@@ -231,27 +231,27 @@ export default {
     var operator = this.getRequest().operator
     switch (operator) {
       case 'audit':
-        const url = `http://infra.xesv5.com/api/redis/edit_page/id/${this.getRequest().id}?tiken=${this.getRequest().token}`
+        var url = `http://infra.xesv5.com/api/redis/edit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`
         this.$axios.get(url).then(res => {
           this.auditEdit = res.data.data
         })
         break
       case 'midify':
-        const url = `http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?tiken=${this.getRequest().token}`
+        url = `http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`
         this.$axios.get(url).then(res => {
-        this.auditEdit = res.data.data
-        this.formItem.vip = this.auditEdit.vip,
-        this.formItem.master_ip = this.auditEdit.master_ip,
-        this.formItem.port = this.auditEdit.port,
-        this.formItem.slave_ip[0] = this.auditEdit.slave_ip[0],
-        this.formItem.slave_ip[1] = this.auditEdit.slave_ip[1],
-        this.formItem.status = this.auditEdit.status,
-        this.formItem.hostname_master = this.auditEdit.hostname_master,
-        this.formItem.hostname[0] = this.auditEdit.hostname[0],
-        this.formItem.hostname[1] = this.auditEdit.hostname[1],
-        this.formItem.cpu_kernel = this.auditEdit.cpu_kernel
+          this.auditEdit = res.data.data
+          this.formItem.vip = this.auditEdit.vip
+          this.formItem.master_ip = this.auditEdit.master_ip
+          this.formItem.port = this.auditEdit.port
+          this.formItem.slave_ip[0] = this.auditEdit.slave_ip[0]
+          this.formItem.slave_ip[1] = this.auditEdit.slave_ip[1]
+          this.formItem.status = this.auditEdit.status
+          this.formItem.hostname_master = this.auditEdit.hostname_master
+          this.formItem.hostname[0] = this.auditEdit.hostname[0]
+          this.formItem.hostname[1] = this.auditEdit.hostname[1]
+          this.formItem.cpu_kernel = this.auditEdit.cpu_kernel
         })
-      break
+        break
     }
   }
 }

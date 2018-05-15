@@ -24,7 +24,7 @@
            <Radio v-for="item in editData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <transfervue v-show="transferShow" :instancesId="formItem.target_group" @modifyTransferData="modifyTransferData"></transfervue>
+      <transfervue v-show="transferShow" :instancesId="formItem.target_group" :targetKey="instancesIdComputed" @modifyTransferData="modifyTransferData"></transfervue>
       <!-- <Row style="margin: 0 0 24px 0;">
         <Col span="4">备份周期</Col>
         <Col span="4">每天</Col>
@@ -82,6 +82,17 @@ export default {
   computed: {
     transferShow () {
       return this.formItem.target_group === 2
+    },
+    instancesIdComputed () {
+      var instance_id = this.formItem.instance_id
+      console.log(instance_id)
+      if (!instance_id.length) {
+        return []
+      } else {
+        var arr = this.formItem.instance_id.split(',')
+        console.log(arr)
+        return arr
+      }
     }
   },
   methods: {

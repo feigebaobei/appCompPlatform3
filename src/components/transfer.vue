@@ -14,11 +14,12 @@
 <script>
 export default {
   name: 'transfer',
-  props: ['instancesId'],
+  props: ['instancesId', 'targetKeys'],
   data () {
     return {
       transferData: [],
-      transferTargetKey: [],
+      // transferTargetKey: [],
+      transferTargetKey: this.targetKeys,
       listStyle: {
         width: '250px',
         height: '300px'

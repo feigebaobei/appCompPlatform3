@@ -25,7 +25,7 @@
           <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" @modifyTransferData="modifyTransferData"></transfervue>
+      <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKey="targetKeyComputed" @modifyTransferData="modifyTransferData"></transfervue>
       <FormItem label="告警策略">
         <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 20px 0">
           <Col span="3">
@@ -169,6 +169,16 @@ export default {
   computed: {
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
+    },
+    targetKeyComputed() {
+      var arr = []
+      var data = this.add_page.instance_group
+      console.log(data)
+      for (var i = 0, iLen = data.length; i < iLen; i++) {
+        arr.push(data[i].instance_id)
+      }
+      console.log(arr)
+      return arr
     }
   },
   methods: {

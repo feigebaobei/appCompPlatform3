@@ -26,7 +26,7 @@
                <Radio v-for="item in comBackupsData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
             </RadioGroup>
           </FormItem>
-          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.radio" @modifyTransferData="modifyTransferData"></transfervue>
+          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.radio" :targetKey="[]" @modifyTransferData="modifyTransferData"></transfervue>
           <!-- <Row style="margin: 0 0 24px 0;">
             <Col span="4" push="1">备份周期</Col>
             <Col span="4">每天</Col>
@@ -261,7 +261,7 @@ export default {
         case '运行中':
           this.$axios({
             method: 'get',
-            url: 'http://infra.xesv5.com/api/alarm/stop_alarm/id/' + curRowData.id + '?token=' + this.getRequest().token
+            url: 'http://infra.xesv5.com/api/backup/stop/id/' + curRowData.id + '?token=' + this.getRequest().token
           }).then(response => {
             console.log(response)
             this.modalOperate = false
