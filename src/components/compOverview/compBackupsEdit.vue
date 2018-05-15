@@ -97,6 +97,13 @@ export default {
     handleSubmitAndAlert (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
+          console.log(this.formItem.name)
+          console.log(this.formItem.policy_type_group)
+          console.log(this.formItem.application_group)
+          console.log(this.formItem.target_group)
+          console.log(this.formItem.time_group)
+          console.log(this.formItem.instance_id.join(','))
+          console.log(this.getRequest().id)
           this.$axios({
             method: 'post',
             url: 'http://infra.xesv5.com/api/backup/edit?token=' + this.getRequest().token,
