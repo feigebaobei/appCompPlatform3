@@ -105,7 +105,7 @@ export default {
               type: this.formItem.policy_type_group,
               application_id: this.formItem.application_group,
               target: this.formItem.target_group,
-              period: this.formItem.period,
+              period: this.formItem.time_group,
               instance_id: this.formItem.instance_id.join(','),
               id: this.getRequest().id
             })

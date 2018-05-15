@@ -169,6 +169,17 @@ export default {
   computed: {
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
+    },
+    instancesIdComputed () {
+      var instance_id = this.formItem.instance_id
+      console.log(instance_id)
+      if (!instance_id.length) {
+        return []
+      } else {
+        var arr = this.formItem.instance_id.split(',')
+        console.log(arr)
+        return arr
+      }
     }
   },
   methods: {
