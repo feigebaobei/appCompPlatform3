@@ -7,7 +7,7 @@
     </Row>
     <Row class="title">
       <Col span="22">
-        <h1>实例列表</h1>
+        <h1>实例信息</h1>
       </Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">

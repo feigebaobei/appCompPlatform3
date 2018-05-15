@@ -25,10 +25,6 @@
         </RadioGroup>
       </FormItem>
       <transfervue v-show="transferShow" :instancesId="formItem.target_group" :targetKey="instancesIdComputed" @modifyTransferData="modifyTransferData"></transfervue>
-      <!-- <Row style="margin: 0 0 24px 0;">
-        <Col span="4">备份周期</Col>
-        <Col span="4">每天</Col>
-      </Row> -->
       <FormItem label="备份周期">
         <span>每天</span>
       </FormItem>
@@ -45,6 +41,7 @@
 </template>
 
 <script>
+import transfervue from '../transfer.vue'
 export default {
   name: 'compBackupsEdit',
   data () {
@@ -167,6 +164,7 @@ export default {
       this.formItem.policy_type_group = this.editData.policy_type
       this.formItem.instance_id = this.editData.instance_id
       this.formItem.target_group = this.editData.target_type
+      this.formItem.time_group = this.editData.period
     })
   }
 }

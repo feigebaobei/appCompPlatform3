@@ -25,7 +25,7 @@
           <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKey="targetKeyComputed" @modifyTransferData="modifyTransferData"></transfervue>
+      <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKey="[]" @modifyTransferData="modifyTransferData"></transfervue>
       <FormItem label="告警策略">
         <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 20px 0">
           <Col span="3">
@@ -169,16 +169,6 @@ export default {
   computed: {
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
-    },
-    targetKeyComputed() {
-      var arr = []
-      var data = this.add_page.instance_group
-      console.log(data)
-      for (var i = 0, iLen = data.length; i < iLen; i++) {
-        arr.push(data[i].instance_id)
-      }
-      console.log(arr)
-      return arr
     }
   },
   methods: {
@@ -207,6 +197,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.feedbackFormStatus(response.data.status === 0)
+            window.history.go(-1)
           }).catch(error => {
             console.log(error)
           })
@@ -393,6 +384,12 @@ export default {
       this.formDataAddAlert.policyType = this.add_page.policy_type
       this.formDataAddAlert.app = this.add_page.application_id
       this.formDataAddAlert.alertObj = this.add_page.target_type
+      for (let i = 0; i < this.add_page.metric_info; i++) {
+        this.formDataAddAlert.metric_id[i] = this.add_page.metric_info[i].metric
+        this.formDataAddAlert.operator_id[i] = this.add_page.metric_info[i].operator
+        this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
+        this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
+      }
     })
   }
 }
