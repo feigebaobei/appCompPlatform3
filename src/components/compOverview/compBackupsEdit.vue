@@ -95,14 +95,6 @@ export default {
   methods: {
     // 编辑提交
     handleSubmitAndAlert (name) {
-      console.log(this.formItem.name)
-      console.log(this.formItem.policy_type_group)
-      console.log(this.formItem.application_group)
-      console.log(this.formItem.target_group)
-      console.log(this.formItem.time_group)
-      console.log(this.formItem.instance_id.join(','))
-      console.log(this.getRequest().id)
-      // ----
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$axios({

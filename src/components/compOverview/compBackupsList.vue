@@ -271,7 +271,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 1)
           })
           break
       }
