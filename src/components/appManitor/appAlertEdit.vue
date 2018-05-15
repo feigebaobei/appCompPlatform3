@@ -208,7 +208,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.feedbackFormStatus(response.data.status === 0)
-//          window.history.go(-1)
+            // window.history.go(-1)
           }).catch(error => {
             console.log(error)
           })
