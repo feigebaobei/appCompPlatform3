@@ -182,13 +182,6 @@ export default {
           {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
       },
-      validateAddAlert: {
-        name: false,
-        policyType: false,
-        app: false,
-        alertObj: false,
-        dingdingName: false
-      },
       /* 创建告警策略 end */
       // 穿梭框 start
       transferData: [
@@ -440,9 +433,6 @@ export default {
       return theRequest
     },
     handleSubmitAndAlert (name) {
-      console.log('formDataAddAlert', this.formDataAddAlert)
-      // var arr = this.metricMethod(this.add_page.metric_group)
-      // console.log(arr)
       this.metricMethod(this.add_page.metric_group)
       this.$refs[name].validate((valid) => {
         console.log(valid)
@@ -583,6 +573,14 @@ export default {
     }
   },
   mounted () {
+    // 请求告警列表信息
+    // this.$axios({
+    //   method: 'get',
+    //   url: 'http://infra.xesv5.com/api/alarm/list/id/0?token=' + this.getRequest().token
+    // }).then(response => {
+    //   console.log(response)
+    //   this.responseAlertList = response
+    // })
     const url = `http://infra.xesv5.com/api/alarm/list/id/0?token=${this.getRequest().token}`
     this.$axios.get(url).then(res => {
       // console.log(res.data.data)
@@ -606,6 +604,8 @@ export default {
     }).then(res => {
       this.add_page = res.data.data
       this.formDataAddAlert.metric_id = this.metricMethod(this.add_page.metric_group)
+      // console.log(this.formDataAddAlert)
+      // console.log(this.formDataAddAlert.metric_id)
       console.log('对话框展示数据', this.add_page)
     })
   }
