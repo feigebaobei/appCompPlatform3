@@ -186,8 +186,7 @@ export default {
               recover_time: newTime
             })
           }).then(response => {
-            console.log('打印数据', response)
-            this.modalAddAert = false
+            this.modalAddRecover = false
             this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
