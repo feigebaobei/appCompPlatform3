@@ -33,7 +33,7 @@
           </Col>
         </Row>
       </Col> -->
-      <Col span="12" style="text-align: right;" v-if="role">
+      <Col span="12" style="text-align: right;" v-if="role && tab === '我的应用'">
         <Button type="primary" @click="modalAddApp = true">添加应用</Button>
         <Modal v-model="modalAddApp" title="添加应用">
           <Form ref="formDataAddApp" :model="formDataAddApp" :rules="formRuleAddApp" :label-width="80">
@@ -237,19 +237,23 @@ export default {
     },
     /* 搜索 start */
     selectMyAppListData (condition) {
+      console.log('selectMyAppListData')
       this.myAppBox = this.search(this.responseMyApp, condition)
       console.log(this.myAppBox)
     },
     selectElseListData (condition) {
+      console.log('selectElseListData')
       this.elseAppBox = this.search(this.responseElseApp, condition)
       console.log(this.elseAppBox)
     },
     selectOverviewListData (condition) {
+      console.log('selectOverviewListData')
       this.overviewBox = this.search(this.responseElseApp, condition)
       console.log(this.overviewBox)
     },
     search (response, condition) {
       var result = []
+      console.log(response)
       var data = response.data.data
       if (!data.length) { return [] }
       if (!condition) {
