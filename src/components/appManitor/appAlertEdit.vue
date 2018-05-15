@@ -400,7 +400,7 @@ export default {
         arr.push(this.add_page.instance_group[i].instance_id)
       }
       this.formDataAddAlert.instance_id = arr
-      for (let i = 0; i < this.add_page.metric_info; i++) {
+      for (let i = 0; i < this.add_page.metric_info.length; i++) {
         this.formDataAddAlert.operator_id[i] = this.add_page.metric_info[i].operator
         this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
         this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
