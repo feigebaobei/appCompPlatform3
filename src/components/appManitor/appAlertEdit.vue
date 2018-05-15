@@ -169,7 +169,6 @@ export default {
   computed: {
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
-<<<<<<< HEAD
     },
     targetKeyComputed () {
       var arr = []
@@ -180,8 +179,6 @@ export default {
       }
       console.log(arr)
       return arr
-=======
->>>>>>> 9162ddd432cc9a49dea342ab28231ce05903157e
     }
   },
   methods: {

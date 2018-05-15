@@ -171,12 +171,12 @@ export default {
       return this.formDataAddAlert.alertObj === 2
     },
     instancesIdComputed () {
-      var instance_id = this.formItem.instance_id
-      console.log(instance_id)
-      if (!instance_id.length) {
+      var instanceId = this.formItem.instance_id
+      console.log(instanceId)
+      if (!instanceId.length) {
         return []
       } else {
-        var arr = this.formItem.instance_id.split(',')
+        var arr = instanceId.split(',')
         console.log(arr)
         return arr
       }

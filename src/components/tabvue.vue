@@ -199,7 +199,6 @@ export default {
     },
     addAppEvent () {
       console.log('addAppEvent')
-
     }
   },
   created () {
