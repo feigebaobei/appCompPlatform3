@@ -454,9 +454,9 @@ export default {
               dingding_name: this.formDataAddAlert.dingdingName
             })
           }).then(response => {
-            console.log(response)
             this.modalAddAert = false
             this.feedbackFormStatus(response.data.status === 0)
+            window.location.reload()
           }).catch(error => {
             console.log(error)
           })
