@@ -405,7 +405,7 @@ export default {
         this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
         this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
       }
-      this.formDataAddAlert = this.add_page.dingdingName
+      this.formDataAddAlert.dingdingName = this.add_page.dingdingName
     })
   }
 }

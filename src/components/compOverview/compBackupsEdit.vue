@@ -84,12 +84,10 @@ export default {
     },
     instancesIdComputed () {
       var instanceId = this.formItem.instance_id
-      console.log(instanceId)
       if (!instanceId.length) {
         return []
       } else {
         var arr = instanceId.split(',')
-        console.log(arr)
         return arr
       }
     }
@@ -114,6 +112,7 @@ export default {
           }).then(res => {
             console.log(res)
             this.feedbackFormStatus(res.data.data.status === 0)
+            window.history.go(-1)
           }).catch(error => {
             console.log(error)
           })
