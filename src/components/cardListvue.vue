@@ -240,6 +240,14 @@ export default {
       this.myAppBox = this.search(this.responseMyApp, condition)
       console.log(this.myAppBox)
     },
+    selectElseListData (condition) {
+      this.elseAppBox = this.search(this.responseElseApp, condition)
+      console.log(this.elseAppBox)
+    },
+    selectOverviewListData (condition) {
+      this.overviewBox = this.search(this.responseElseApp, condition)
+      console.log(this.overviewBox)
+    },
     search (response, condition) {
       var result = []
       var data = response.data.data
@@ -295,6 +303,7 @@ export default {
       }).then(response => {
         // console.log(response)
         this.responseOverview = response
+        this.selectOverviewListData()
       })
     },
     requestAudit () {
