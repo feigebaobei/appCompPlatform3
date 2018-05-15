@@ -44,6 +44,12 @@ export default {
           width: 120
         },
         {
+          title: '组件类型',
+          key: 'name',
+          align: '',
+          width: 120
+        },
+        {
           title: '所属应用',
           key: 'application_name',
           align: 'center',

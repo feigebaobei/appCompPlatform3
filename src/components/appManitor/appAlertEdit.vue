@@ -170,7 +170,7 @@ export default {
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
     },
-    targetKeyComputed() {
+    targetKeyComputed () {
       var arr = []
       var data = this.add_page.instance_group
       console.log(data)
