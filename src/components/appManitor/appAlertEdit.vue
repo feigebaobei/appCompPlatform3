@@ -169,6 +169,7 @@ export default {
   computed: {
     transferShow () {
       return this.formDataAddAlert.alertObj === 2
+<<<<<<< HEAD
     },
     targetKeyComputed () {
       var arr = []
@@ -179,6 +180,8 @@ export default {
       }
       console.log(arr)
       return arr
+=======
+>>>>>>> 9162ddd432cc9a49dea342ab28231ce05903157e
     }
   },
   methods: {
@@ -207,6 +210,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.feedbackFormStatus(response.data.status === 0)
+            window.history.go(-1)
           }).catch(error => {
             console.log(error)
           })
@@ -393,6 +397,12 @@ export default {
       this.formDataAddAlert.policyType = this.add_page.policy_type
       this.formDataAddAlert.app = this.add_page.application_id
       this.formDataAddAlert.alertObj = this.add_page.target_type
+      for (let i = 0; i < this.add_page.metric_info; i++) {
+        this.formDataAddAlert.metric_id[i] = this.add_page.metric_info[i].metric
+        this.formDataAddAlert.operator_id[i] = this.add_page.metric_info[i].operator
+        this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
+        this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
+      }
     })
   }
 }
