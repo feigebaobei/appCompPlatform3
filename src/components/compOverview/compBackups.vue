@@ -5,25 +5,13 @@
         <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 备份策略</a></h2>
       </Col>
     </Row>
-    <!-- <Row class="title">
-      <Col span="24">
-        <h1>备份策略</h1>
-      </Col>
-    </Row> -->
-    <Row class="">
-      <!-- <Col span="7">
-        <DatePicker type="date" placeholder="--开始时间--" style="width: 200px" format="yyyy年MM月dd日" @on-change="selectInstanceListData"></DatePicker>
-      </Col>
-      <Col span="7">
-        <DatePicker type="date" placeholder="--结束时间--" style="width: 200px" format="yyyy年MM月dd日" @on-change="selectInstanceListData"></DatePicker>
-      </Col> -->
+    <Row>
       <Col span='14'>
         <DatePicker type="daterange" placeholder="请输入搜索的时间范围" style="width: 250px" format="yyyy-MM-dd" @on-change="selectInstanceListData"></DatePicker>
       </Col>
       <Col span="10">
         <!-- <span v-html="预计下次备份时间:"></span> -->
-        <span v-html="backupsDataList[0].next_time"></span>
-        预计下次备份时间:{{backupsDataList[0].next_time}}
+        <span v-html="responseInstanceList.data.data[0].next_time"></span>
       </Col>
     </Row>
     <div style="margin-top:12px;">
@@ -236,20 +224,6 @@ export default {
       method: 'get',
       url: `http://infra.xesv5.com/api/backup/list/id/${this.getRequest().id}/start_time/0/end_time/0?token=${this.getRequest().token}`
     }).then(res => {
-      // this.backupsDataList = res.data.data
-      // console.log('这是备份页面传递过来的id请求的数据', this.backupsDataList)
-      // for (let i of this.backupsDataList) {
-      //   this.instanceListData.push({
-      //     instance_name: i.instance_name,
-      //     instance_id: i.instance_id,
-      //     application_name: i.application_name,
-      //     start_time: i.start_time,
-      //     policy: i.policy,
-      //     size: i.size,
-      //     type: i.type,
-      //     status: i.status
-      //   })
-      // }
       this.responseInstanceList = res
       this.selectInstanceListData()
     })
