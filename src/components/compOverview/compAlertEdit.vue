@@ -401,11 +401,11 @@ export default {
       }
       this.formDataAddAlert.instance_id = arr
       for (let i = 0; i < this.add_page.metric_info; i++) {
-        this.formDataAddAlert.metric_id[i] = this.add_page.metric_info[i].metric
         this.formDataAddAlert.operator_id[i] = this.add_page.metric_info[i].operator
         this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
         this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
       }
+      this.formDataAddAlert = this.add_page.dingdingName
     })
   }
 }

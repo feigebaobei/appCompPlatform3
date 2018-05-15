@@ -230,7 +230,7 @@ export default {
             return h('a', {
               attrs: {
                 // href: './compAlertEdit.html?id=' + params.row.id
-                href: `./compAlertEdit.html?id=${params.row.id}&token=${this.getRequest().token}`
+                href: `./appAlertEdit.html?id=${params.row.id}&token=${this.getRequest().token}`
               }
             }, params.row.policy_name)
           }
