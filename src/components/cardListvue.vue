@@ -5,20 +5,20 @@
       <Col span="12" v-if="tab === '我的应用'">
         <Row :gutter="15">
           <Col span="16">
-            <Input type="text" v-model="searchText" placeholder="可以搜索应用名称/应用id"></Input>
+            <Input type="text" v-model="searchTextMyApp" placeholder="可以搜索应用名称/应用id"></Input>
           </Col>
           <Col span="8">
-            <Button type="primary" @click="selectMyAppListData(searchText)">检索</Button>
+            <Button type="primary" @click="selectMyAppListData(searchTextMyApp)">检索</Button>
           </Col>
         </Row>
       </Col>
       <Col span="12" v-if="tab === '其它应用'">
         <Row :gutter="15">
           <Col span="16">
-            <Input type="text" v-model="searchText" placeholder="可以搜索应用名称/应用id"></Input>
+            <Input type="text" v-model="searchTextElseApp" placeholder="可以搜索应用名称/应用id"></Input>
           </Col>
           <Col span="8">
-            <Button type="primary" @click="selectElseListData(searchText)">检索</Button>
+            <Button type="primary" @click="selectElseListData(searchTextElseApp)">检索</Button>
           </Col>
         </Row>
       </Col>
@@ -83,7 +83,23 @@ export default {
   props: ['tab'],
   data () {
     return {
-      searchText: '',
+      searchTextMyApp: '',
+      searchTextElseApp: '',
+      searchTextOverview: '',
+      searchTextAuditList: '',
+      appInstanceList: {
+        myApp: {
+          searchText: ''
+        },
+        elseApp: {
+          searchText: ''
+        }
+      },
+      compInstanceList: {
+        overview: {
+          searchText: ''
+        }
+      },
       /* add app start */
       modalAddApp: false,
       formDataAddApp: {
@@ -217,7 +233,7 @@ export default {
             // 刷新表格
             // this.refreshList()
             // 第一期做成全页面刷新。
-            // this.refresh()
+            this.refresh()
           })
         } else {
           this.$Message.error('不可为空')
@@ -240,6 +256,9 @@ export default {
       console.log('selectMyAppListData')
       this.myAppBox = this.search(this.responseMyApp, condition)
       console.log(this.myAppBox)
+      console.log(this.searchTextMyApp)
+      this.appInstanceList.myApp.searchText = this.searchTextMyApp
+      this.frontStore()
     },
     selectElseListData (condition) {
       console.log('selectElseListData')
@@ -268,6 +287,20 @@ export default {
       }
       console.log(result)
       return result
+    },
+    frontStore () {
+      console.log('frontStore')
+      // var obj = {}
+      // obj.myApp = {}
+      // obj.elseApp = {}
+      var appInstanceListStr = JSON.stringify(this.appInstanceList)
+      var compInstanceListStr = JSON.stringify(this.compInstanceList)
+      console.log(appInstanceListStr)
+      console.log(compInstanceListStr)
+      window.localStorage.appInstanceList = appInstanceListStr
+      window.localStorage.compInstanceList = compInstanceListStr
+      console.log(window.localStorage.appInstanceList)
+      console.log(window.localStorage.compInstanceList)
     },
     /* 搜索 end */
     // 各请求方法
@@ -362,6 +395,9 @@ export default {
     refresh () {
       console.log('refresh')
       history.go(0)
+      setTimeout(function () {
+        history.go(0)
+      }, 2500)
     }
   },
   mounted () {

@@ -15,6 +15,9 @@ const store = new Vuex.Store({
       // department_name: 'maintenance',
       userStatus: false, // 表示是否等到用户信息
       tokenStatus: false// 表示保存token信息
+    },
+    pageInfo: {
+      appInstanceList: {}
     }
   },
   getters: {
