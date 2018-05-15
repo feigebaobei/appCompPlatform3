@@ -211,7 +211,8 @@ export default {
             // this.$Message.success('操作成功！')
             console.log(res)
             this.modalCreateBackups = false
-            this.feedbackFormStatus(res.data.data.status === 0)
+            this.$refs[name].resetFields()
+            this.feedbackFormStatus(res.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
