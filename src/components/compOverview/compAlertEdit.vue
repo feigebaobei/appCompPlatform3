@@ -396,11 +396,11 @@ export default {
       this.formDataAddAlert.policyType = this.add_page.policy_type
       this.formDataAddAlert.app = this.add_page.application_id
       this.formDataAddAlert.alertObj = this.add_page.target_type
-      for (var i = 0; i < this.add_page.instance_group.length; i++) {
+      for (let i = 0; i < this.add_page.instance_group.length; i++) {
         arr.push(this.add_page.instance_group[i].instance_id)
       }
       this.formDataAddAlert.instance_id = arr
-      for (var j = 0; j < this.add_page.metric_info.length; j++) {
+      for (let j = 0; j < this.add_page.metric_info.length; j++) {
         this.formDataAddAlert.operator_id[j] = this.add_page.metric_info[j].operator
         this.formDataAddAlert.threshold[j] = this.add_page.metric_info[j].threshold
         this.formDataAddAlert.period_id[j] = this.add_page.metric_info[j].period
