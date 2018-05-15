@@ -36,6 +36,9 @@ const store = new Vuex.Store({
       // console.log(state.userInfo)
       return state.userInfo
     },
+    getPageInfo: function (state) {
+      return state.pageInfo
+    }
     getPageInfoAIL: function (state) {
       return state.pageInfo.appInstanceList
     }
@@ -63,6 +66,11 @@ const store = new Vuex.Store({
       // console.log(state.userInfo)
       // console.log(state.userInfo.token)
     },
+    setPageInfo: function (state, payload) {
+      console.log(payload)
+      state.pageInfo = payload
+      console.log(state.pageInfo)
+    }
     setPageInfoAIL: function (state, payload) {
       state.pageInfo.appInstanceList.curTab = payload.curTab
       state.pageInfo.appInstanceList.searchTextMyApp = payload.searchTextMyApp
@@ -85,6 +93,9 @@ const store = new Vuex.Store({
       // console.log('actions setToken')
       commit('setToken', payload)
     },
+    setPageInfo: function ({commit}, payload) {
+      commit('setPageInfo', payload)
+    }
     setPageInfoAIL: function ({commit}, payload) {
       commit('setPageInfoAIL', payload)
     },
