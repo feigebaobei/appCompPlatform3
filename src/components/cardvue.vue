@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="panel">
     <!-- 应用管理 start -->
     <div class="apppanel" v-if="userInfo.role === 2">
       <!-- </slot> -->
@@ -144,51 +144,53 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.apppanel {
+.panel {
+  width: 260px;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin: 15px 10px;
   padding: 12px 10px;
   display: inline-block;
-  width: 260px;
-  .titleName {
-    display: inline-block;
-  }
-  .deptName {
-    display: inline-block;
-    text-align: right;
-    float: right;
-  }
-  .content {
-    margin: 15px 5px 10px;
-    .badge {
-      height: 42px;
-      background: #eee;
-      border-radius: 6px;
+  .apppanel {
+    .titleName {
       display: inline-block;
-      line-height: 42px;
-      text-align: middle;
-      padding: 0 10px;
-      text-align: center;
-      margin: 5px 5px;
+    }
+    .deptName {
+      display: inline-block;
+      text-align: right;
+      float: right;
+    }
+    .content {
+      margin: 15px 5px 10px;
+      .badge {
+        height: 42px;
+        background: #eee;
+        border-radius: 6px;
+        display: inline-block;
+        line-height: 42px;
+        text-align: middle;
+        padding: 0 10px;
+        text-align: center;
+        margin: 5px 5px;
+      }
+    }
+    .monite {
+      color: #fff;
+      background: #e22;
+      border-radius: 3px;
+      padding: 0px 3px;
+    }
+    .bottom {
+      .name {
+        max-width: 75%;
+        word-break: break-all;
+      }
     }
   }
-  .monite {
-    color: #fff;
-    background: #e22;
-    border-radius: 3px;
-    padding: 0px 3px;
-  }
-  .bottom {
-    .name {
-      max-width: 75%;
-      word-break: break-all;
+  .comppanel {
+    .right {
+      float: right;
     }
-  }
-}
-.comppanel {
-  .right {
-    float: right;
   }
 }
 </style>

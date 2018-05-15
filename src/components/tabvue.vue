@@ -150,6 +150,10 @@ export default {
             console.log(response)
             this.modalAddApp = false
             this.feedbackFormStatus(response.data.status === 0)
+            // 刷新表格
+            // this.refreshList()
+            // 第一期做成全页面刷新。
+            this.refresh()
           })
         } else {
           this.$Message.error('不可为空')
@@ -184,10 +188,25 @@ export default {
         }
       }
       return theRequest
+    },
+    refresh () {
+      console.log('refresh')
+      history.go(0)
+    },
+    refreshList () {
+      console.log('refreshList')
+      this.$emit('')
+    },
+    addAppEvent () {
+      console.log('addAppEvent')
+
     }
   },
+  created () {
+    this.$on('addAppEvent', this.addAppEvent)
+  },
   mounted () {
-    this.getRequest()
+    // this.getRequest()
   }
 }
 </script>
