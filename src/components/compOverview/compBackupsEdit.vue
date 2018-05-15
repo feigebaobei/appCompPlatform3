@@ -75,7 +75,9 @@ export default {
       }
     }
   },
-  components: {},
+  components: {
+    transfervue
+  },
   computed: {
     transferShow () {
       return this.formItem.target_group === 2
@@ -164,7 +166,7 @@ export default {
       this.formItem.policy_type_group = this.editData.policy_type
       this.formItem.instance_id = this.editData.instance_id
       this.formItem.target_group = this.editData.target_type
-      this.formItem.time_group = this.editData.period
+      this.formItem.time_group = parseInt(this.editData.period)
     })
   }
 }
