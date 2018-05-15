@@ -187,6 +187,7 @@ export default {
             })
           }).then(response => {
             console.log('打印数据', response)
+            this.modalAddAert = false
             this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
