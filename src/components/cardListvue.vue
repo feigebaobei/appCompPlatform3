@@ -256,8 +256,11 @@ export default {
       console.log('selectMyAppListData')
       this.myAppBox = this.search(this.responseMyApp, condition)
       console.log(this.myAppBox)
-      console.log(this.searchTextMyApp)
-      this.appInstanceList.myApp.searchText = this.searchTextMyApp
+      // console.log(this.searchTextMyApp)
+      // this.appInstanceList.myApp.searchText = this.searchTextMyApp
+      // 把数据保存到vuex
+      this.$store.dispatch('setPageInfoAILCurTab', {curTab: this.searchTextMyApp})
+      // 从vuex保存到localStorage
       this.frontStore()
     },
     selectElseListData (condition) {
@@ -293,14 +296,16 @@ export default {
       // var obj = {}
       // obj.myApp = {}
       // obj.elseApp = {}
-      var appInstanceListStr = JSON.stringify(this.appInstanceList)
-      var compInstanceListStr = JSON.stringify(this.compInstanceList)
-      console.log(appInstanceListStr)
-      console.log(compInstanceListStr)
-      window.localStorage.appInstanceList = appInstanceListStr
-      window.localStorage.compInstanceList = compInstanceListStr
-      console.log(window.localStorage.appInstanceList)
-      console.log(window.localStorage.compInstanceList)
+      // var appInstanceListStr = JSON.stringify(this.appInstanceList)
+      // var compInstanceListStr = JSON.stringify(this.compInstanceList)
+      // console.log(appInstanceListStr)
+      // console.log(compInstanceListStr)
+      // window.localStorage.appInstanceList = appInstanceListStr
+      // window.localStorage.compInstanceList = compInstanceListStr
+      // console.log(window.localStorage.appInstanceList)
+      // console.log(window.localStorage.compInstanceList)
+      var pageInfo = this.$store.getters.getPageInfoAIL
+      window.localStorage.pageInfo = pageInfo
     },
     /* 搜索 end */
     // 各请求方法

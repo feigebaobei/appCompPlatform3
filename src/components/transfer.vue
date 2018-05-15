@@ -29,6 +29,7 @@ export default {
   },
   watch: {
     instancesId: function (val, oldVal) {
+      console.log('val', val, 'oldVal', oldVal)
       if (val !== '') {
         this.requestData()
       }
