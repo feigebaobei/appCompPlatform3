@@ -26,7 +26,7 @@
                <Radio v-for="item in comBackupsData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
             </RadioGroup>
           </FormItem>
-          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.application_group" :targetKeys="formDataCreateBackups.instanceIds" @modifyTransferData="modifyTransferData"></transfervue>
+          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.application_group" :targetKey="formDataCreateBackups.instanceIds" @modifyTransferData="modifyTransferData"></transfervue>
           <FormItem label="备份周期">
             <span>每天</span>
           </FormItem>
@@ -212,7 +212,7 @@ export default {
             console.log(res)
             this.modalCreateBackups = false
             this.$refs[name].resetFields()
-            this.feedbackFormStatus(res.data.status === 0)
+            this.febackFormStatus(response.data.status === 0, response.data.data)
           }).catch(error => {
             console.log(error)
           })
@@ -262,7 +262,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 0,  response.data.data)
           })
           break
         case '已停用':
@@ -272,7 +272,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.data.status === 1)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           })
           break
       }
@@ -300,9 +300,12 @@ export default {
       return theRequest
     },
     // 回馈提交状态
-    feedbackFormStatus (bool) {
+    feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
+        setTimeout(function(){
+          this.$Message.success(message)
+        },800)
       } else {
         this.$Message.error('操作失败！')
       }

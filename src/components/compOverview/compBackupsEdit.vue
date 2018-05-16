@@ -24,7 +24,7 @@
            <Radio v-for="item in editData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <transfervue v-show="transferShow" :instancesId="formItem.target_group" :targetKeys="formItem.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
+      <transfervue v-show="transferShow" :instancesId="formItem.application_group" :targetKey="formItem.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
       <FormItem label="备份周期">
         <span>每天</span>
       </FormItem>
@@ -111,7 +111,7 @@ export default {
             })
           }).then(res => {
             console.log(res)
-            this.feedbackFormStatus(res.data.status === 0)
+            this.febackFormStatus(response.data.status === 0, response.data.data)
             window.history.go(-1)
           }).catch(error => {
             console.log(error)
