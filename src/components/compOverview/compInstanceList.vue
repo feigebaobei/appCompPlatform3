@@ -241,7 +241,7 @@ export default {
         }
       } else {
         for (i = 0, iLen = data.length; i < iLen; i++) {
-          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1 || data[i].application_name.indexOf() !== -1) {
+          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1 || data[i].application_name.indexOf(condition) !== -1) {
             obj = {}
             obj.application_name = data[i].application_name
             obj.audit_text = data[i].audit_text
