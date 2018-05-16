@@ -135,7 +135,6 @@ export default {
         period_id: [],
         token: '',
         dingding_name: ''
-        
       },
       fromRuleAddAlert: {
         name: [
