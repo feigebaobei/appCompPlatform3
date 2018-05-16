@@ -7,7 +7,7 @@
       <Col span="12" style="text-align: right;">
         <Button type="primary" @click="modalAddAert = true">创建告警策略</Button>
         <Modal v-model="modalAddAert" title="创建告警策略" width="700">
-          <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="100">
+          <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="120">
             <FormItem label="策略名称" prop="name">
               <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
             </FormItem>

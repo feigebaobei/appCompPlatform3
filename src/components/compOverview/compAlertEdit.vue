@@ -6,7 +6,7 @@
       </Col>
     </Row>
     <!-- appAlertEdit -->
-    <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="100">
+    <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="120">
       <FormItem label="策略名称" prop="name">
         <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
       </FormItem>
@@ -215,7 +215,6 @@ export default {
           }).then(response => {
             console.log(response)
             this.feedbackFormStatus(response.data.status === 0)
-            window.history.go(-1)
           }).catch(error => {
             console.log(error)
           })
@@ -240,6 +239,9 @@ export default {
     feedbackFormStatus (bool) {
       if (bool) {
         this.$Message.success('操作成功！')
+        setTimeout(function () {
+          window.location.href = "./compAlertList.html?token=" + this.getRequest().token
+        }, 800)
       } else {
         this.$Message.error('操作失败！')
       }
