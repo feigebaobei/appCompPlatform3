@@ -93,7 +93,7 @@ export default {
     return {
       auditEdit: '',
       formItem: {
-        id: this.auditEdit.id,
+        id: '',
         vip: '',
         master_ip: '',
         port: '',
@@ -231,15 +231,14 @@ export default {
     var operator = this.getRequest().operator
     switch (operator) {
       case 'audit':
-        var url = `http://infra.xesv5.com/api/redis/edit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`
-        this.$axios.get(url).then(res => {
+        this.$axios.get(`http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`).then(res => {
           this.auditEdit = res.data.data
         })
         break
       case 'midify':
-        url = `http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`
-        this.$axios.get(url).then(res => {
+        this.$axios.get(`http://infra.xesv5.com/api/redis/edit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`).then(res => {
           this.auditEdit = res.data.data
+          this.formItem.id = this.getRequest().id
           this.formItem.vip = this.auditEdit.vip
           this.formItem.master_ip = this.auditEdit.master_ip
           this.formItem.port = this.auditEdit.port
