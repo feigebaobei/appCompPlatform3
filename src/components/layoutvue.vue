@@ -241,7 +241,7 @@ export default {
           case '告警策略':
             return './appAlertList.html?token=' + this.$store.getters.getUserInfo.token
           case '性能监控':
-            return '#'
+            return './api/redis/redirect_grafana?token=' + this.$store.getters.getUserInfo.token
         }
       }
       if (role === 1) {
@@ -252,7 +252,7 @@ export default {
           case '告警策略':
             return './compAlertList.html?token=' + this.$store.getters.getUserInfo.token
           case '性能监控':
-            return '#'
+            return './api/redis/redirect_grafana?token=' + this.$store.getters.getUserInfo.token
           case '备份':
             return './compBackupsList.html?token=' + this.$store.getters.getUserInfo.token
           case '恢复':
