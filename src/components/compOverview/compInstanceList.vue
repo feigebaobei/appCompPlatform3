@@ -216,7 +216,7 @@ export default {
     search (response, condition) {
       // console.log(condition, 'condition')
       var result = []
-      var data = response.data.data
+      var data = response.data.data.list
       if (!data.length) { return [] }
       if (!condition) {
         for (var i = 0, iLen = data.length; i < iLen; i++) {

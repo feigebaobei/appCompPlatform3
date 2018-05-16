@@ -177,9 +177,9 @@ export default {
     feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
-        setTimeout(function(){
+        setTimeout(function () {
           this.$Message.success(message)
-        },800)
+        }, 800)
       } else {
         this.$Message.error('操作失败！')
       }

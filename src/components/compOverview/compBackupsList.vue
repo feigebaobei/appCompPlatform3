@@ -207,9 +207,9 @@ export default {
               // instance_id: this.add_instance_id
               instance_id: this.formDataCreateBackups.instanceIds.join(',')
             })
-          }).then(res => {
+          }).then(response => {
             // this.$Message.success('操作成功！')
-            console.log(res)
+            console.log(response)
             this.modalCreateBackups = false
             this.$refs[name].resetFields()
             this.feedbackFormStatus(response.data.status === 0, response.data.data)
@@ -262,7 +262,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.data.status === 0,  response.data.data)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           })
           break
         case '已停用':
@@ -303,9 +303,9 @@ export default {
     feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
-        setTimeout(function(){
+        setTimeout(function () {
           this.$Message.success(message)
-        },800)
+        }, 800)
       } else {
         this.$Message.error('操作失败！')
       }

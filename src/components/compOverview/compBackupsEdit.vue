@@ -109,9 +109,9 @@ export default {
               instance_id: this.formItem.instance_id.join,
               id: this.getRequest().id
             })
-          }).then(res => {
-            console.log(res)
-            this.febackFormStatus(res.data.status === 0, res.data.data)
+          }).then(response => {
+            console.log(response)
+            this.febackFormStatus(response.data.status === 0, response.data.data)
             window.history.go(-1)
           }).catch(error => {
             console.log(error)
