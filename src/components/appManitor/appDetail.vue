@@ -160,7 +160,7 @@ export default {
           }).then(response => {
             // console.log(response)
             this.modalMoniter = false
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           }).catch(error => {
             console.log(error)
           })
@@ -174,9 +174,12 @@ export default {
     },
     /* moniter end */
     // 回馈提交状态
-    feedbackFormStatus (bool) {
+    feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
+        setTimeout(function(){
+          this.$Message.success(message)
+        },800)
       } else {
         this.$Message.error('操作失败！')
       }
@@ -214,7 +217,7 @@ export default {
             this.modalAddComp = false
             console.log(response.data)
             console.log(response.data.status)
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           }).catch(error => {
             console.log(error)
           })

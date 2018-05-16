@@ -47,7 +47,7 @@ export default {
           render: (h, params) => {
             return h('a', {
               attrs: {
-                href: './compInstance.html?id=' + params.row.id + '&token=' + this.$store.getters.getUserInfo.token
+                href: './compInstance.html?id=' + params.row.id + '&token=' + this.getRequest().token
               }
             }, params.row.name)
           }

@@ -212,7 +212,7 @@ export default {
             console.log(res)
             this.modalCreateBackups = false
             this.$refs[name].resetFields()
-            this.febackFormStatus(response.data.status === 0, response.data.data)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           }).catch(error => {
             console.log(error)
           })
