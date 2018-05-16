@@ -43,7 +43,7 @@
         <h1>审核意见</h1>
       </Col>
     </Row>
-    <Form ref="formItem" :model="formItem" :label-width="100" :rules="ruleValidate">
+    <Form ref="formItem" :model="formItem" :label-width="120" :rules="ruleValidate">
       <FormItem prop="status">
         <RadioGroup v-model="formItem.status">
           <Radio v-for="item in auditEdit.op_status" :key="item.id" :label="item.id">{{item.name}}</Radio>
@@ -103,7 +103,7 @@ export default {
         hostname_master: '',
         hostname1: '',
         hostname2: '',
-        cpu_kernel: ''
+        cpu_kernel: number
       },
       ruleValidate: {
         vip: [
@@ -118,7 +118,11 @@ export default {
           { required: true, message: '请输入正确格式port', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
-        slave_ip: [
+        slave_ip1: [
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validateIp, trigger: 'change'}
+        ],
+        slave_ip2: [
           { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validateIp, trigger: 'change'}
         ],
@@ -129,7 +133,11 @@ export default {
           { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
-        hostname: [
+        hostname1: [
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
+          {validator: this.validatePort, trigger: 'change'}
+        ],
+        hostname2: [
           { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
@@ -150,7 +158,7 @@ export default {
             method: 'post',
             url: 'http://infra.xesv5.com/api/redis/audit?token=' + this.getRequest().token,
             data: this.qs.stringify({
-              id: this.formItem.id,
+              id: this.getRequest().id,
               vip: this.formItem.vip,
               master_ip: this.formItem.master_ip,
               port: this.formItem.port,
