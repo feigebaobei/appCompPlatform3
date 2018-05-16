@@ -1,184 +1,234 @@
 <template>
   <div>
-    <Row>
+    <Row style="margin: 0 0 25px 0;">
       <Col style="border-bottom: 1px solid #d8d8d8;">
-        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 审核管理</a></h2>
+        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 告警策略</a></h2>
       </Col>
     </Row>
-    <Row style="margin: 15px 0 15px 0;">
-      <Col span="22">
-        <h1>申请信息</h1>
-      </Col>
-    </Row>
-    <Row type="flex" justify="center" class="code-row-bg">
-      <Col span="4"><h6>实例id</h6></Col>
-      <Col span="8" v-html="auditEdit.id"></Col>
-      <Col span="4"><h6>实例名称</h6></Col>
-      <Col span="8" v-html="auditEdit.name"></Col>
-    </Row>
-    <Row type="flex" justify="center" class="code-row-bg">
-      <Col span="4"><h6>组件类型</h6></Col>
-      <Col span="8" v-html="auditEdit.component_name"></Col>
-      <Col span="4"><h6>所属应用</h6></Col>
-      <Col span="8" v-html="auditEdit.application_name.name"></Col>
-    </Row>
-    <Row type="flex" justify="center" class="code-row-bg">
-      <Col span="4"><h6>申请人</h6></Col>
-      <Col span="8" v-html="auditEdit.proposer"></Col>
-      <Col span="4"><h6>申请部门</h6></Col>
-      <Col span="8" v-html="auditEdit.department_name"></Col>
-    </Row>
-    <Row type="flex" justify="center" class="code-row-bg">
-      <Col span="4"><h6>申请类型</h6></Col>
-      <Col span="8" v-html="auditEdit.apply_name"></Col>
-      <Col span="4"><h6>申请时间</h6></Col>
-      <Col span="8" v-html="auditEdit.create_time"></Col>
-    </Row>
-    <Row type="flex" justify="center" class="code-row-bg">
-      <Col span="4"><h6>申请理由</h6></Col>
-      <Col span="20" v-html="auditEdit.remark"></Col>
-    </Row>
-    <Row style="margin: 15px 0 15px 0;">
-      <Col span="22">
-        <h1>审核意见</h1>
-      </Col>
-    </Row>
-    <Form ref="formItem" :model="formItem" :label-width="120" :rules="ruleValidate">
-      <FormItem prop="status">
-        <RadioGroup v-model="formItem.status">
-          <Radio v-for="item in auditEdit.op_status" :key="item.id" :label="item.id">{{item.name}}</Radio>
+    <!-- appAlertEdit -->
+    <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="100">
+      <FormItem label="策略名称" prop="name">
+        <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
+      </FormItem>
+      <FormItem label="策略类型" prop="policyType">
+        <Select v-if="add_page.policy_type_group" v-model="formDataAddAlert.policyType" placeholder="请选择策略类型">
+          <Option :value="item.id" v-for="item in add_page.policy_type_group" :key="item.id">{{item.name}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="所属应用" prop="app">
+        <Select v-model="formDataAddAlert.app" placeholder="请选择所属应用">
+          <Option :value="item.id" v-for="item in add_page.application_group" :key="item.id">{{item.name}}</Option>
+        </Select>
+      </FormItem>
+      <FormItem label="告警对象" prop="alertObj">
+        <RadioGroup v-model="formDataAddAlert.alertObj">
+          <Radio :label="item.id" v-for="item in add_page.target_group" :key="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
-      <Card dis-hover v-if="formItem.status === 1">
-        <p slot="title">实例配置</p>
-        <FormItem label="v ip" prop="vip">
-            <Input v-model="formItem.vip"></Input>
-        </FormItem>
-        <FormItem label="master ip" prop="master_ip">
-            <Input v-model="formItem.master_ip"></Input>
-        </FormItem>
-        <FormItem label="hostname_master" prop="hostname_master">
-            <Input v-model="formItem.hostname_master"></Input>
-        </FormItem>
-        <FormItem label="slave1 ip" prop="slave_ip1">
-            <Input v-model="formItem.slave_ip1"></Input>
-        </FormItem>
-        <FormItem label="hostname1" prop="hostname1">
-            <Input v-model="formItem.hostname1"></Input>
-        </FormItem>
-        <FormItem label="slave2 ip" prop="slave_ip2">
-            <Input v-model="formItem.slave_ip2"></Input>
-        </FormItem>
-        <FormItem label="hostname2" prop="hostname2">
-            <Input v-model="formItem.hostname2"></Input>
-        </FormItem>
-        <FormItem label="port" prop="port">
-            <Input v-model="formItem.port"></Input>
-        </FormItem>
-        <FormItem label="cpu核数" prop="bind_cpu">
-            <Input v-model="formItem.bind_cpu"></Input>
-        </FormItem>
-        <FormItem>
-          <Button type="primary" @click="handleSubmit('formItem')">Submit</Button>
-        </FormItem>
-      </Card>
+      <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKeys="formDataAddAlert.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
+      <FormItem label="告警策略">
+        <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 20px 0">
+          <Col span="3">
+            <span v-html="item.name"></span>
+          </Col>
+          <Col span="5">
+            <FormItem :prop="formPropAddAlert[index].operator">
+              <Select v-model="formDataAddAlert.operator_id[index]" placeholder="请选择操作符">
+                <Option :value="subItem.id" v-for="subItem in add_page.operator_group" :key="subItem.id">{{subItem.name}}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="5">
+            <FormItem :prop="formPropAddAlert[index].threshold">
+              <Input v-model="formDataAddAlert.threshold[index]" placeholder="请输入阈值"></Input>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem :prop="formPropAddAlert[index].period">
+              <Select v-model="formDataAddAlert.period_id[index]" placeholder="请选择周期">
+                <Option :value="subItem.id" v-for="subItem in add_page.period_group" :key="subItem.id">{{subItem.full_name}}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+      </FormItem>
+      <FormItem label="设置告警群" prop="dingdingName">
+        <Input v-model="formDataAddAlert.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+      </FormItem>
+      <FormItem>
+        <Button type="primary" @click="handleSubmitAndAlert('formDataAddAlert')">Submit</Button>
+        <Button type="ghost" @click="handleResetAndAlert('formDataAddAlert')" style="margin-left: 8px">Reset</Button>
+      </FormItem>
     </Form>
   </div>
 </template>
 
 <script>
+import transfervue from '../transfer.vue'
 export default {
-  name: 'auditEdit',
+  name: 'appAlertEdit',
   data () {
     return {
-      auditEdit: '',
-      formItem: {
-        id: '',
-        vip: '',
-        master_ip: '',
-        port: '',
-        slave_ip1: '',
-        slave_ip2: '',
-        status: '',
-        hostname_master: '',
-        hostname1: '',
-        hostname2: '',
-        bind_cpu: ''
+      add_page: {},
+      alertListData: [],
+      // instancesId: this.,
+      responseAlertList: {
+        data: {
+          data: [],
+          message: '',
+          status: 0
+        },
+        status: 0
       },
-      ruleValidate: {
-        vip: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validateIp, trigger: 'change'}
+      /* 创建告警策略 start */
+      modalAddAert: false,
+      formPropAddAlert: [
+        {
+          operator: 'cpuOperater',
+          threshold: 'cpuThreshold',
+          period: 'cpuPeriod'
+        },
+        {
+          operator: 'connOperater',
+          threshold: 'connThreshold',
+          period: 'connPeriod'
+        },
+        {
+          operator: 'opsOperater',
+          threshold: 'opsThreshold',
+          period: 'opsPeriod'
+        }
+      ],
+      formDataAddAlert: {
+        name: '',
+        policyType: '',
+        app: '',
+        alertObj: '',
+        instance_id: '',
+        metric_id: [],
+        operator_id: [],
+        threshold: [],
+        period_id: [],
+        dingdingName: ''
+      },
+      fromRuleAddAlert: {
+        name: [
+          {required: true, message: '请输入策略名称', trigger: 'change'}
+          // {validator: this.validateName, trigger: 'change'}
         ],
-        master_ip: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validateIp, trigger: 'change'}
+        policyType: [
+          {required: true, message: '请选择策略类型', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validatePolicyType, trigger: 'change'}
         ],
-        port: [
-          { required: true, message: '请输入正确格式port', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+        app: [
+          {required: true, message: '请选择所属应用', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validateApp, trigger: 'change'}
         ],
-        slave_ip1: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validateIp, trigger: 'change'}
+        alertObj: [
+          {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          // {validator: this.validateAlertObj, trigger: 'change'}
         ],
-        slave_ip2: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validateIp, trigger: 'change'}
+        cpuOperater: [
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          {validator: this.cpuOperater, trigger: 'change'}
         ],
-        status: [
-          { required: true, message: '请选择操作结果', pattern: /.+/, trigger: 'blur' }
+        cpuThreshold: [
+          // {required: true, message: '请选择告警对象', pattern: /.+/, trigger: 'change'}
+          {validator: this.cpuThreshold, trigger: 'change'}
         ],
-        hostname_master: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+        cpuPeriod: [
+          {validator: this.cpuPeriod, trigger: 'change'}
         ],
-        hostname1: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+        connOperater: [
+          {validator: this.connOperater, trigger: 'change'}
         ],
-        hostname2: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+        connThreshold: [
+          {validator: this.connThreshold, trigger: 'change'}
         ],
-        bind_cpu: [
-          { required: true, message: '请输入cpu核数', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validateNumber, trigger: 'change'}
+        connPeriod: [
+          {validator: this.connPeriod, trigger: 'change'}
+        ],
+        opsOperater: [
+          {validator: this.opsOperater, trigger: 'change'}
+        ],
+        opsThreshold: [
+          {validator: this.opsThreshold, trigger: 'change'}
+        ],
+        opsPeriod: [
+          {validator: this.opsPeriod, trigger: 'change'}
+        ],
+        dingdingName: [
+          {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
       }
     }
   },
-  components: {},
-  computed: {},
+  components: {
+    transfervue
+  },
+  computed: {
+    transferShow () {
+      return this.formDataAddAlert.alertObj === 2
+    },
+    instancesIdComputed () {
+      var instanceId = this.formItem.instance_id
+      console.log(instanceId)
+      if (!instanceId.length) {
+        return []
+      } else {
+        var arr = instanceId.split(',')
+        console.log(arr)
+        return arr
+      }
+    }
+  },
   methods: {
-    handleSubmit (name) {
+    /* 编辑策略 start */
+    handleSubmitAndAlert (name) {
+      this.metricMethod(this.add_page.metric_group)
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$axios({
             method: 'post',
-            url: 'http://infra.xesv5.com/api/redis/audit?token=' + this.getRequest().token,
+            url: 'http://infra.xesv5.com/api/alarm/edit?token=' + this.getRequest().token,
             data: this.qs.stringify({
-              id: this.getRequest().id,
-              vip: this.formItem.vip,
-              master_ip: this.formItem.master_ip,
-              port: this.formItem.port,
-              slave_ip: [this.formItem.slave_ip1, this.formItem.slave_ip2],
-              status: this.formItem.status,
-              hostname_master: this.formItem.hostname_master,
-              hostname: [this.formItem.hostname1, this.formItem.hostname2],
-              bind_cpu: this.formItem.bind_cpu
+              name: this.formDataAddAlert.name,
+              type: this.formDataAddAlert.policyType,
+              application_id: this.formDataAddAlert.app,
+              target: this.formDataAddAlert.alertObj,
+              token: this.getRequest().token,
+              metric_id: this.formDataAddAlert.metric_id,
+              operator_id: this.formDataAddAlert.operator_id,
+              threshold: this.formDataAddAlert.threshold,
+              period_id: this.formDataAddAlert.period_id,
+              instance_id: this.formDataAddAlert.instance_id.join(','),
+              dingding_name: this.formDataAddAlert.dingdingName,
+              id: this.getRequest().id
             })
-          }).then(res => {
-            console.log(res)
-            this.feedbackFormStatus(res.data.status === 0, res.data.data)
-          }).catch(err => {
-            console.log(err)
+          }).then(response => {
+            console.log(response)
+            this.feedbackFormStatus(response.data.status === 0)
+            window.history.go(-1)
+          }).catch(error => {
+            console.log(error)
           })
         } else {
-          this.feedbackFormStatus(false)
+          this.$Message.error('不可为空!')
         }
       })
     },
+    metricMethod (metricGroup) {
+      var arr = []
+      for (var i = 0, iLen = metricGroup.length; i < iLen; i++) {
+        arr.push(metricGroup[i].id)
+      }
+      this.formDataAddAlert.metric_id = arr
+      console.log(this.formDataAddAlert.metric_id)
+    },
+    handleResetAndAlert (name) {
+      this.$refs[name].resetFields()
+    },
+    /* 编辑策略 end */
     // 回馈提交状态
     feedbackFormStatus (bool) {
       if (bool) {
@@ -187,35 +237,6 @@ export default {
         this.$Message.error('操作失败！')
       }
     },
-    /* 验证 start */
-    validateIp (rule, value, callback) {
-      console.log(value)
-      var reg = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
-      if (reg.test(value)) {
-        callback()
-      } else {
-        callback(new Error('请输入正确格式的ip'))
-      }
-    },
-    validateNumber (rule, value, callback) {
-      console.log(value)
-      var reg = /^[+]{0,1}(\d+)$/
-      if (reg.test(value)) {
-        callback()
-      } else {
-        callback(new Error('请输入正确格式的port'))
-      }
-    },
-    validatePort (rule, value, callback) {
-      console.log(value)
-      var reg = /^([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/
-      if (reg.test(value)) {
-        callback()
-      } else {
-        callback(new Error('请输入正确格式的port'))
-      }
-    },
-    /* 验证 end */
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串
       var index = url.indexOf('?')
@@ -233,39 +254,163 @@ export default {
         }
       }
       return theRequest
+    },
+    cpuOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[0]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    cpuThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[0]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    cpuPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[0]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    connOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[1]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    connThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[1]
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    connPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[1]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    opsOperater (rule, value, callback) {
+      value = this.formDataAddAlert.operator_id[2]
+      // console.log(this.formDataAddAlert)
+      // console.log(rule)
+      console.log(value)
+      // console.log(callback)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择操作符'))
+      } else {
+        callback()
+      }
+    },
+    opsThreshold (rule, value, callback) {
+      value = this.formDataAddAlert.threshold[2]
+      console.log(value)
+      if (value === '') {
+        callback(new Error('请输入阈值'))
+      } else {
+        // callback()
+        // var reg = /^\+?[0-9].?[0-9]*$/
+        var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
+        if (reg.test(value)) {
+          if (value < 0) {
+            callback(new Error('请输入大于0的数字'))
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('请输入大于0的数字'))
+        }
+      }
+    },
+    opsPeriod (rule, value, callback) {
+      value = this.formDataAddAlert.period_id[2]
+      console.log(value)
+      if (value === '' || value === undefined) {
+        callback(new Error('请选择周期'))
+      } else {
+        callback()
+      }
+    },
+    // modifyTransferData
+    modifyTransferData (params) {
+      console.log('params', params)
+      this.formDataAddAlert.instance_id = params
     }
   },
-  created () {
-    var operator = this.getRequest().operator
-    switch (operator) {
-      case 'audit':
-        this.$axios.get(`http://infra.xesv5.com/api/redis/audit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`).then(res => {
-          this.auditEdit = res.data.data
-        })
-        break
-      case 'midify':
-        this.$axios.get(`http://infra.xesv5.com/api/redis/edit_page/id/${this.getRequest().id}?token=${this.getRequest().token}`).then(res => {
-          this.auditEdit = res.data.data
-          this.formItem.id = this.getRequest().id
-          this.formItem.vip = this.auditEdit.vip
-          this.formItem.master_ip = this.auditEdit.master_ip
-          this.formItem.port = this.auditEdit.port
-          this.formItem.slave_ip[0] = this.auditEdit.slave_ip[0]
-          this.formItem.slave_ip[1] = this.auditEdit.slave_ip[1]
-          this.formItem.status = this.auditEdit.status
-          this.formItem.hostname_master = this.auditEdit.hostname_master
-          this.formItem.hostname[0] = this.auditEdit.hostname[0]
-          this.formItem.hostname[1] = this.auditEdit.hostname[1]
-          this.formItem.bind_cpu = this.auditEdit.bind_cpu
-        })
-        break
-    }
+  mounted () {
+    // 编辑数据内容
+    this.$axios({
+      method: 'get',
+      url: 'http://infra.xesv5.com/api/alarm/edit_page/id/' + this.getRequest().id + '?token=' + this.getRequest().token
+    }).then(res => {
+      let arr = []
+      this.add_page = res.data.data
+      this.formDataAddAlert.name = this.add_page.name
+      this.formDataAddAlert.policyType = this.add_page.policy_type
+      this.formDataAddAlert.app = this.add_page.application_id
+      this.formDataAddAlert.alertObj = this.add_page.target_type
+      for (let i = 0; i < this.add_page.instance_group.length; i++) {
+        arr.push(this.add_page.instance_group[i].instance_id)
+      }
+      this.formDataAddAlert.instance_id = arr
+      for (let j = 0; j < this.add_page.metric_info.length; j++) {
+        this.formDataAddAlert.operator_id[j] = this.add_page.metric_info[j].operator
+        this.formDataAddAlert.threshold[j] = this.add_page.metric_info[j].threshold
+        this.formDataAddAlert.period_id[j] = this.add_page.metric_info[j].period
+      }
+      this.formDataAddAlert.dingdingName = this.add_page.dingding_name
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .code-row-bg{
-    margin: 5px 0 5px 0;
-  }
+
 </style>

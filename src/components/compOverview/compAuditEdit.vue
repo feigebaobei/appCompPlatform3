@@ -75,8 +75,8 @@
         <FormItem label="port" prop="port">
             <Input v-model="formItem.port"></Input>
         </FormItem>
-        <FormItem label="cpu核数" prop="cpu_kernel">
-            <Input v-model="formItem.cpu_kernel"></Input>
+        <FormItem label="cpu核数" prop="bind_cpu">
+            <Input v-model="formItem.bind_cpu"></Input>
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmit('formItem')">Submit</Button>
@@ -103,7 +103,7 @@ export default {
         hostname_master: '',
         hostname1: '',
         hostname2: '',
-        cpu_kernel: ''
+        bind_cpu: ''
       },
       ruleValidate: {
         vip: [
@@ -141,7 +141,7 @@ export default {
           { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
           {validator: this.validatePort, trigger: 'change'}
         ],
-        cpu_kernel: [
+        bind_cpu: [
           { required: true, message: '请输入cpu核数', pattern: /.+/, trigger: 'blur' },
           {validator: this.validateNumber, trigger: 'change'}
         ]
@@ -166,7 +166,7 @@ export default {
               status: this.formItem.status,
               hostname_master: this.formItem.hostname_master,
               hostname: [this.formItem.hostname1, this.formItem.hostname2],
-              cpu_kernel: this.formItem.cpu_kernel
+              bind_cpu: this.formItem.bind_cpu
             })
           }).then(res => {
             console.log(res)
@@ -256,7 +256,7 @@ export default {
           this.formItem.hostname_master = this.auditEdit.hostname_master
           this.formItem.hostname[0] = this.auditEdit.hostname[0]
           this.formItem.hostname[1] = this.auditEdit.hostname[1]
-          this.formItem.cpu_kernel = this.auditEdit.cpu_kernel
+          this.formItem.bind_cpu = this.auditEdit.bind_cpu
         })
         break
     }
