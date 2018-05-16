@@ -455,7 +455,7 @@ export default {
             })
           }).then(response => {
             this.modalAddAert = false
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
             window.location.reload()
           }).catch(error => {
             console.log(error)
@@ -518,9 +518,13 @@ export default {
       this.$refs[name].resetFields()
     },
     // 回馈提交状态
-    feedbackFormStatus (bool) {
+    feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
+        setTimeout(function () {
+          this.$Message.success(message)
+          history.go(0)
+        }, 800)
       } else {
         this.$Message.error('操作失败！')
       }
