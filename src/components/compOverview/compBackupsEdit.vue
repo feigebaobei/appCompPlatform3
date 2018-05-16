@@ -53,7 +53,7 @@ export default {
         application_group: '',
         target_group: '',
         time_group: '',
-        instance_id: []
+        instance_id: ''
       },
       // 表单验证
       formItems: {
