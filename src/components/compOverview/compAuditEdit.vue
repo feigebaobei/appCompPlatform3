@@ -162,7 +162,7 @@ export default {
             })
           }).then(res => {
             console.log(res)
-            this.febackFormStatus(res.data.status === 0, res.data.data)
+            this.feedbackFormStatus(res.data.status === 0, res.data.data)
           }).catch(err => {
             console.log(err)
           })
