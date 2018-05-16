@@ -453,7 +453,6 @@ export default {
               type: this.formDataAddAlert.policyType,
               application_id: this.formDataAddAlert.app,
               target: this.formDataAddAlert.alertObj,
-              token: this.getRequest().token,
               metric_id: this.formDataAddAlert.metric_id,
               operator_id: this.formDataAddAlert.operator_id,
               threshold: this.formDataAddAlert.threshold,
