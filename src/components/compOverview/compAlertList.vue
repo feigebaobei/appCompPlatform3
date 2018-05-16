@@ -459,7 +459,7 @@ export default {
               period_id: this.formDataAddAlert.period_id,
               instance_id: this.formDataAddAlert.instance_id.join(','),
               token: this.formDataAddAlert.token,
-              dingding_name: this.formDataAddAlert.dingding_name,
+              dingding_name: this.formDataAddAlert.dingding_name
             })
           }).then(response => {
             this.modalAddAert = false
