@@ -30,7 +30,7 @@
               </RadioGroup>
             </FormItem>
             <!-- <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer> -->
-            <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKey="formDataAddAlert.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
+            <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKeys="formDataAddAlert.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
             <FormItem label="告警策略">
               <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 20px 0">
                 <Col span="3">

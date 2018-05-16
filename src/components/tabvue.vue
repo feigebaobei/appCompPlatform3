@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Tabs type="card" v-if="userInfo.userStatus">
-      <TabPane :label="tabs[0]">
+    <Tabs :value="tabActive()" type="card" v-if="userInfo.userStatus" @on-click="midifyTabActive">
+      <TabPane :label="tabs[0]" name="one">
         <cardListvue :tab="tabs[0]">
         </cardListvue>
       </TabPane>
-      <TabPane :label="tabs[1]">
+      <TabPane :label="tabs[1]" name="two">
         <cardListvue :tab="tabs[1]" v-if="tabs[1] === '其它应用'"></cardListvue>
         <auditmanage v-else></auditmanage>
       </TabPane>
@@ -89,6 +89,22 @@ export default {
     /* 根据用户身份，显示选项卡。 end */
   },
   methods: {
+    tabActive () {
+      var pageInfoStr = window.localStorage.pageInfo
+      var pageInfo = JSON.parse(pageInfoStr)
+      console.log(pageInfo)
+      return pageInfo.appInstanceList.curTab
+    },
+    // 点击tab时
+    midifyTabActive (name) {
+      console.log(name)
+      var pageInfo = this.$store.getters.getPageInfo
+      pageInfo.appInstanceList.curTab = name
+      // 保存到vuex
+      this.$store.dispatch('setPageInfo', pageInfo)
+      // 保存到localStorage
+      window.localStorage.pageInfo = JSON.stringify(pageInfo)
+    },
     // 添加应用
     handleSubmitAddApp (name) {
       this.$refs[name].validate((valid) => {

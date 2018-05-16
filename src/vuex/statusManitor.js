@@ -67,19 +67,19 @@ const store = new Vuex.Store({
       // console.log(state.userInfo.token)
     },
     setPageInfo: function (state, payload) {
-      console.log(payload)
+      // console.log(payload)
       state.pageInfo = payload
-      console.log(state.pageInfo)
+      // console.log(state.pageInfo)
     },
     setPageInfoAIL: function (state, payload) {
       state.pageInfo.appInstanceList.curTab = payload.curTab
       state.pageInfo.appInstanceList.searchTextMyApp = payload.searchTextMyApp
       state.pageInfo.appInstanceList.searchTextElseApp = payload.searchTextElseApp
-      console.log(state.pageInfo.appInstanceList)
+      // console.log(state.pageInfo.appInstanceList)
     },
     setPageInfoAILCurTab: function (state, payload) {
       state.pageInfo.appInstanceList.curTab = payload.curTab
-      console.log(state.pageInfo.appInstanceList)
+      // console.log(state.pageInfo.appInstanceList)
     }
   },
   actions: {

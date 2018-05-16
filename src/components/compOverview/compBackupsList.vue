@@ -26,7 +26,7 @@
                <Radio v-for="item in comBackupsData.target_group" :key="item.id" :label="item.id">{{item.name}}</Radio>
             </RadioGroup>
           </FormItem>
-          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.application_group" :targetKey="formDataCreateBackups.instanceIds" @modifyTransferData="modifyTransferData"></transfervue>
+          <transfervue v-show="transferShow" :instancesId="formDataCreateBackups.application_group" :targetKeys="formDataCreateBackups.instanceIds" @modifyTransferData="modifyTransferData"></transfervue>
           <FormItem label="备份周期">
             <span>每天</span>
           </FormItem>

@@ -2,7 +2,7 @@
   <div>
     <Row>
       <Col style="border-bottom: 1px solid #d8d8d8;">
-        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 我的应用</a></h2>
+        <h2><a href="javascript:history.go(-1)" style="text-decoration: none;color: #000;">＜ 应用管理</a></h2>
       </Col>
     </Row>
     <Row style="margin: 10px 0;">
@@ -54,12 +54,14 @@
       <Col span="4"><h6>管理员</h6></Col>
       <Col span="8" v-html="responseDetail.data.data.admin_name"></Col>
       <Col span="4"><h6>创建时间</h6></Col>
-      <Col span="8" v-html="responseDetail.data.data.created_time"></Col>
+      <Col span="8" v-html="responseDetail.data.data.created_at"></Col>
     </Row>
     <hr class="hr">
     <Row>
-      <Col span="24" v-if="responseComp.data.data.length" style="margin: 0 0 15px 0;">
-        <Button v-for="item in responseComp.data.data" :key="item.component_id" v-html="item.component_name" class="comp"></Button>
+      <Col v-if="responseComp.data.data.length" style="margin: 0 0 15px 0;">
+        <a :href="linkComp(item)" v-for="item in responseComp.data.data" :key="item.component_id">
+          <Button v-html="item.component_name" class="comp"></Button>
+        </a>
       </Col>
       <Col>
         <Button type="primary" class="comp" @click="modalAddComp = true">添加组件</Button>
@@ -137,6 +139,10 @@ export default {
   components: {},
   computed: {},
   methods: {
+    linkComp (item) {
+      var href = './appInstanceList.html?componentId=' + item.component_id + '&token=' + this.getRequest().token
+      return href
+    },
     /* moniter start */
     okMoniter () {},
     cancelMoniter () {},

@@ -29,6 +29,13 @@
                 <Radio :label="item.id" v-for="item in addInstance.node_type" :key="item.id">{{item.name}}</Radio>
               </RadioGroup>
             </FormItem>
+            <!-- 组件类型 start -->
+            <!-- <FormItem label="组件类型" prop="compType">
+              <RadioGroup v-model="formDataAddInstance.compType">
+                <Radio :label="item.id" v-for="item in addInstance.node_type" :key="item.id">{{item.name}}</Radio>
+              </RadioGroup>
+            </FormItem> -->
+            <!-- 组件类型 end -->
             <FormItem label="实例规格" prop="rule">
               <Select v-model="formDataAddInstance.rule" placeholder="请选择实例规格">
                 <Option :value="item.id" v-for="item in addInstance.mem_type" :key="item.id" v-html="item.name"></Option>
@@ -54,6 +61,7 @@
       </Col>
     </Row>
     <Table height="800" border :columns="instanceListColumns" :data="instanceListData" style="margin: 15px 0 0 0;"></Table>
+    <!-- <Table height="800" border :columns="instanceListColumns" :data="testData" style="margin: 15px 0 0 0;"></Table> -->
   </div>
 </template>
 
@@ -171,13 +179,13 @@ export default {
               sortable: true
             }
           ]
-        }, {
+        },
+        {
           title: '状态',
           align: 'center',
           key: 'status',
           width: 80,
           fixed: 'right',
-          // filters: this.selectTableStatus(),
           filters: [
             {
               label: '申请中',
@@ -196,34 +204,62 @@ export default {
               value: '已驳回'
             }
           ],
+          // filters: this.selectILStatusFilters(this.responseInstanceList.data.data.extraData),
           filterMultiple: false,
           filterMethod (value, row) {
-            switch (value) {
-              case '软件安装中':
-                return row.status === '软件安装中'
-              case '使用中':
-                return row.status === '使用中'
-              case '申请中':
-                return row.status === '申请中'
-              case '已驳回':
-                return row.status === '已驳回'
-            }
+            // var filters = this.instanceListData
+            // console.log(value, row)
+            // var filters = this.filters
+            // for (var i = 0, iLen = filters.length; i < iLen; i++) {
+            //   console.log(value)
+            //   filters[i].value === value
+            // }
+            return row.status === value
+            //
+            // switch (value) {
+            //   case '软件安装中':
+            //     return row.status === '软件安装中'
+            //   case '使用中':
+            //     return row.status === '使用中'
+            //   case '申请中':
+            //     return row.status === '申请中'
+            //   case '已驳回':
+            //     return row.status === '已驳回'
+            // }
+            //
+            // var statusGroup = this.responseInstanceList.data.data.extraData.status_group
+            // var list = []
+            // for (var i = 0, iLen = statusGroup.length; i < iLen; i++) {
+            //   list.push(statusGroup[i].name)
+            // }
+            // console.log(list)
+            // for (i = 0, iLen = list.length; i < iLen; i++) {
+            //   if (list[i] === value) {
+            //     return row.status === list[i]
+            //   }
+            // }
           }
+          // filterMethod: this.selectILStatusFM(value, row)
         }
       ],
       responseInstanceList: {
         data: {
-          data: {},
+          data: {
+            extraData: {},
+            list: []
+          },
           message: '',
           status: 0
         },
         status: 0
       },
+      // extraData: this.responseInstanceList.data.data.extraData,
       formDataAddInstance: {
         name: '',
         version: '',
         capacity: '',
         duplicate: '',
+        // compType: '',
         rule: '',
         app: '',
         reason: ''
@@ -252,6 +288,32 @@ export default {
           {required: true, message: '请输入申请事由', trigger: 'change'}
         ]
       },
+      testData: [
+        {
+          id: 223,
+          status: '申请中'
+        },
+        {
+          id: 23,
+          status: '软件安装中'
+        },
+        {
+          id: 222,
+          status: '申请中'
+        },
+        {
+          id: 2433,
+          status: '使用中'
+        },
+        {
+          id: 32,
+          status: '已驳回'
+        },
+        {
+          id: 54,
+          status: '申请中'
+        }
+      ],
       instanceListDataBox: []
     }
   },
@@ -294,7 +356,121 @@ export default {
       }
     }
   },
+  watch: {
+    // responseInstanceList (val, oldVal) {
+    //   console.log('responseInstanceList')
+    //   console.log(val, oldVal)
+    //   if (!val) { return '' }
+    //   var statusGroup = val.data.data.extraData.status_group
+    //   console.log(statusGroup)
+    //   var arr = []
+    //   for (var i = 0, iLen = statusGroup.length; i < iLen; i++) {
+    //     var obj = {}
+    //     obj.label = statusGroup[i].name
+    //     obj.value = statusGroup[i].name
+    //     arr.push(obj)
+    //   }
+    //   console.log(arr)
+    //   console.log(this.instanceListColumns)
+    //   // this.instanceListColumns[6].filters = arr
+    //   this.instanceListColumns[6].filters = [
+    //     {
+    //       label: '申请中',
+    //       value: '申请中'
+    //     },
+    //     {
+    //       label: '已驳回',
+    //       value: '已驳回'
+    //     }
+    //   ]
+    //   //
+    //   // filterMethod
+    //   // this.instanceListColumns[6].filterMethod = function (value, row) {
+    //   //   switch (value) {
+    //   //     case '软件安装中':
+    //   //       return row.status === '软件安装中'
+    //   //     case '使用中':
+    //   //       return row.status === '使用中'
+    //   //     case '申请中':
+    //   //       return row.status === '申请中'
+    //   //     case '已驳回':
+    //   //       return row.status === '已驳回'
+    //   //   }
+    //   // }
+    // }
+  },
   methods: {
+    // 表单筛选 start
+    setSelect () {
+      console.log(this.responseInstanceList)
+      // var statusGroup = this.responseInstanceList.data.data.extraData.status_group
+      // console.log(statusGroup)
+      // var arr = []
+      // for (var i = 0, iLen = statusGroup.length; i < iLen; i++) {
+      //   var obj = {}
+      //   obj.label = statusGroup[i].name
+      //   obj.value = statusGroup[i].name
+      //   arr.push(obj)
+      // }
+      // console.log(arr)
+      // console.log(this.instanceListColumns[6])
+      // this.instanceListColumns[6].filters = arr
+      this.instanceListColumns[6].filters = [
+        {
+          label: '申请中',
+          value: '申请中'
+        },
+        {
+          label: '已驳回',
+          value: '已驳回'
+        }
+      ]
+    },
+    selectILStatusFilters (extraData) {
+      console.log(extraData)
+      var statusGroup = extraData.status_group
+      var arr = []
+      for (var i = 0, iLen = statusGroup.length; i < iLen; i++) {
+        var obj = {}
+        obj.label = statusGroup[i].name
+        obj.value = statusGroup[i].name
+        arr.push(obj)
+      }
+      console.log(arr)
+      return arr
+      // return [
+      //   {
+      //     label: '申请中',
+      //     value: '申请中'
+      //   },
+      //   {
+      //     label: '软件安装中',
+      //     value: '软件安装中'
+      //   },
+      //   {
+      //     label: '使用中',
+      //     value: '使用中'
+      //   },
+      //   {
+      //     label: '已驳回',
+      //     value: '已驳回'
+      //   }
+      // ]
+    },
+    selectILStatusFM (value, row) {
+      var extraData = this.responseInstanceList.data.data.extraData
+      console.log(extraData)
+      var list = []
+      for (var i = 0, iLen = extraData.status_group.length; i < iLen; i++) {
+        list.push(extraData.status_group[i].name)
+      }
+      console.log(list)
+      switch (value) {
+        case list[i]:
+          break
+      }
+    },
+    // 表单筛选 end
     // 验证
     validateCapacity (rule, value, callback) {
       console.log(value)
@@ -314,7 +490,7 @@ export default {
     },
     search (response, condition) {
       var result = []
-      var data = response.data.data
+      var data = response.data.data.list
       if (!data.length) { return result }
       if (!condition) {
         for (var i = 0, iLen = data.length; i < iLen; i++) {
@@ -374,6 +550,7 @@ export default {
             data: {
               'name': this.formDataAddInstance.name,
               'application_id': this.formDataAddInstance.app,
+              'component_type': 1, // 组件类型写死
               'arch_type': this.formDataAddInstance.version,
               'node_type': this.formDataAddInstance.duplicate,
               'mem_type': this.formDataAddInstance.rule
@@ -426,20 +603,55 @@ export default {
         }
       }
       return theRequest
+    },
+    getcomponentId () {
+      var componentId = this.getRequest().componentId
+      // console.log(componentId)
+      if (componentId === undefined) {
+        return '0'
+      } else {
+        return componentId
+      }
     }
   },
-  mounted () {
+  created () {
     // console.log(this.$store.getters.getUserInfo.token)
     // 请求添加实例的表单模板数据
     this.addInstanceData()
     // 请求实例列表数据
     this.$axios({
       method: 'get',
-      url: 'http://infra.xesv5.com/api/redis/list/id/0?token=' + this.getRequest().token
+      // url: 'http://infra.xesv5.com/api/redis/list/id/0?token=' + this.getRequest().token
+      url: 'http://infra.xesv5.com/api/redis/list/id/' + this.getcomponentId() + '?token=' + this.getRequest().token
     }).then(response => {
       this.responseInstanceList = response
       this.selectInstanceListData()
+      // console.log(this.responseInstanceList)
+      this.setSelect()
     })
+    //
+    // var that = this
+    // var p1 = new Promise(function (resolve, reject) {
+    //   console.log(that)
+    //   that.$axios({
+    //     method: 'get',
+    //     url: 'http://infra.xesv5.com/api/redis/list/id/' + that.getcomponentId() + '?token=' + that.getRequest().token
+    //   }).then(response => {
+    //     that.responseInstanceList = response
+    //     // that.setSelect()
+    //     resolve()
+    //   }).catch(error => {
+    //     console.log(error)
+    //     reject()
+    //   })
+    // }).then(function () {
+    //   console.log('resolve')
+    //   // that.setSelect()
+    // }, function () {
+    //   console.log('reject')
+    // })
+  },
+  mounted () {
   }
 }
 </script>

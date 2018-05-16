@@ -33,6 +33,10 @@ export default {
       if (val !== '') {
         this.requestData()
       }
+    },
+    targetKeys (val, oldVal) {
+      console.log('val', val, 'oldVal', oldVal)
+      this.transferTargetKey = val
     }
   },
   methods: {
@@ -80,6 +84,7 @@ export default {
   },
   created () {
     console.log('应用id', this.instancesId)
+    console.log('targetKeys', this.targetKeys)
     if (this.instancesId !== '') {
       this.requestData()
     }

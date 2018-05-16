@@ -253,7 +253,7 @@ export default {
     },
     /* 搜索 start */
     selectMyAppListData (condition) {
-      console.log('selectMyAppListData')
+      // console.log('selectMyAppListData')
       this.myAppBox = this.search(this.responseMyApp, condition)
       // console.log(this.myAppBox)
       // console.log(this.searchTextMyApp)
@@ -264,14 +264,14 @@ export default {
       this.frontStore()
     },
     selectElseListData (condition) {
-      console.log('selectElseListData')
+      // console.log('selectElseListData')
       this.elseAppBox = this.search(this.responseElseApp, condition)
-      console.log(this.elseAppBox)
+      // console.log(this.elseAppBox)
     },
     selectOverviewListData (condition) {
-      console.log('selectOverviewListData')
+      // console.log('selectOverviewListData')
       this.overviewBox = this.search(this.responseElseApp, condition)
-      console.log(this.overviewBox)
+      // console.log(this.overviewBox)
     },
     search (response, condition) {
       var result = []
@@ -292,25 +292,16 @@ export default {
       return result
     },
     frontStore () {
-      console.log('frontStore')
-      // var obj = {}
-      // obj.myApp = {}
-      // obj.elseApp = {}
-      // var appInstanceListStr = JSON.stringify(this.appInstanceList)
-      // var compInstanceListStr = JSON.stringify(this.compInstanceList)
-      // console.log(appInstanceListStr)
-      // console.log(compInstanceListStr)
-      // window.localStorage.appInstanceList = appInstanceListStr
-      // window.localStorage.compInstanceList = compInstanceListStr
-      // console.log(window.localStorage.appInstanceList)
-      // console.log(window.localStorage.compInstanceList)
+      // console.log('frontStore')
       var pageInfo = this.$store.getters.getPageInfo
-      console.log(pageInfo)
+      // console.log(pageInfo)
       pageInfo.appInstanceList.searchTextMyApp = this.searchTextMyApp
+      // 保存到vuex
       this.$store.dispatch('setPageInfo', pageInfo)
-      console.log(this.$store.getters.getPageInfo)
-      window.localStorage.pageInfo = pageInfo
-      console.log(window.localStorage.pageInfo)
+      // console.log(this.$store.getters.getPageInfo)
+      // 保存到localStorage
+      window.localStorage.pageInfo = JSON.stringify(pageInfo)
+      // console.log(window.localStorage.pageInfo)
     },
     /* 搜索 end */
     // 各请求方法

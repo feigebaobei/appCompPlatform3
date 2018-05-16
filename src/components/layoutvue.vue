@@ -132,7 +132,8 @@ export default {
   },
   computed: {
     indexHref () {
-      return `./index.html?token=${this.$store.getters.getUserInfo.token}`
+      // return `./index.html?token=${this.$store.getters.getUserInfo.token}`
+      return `./?token=${this.$store.getters.getUserInfo.token}`
     },
     getResponseSider: {
       set () {},
@@ -509,6 +510,11 @@ export default {
       var href = domain + '/?token=' + this.getDataAtFront()[0].token
       console.log(href)
       window.location.href = href
+    },
+    vuexStore () {
+      var pageInfo = window.localStorage.pageInfo
+      console.log(pageInfo)
+      this.$store.dispatch('setPageInfo', JSON.parse(pageInfo))
     }
   },
   // mounted () {
@@ -522,6 +528,7 @@ export default {
     // this.box.addEventListener('click', () => {
     //   this.refreshDate()
     // }, false)
+    this.vuexStore()
   }
 }
 

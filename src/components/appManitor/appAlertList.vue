@@ -30,7 +30,7 @@
               </RadioGroup>
             </FormItem>
             <!-- <Transfer v-if="transferShow" :data="transferData" :target-keys="transferTargetKey" :render-format="transferRender" @on-change="transferHandleChange" style="margin: 0 0 24px 80px;"></Transfer> -->
-            <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKey="formDataAddAlert.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
+            <transfervue v-show="transferShow" :instancesId="formDataAddAlert.app" :targetKeys="formDataAddAlert.instance_id" @modifyTransferData="modifyTransferData"></transfervue>
             <FormItem label="告警策略">
               <Row v-if="add_page.metric_group.length" v-for="(item, index) in add_page.metric_group" :key="item.id" :gutter="15" style="margin: 0 0 20px 0">
                 <Col span="3">
@@ -295,6 +295,7 @@ export default {
     }
   },
   methods: {
+    /* 验证 start */
     cpuOperater (rule, value, callback) {
       value = this.formDataAddAlert.operator_id[0]
       if (value === '' || value === undefined) {
@@ -414,6 +415,7 @@ export default {
         callback()
       }
     },
+    /* 验证 end */
     getRequest () {
       var url = window.location.href // 获取url中"?"符后的字串
       var index = url.indexOf('?')
@@ -455,8 +457,7 @@ export default {
             })
           }).then(response => {
             this.modalAddAert = false
-            this.feedbackFormStatus(response.data.status === 0)
-            window.location.reload()
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           }).catch(error => {
             console.log(error)
           })
@@ -518,11 +519,15 @@ export default {
       this.$refs[name].resetFields()
     },
     // 回馈提交状态
-    feedbackFormStatus (bool) {
+    feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
+        setTimeout(function () {
+          window.location.reload()
+        }, 800)
       } else {
         this.$Message.error('操作失败！')
+        this.$Message.error(message)
       }
     },
     // 穿梭框 start
@@ -547,7 +552,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           })
           break
         case '已停用':
@@ -557,7 +562,7 @@ export default {
           }).then(response => {
             console.log(response)
             this.modalOperate = false
-            this.feedbackFormStatus(response.data.status === 0)
+            this.feedbackFormStatus(response.data.status === 0, response.data.data)
           })
           break
       }
