@@ -528,7 +528,7 @@ export default {
     // this.box.addEventListener('click', () => {
     //   this.refreshDate()
     // }, false)
-    // this.vuexStore()
+    this.vuexStore()
   }
 }
 
