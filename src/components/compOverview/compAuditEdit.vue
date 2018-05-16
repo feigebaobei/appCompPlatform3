@@ -103,7 +103,7 @@ export default {
         hostname_master: '',
         hostname1: '',
         hostname2: '',
-        cpu_kernel: number
+        cpu_kernel: ''
       },
       ruleValidate: {
         vip: [
