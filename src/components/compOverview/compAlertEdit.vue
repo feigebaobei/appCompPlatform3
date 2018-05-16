@@ -239,8 +239,9 @@ export default {
     feedbackFormStatus (bool) {
       if (bool) {
         this.$Message.success('操作成功！')
+        var that = this
         setTimeout(function () {
-          window.location.href = './compAlertList.html?token=' + this.getRequest().token
+          window.location.href = './compAlertList.html?token=' + that.getRequest().token
         }, 800)
       } else {
         this.$Message.error('操作失败！')
