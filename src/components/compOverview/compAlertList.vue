@@ -57,8 +57,11 @@
                 </Col>
               </Row>
             </FormItem>
-            <FormItem label="设置告警群" prop="dingdingName">
-              <Input v-model="formDataAddAlert.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+            <FormItem label="设置告警群" prop="token">
+              <Input v-model="formDataAddAlert.token" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+            </FormItem>
+            <FormItem label="设置告警群名称" prop="dingding_name">
+              <Input v-model="formDataAddAlert.dingding_name" placeholder="请输入策略名称"></Input>
             </FormItem>
             <FormItem>
               <Button type="primary" @click="handleSubmitAndAlert('formDataAddAlert')">Submit</Button>
@@ -130,7 +133,9 @@ export default {
         operator_id: [],
         threshold: [],
         period_id: [],
-        dingdingName: ''
+        token: '',
+        dingding_name: ''
+        
       },
       fromRuleAddAlert: {
         name: [
@@ -178,7 +183,10 @@ export default {
         opsPeriod: [
           {validator: this.opsPeriod, trigger: 'change'}
         ],
-        dingdingName: [
+        token: [
+          {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
+        ],
+        dingding_name: [
           {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
       },
@@ -451,7 +459,8 @@ export default {
               threshold: this.formDataAddAlert.threshold,
               period_id: this.formDataAddAlert.period_id,
               instance_id: this.formDataAddAlert.instance_id.join(','),
-              dingding_name: this.formDataAddAlert.dingdingName
+              token: this.formDataAddAlert.token,
+              dingding_name: this.formDataAddAlert.dingding_name,
             })
           }).then(response => {
             this.modalAddAert = false
