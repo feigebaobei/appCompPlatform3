@@ -41,7 +41,7 @@
                 <Icon type="ios-keypad"></Icon>
                 <span v-html="item.name"></span>
               </template>
-              <a :href="navHref(subItem)" :target="subItem.name === '性能监控' ? _blank : _self" style="color: #333;" v-for="(subItem, subIndex) in item.child" :key="subItem.id">
+              <a :href="navHref(subItem)" :target="subItem.name === '性能监控' ? '_blank' : '_self'" style="color: #333;" v-for="(subItem, subIndex) in item.child" :key="subItem.id">
                 <MenuItem :name="menuItemName(index, subIndex)" v-html="subItem.name"></MenuItem>
               </a>
             </Submenu>
