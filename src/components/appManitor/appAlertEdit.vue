@@ -6,7 +6,7 @@
       </Col>
     </Row>
     <!-- appAlertEdit -->
-    <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="100">
+    <Form ref="formDataAddAlert" :model="formDataAddAlert" :rules="fromRuleAddAlert" :label-width="120">
       <FormItem label="策略名称" prop="name">
         <Input v-model="formDataAddAlert.name" placeholder="请输入策略名称"></Input>
       </FormItem>
@@ -52,8 +52,11 @@
           </Col>
         </Row>
       </FormItem>
-      <FormItem label="设置告警群" prop="dingdingName">
-        <Input v-model="formDataAddAlert.dingdingName" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+      <FormItem label="设置告警群" prop="token">
+        <Input v-model="formDataAddAlert.token" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入告警群"></Input>
+      </FormItem>
+      <FormItem label="设置告警群名称" prop="dingding_name">
+        <Input v-model="formDataAddAlert.dingding_name" placeholder="请输入策略名称"></Input>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleSubmitAndAlert('formDataAddAlert')">Submit</Button>
@@ -109,7 +112,8 @@ export default {
         operator_id: [],
         threshold: [],
         period_id: [],
-        dingdingName: ''
+        token: '',
+        dingding_name: ''
       },
       fromRuleAddAlert: {
         name: [
@@ -157,7 +161,10 @@ export default {
         opsPeriod: [
           {validator: this.opsPeriod, trigger: 'change'}
         ],
-        dingdingName: [
+        token: [
+          {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
+        ],
+        dingding_name: [
           {required: true, message: '请输入告警策略名称', pattern: /.+/, trigger: 'change'}
         ]
       }
@@ -196,19 +203,18 @@ export default {
               type: this.formDataAddAlert.policyType,
               application_id: this.formDataAddAlert.app,
               target: this.formDataAddAlert.alertObj,
-              token: this.getRequest().token,
               metric_id: this.formDataAddAlert.metric_id,
               operator_id: this.formDataAddAlert.operator_id,
               threshold: this.formDataAddAlert.threshold,
               period_id: this.formDataAddAlert.period_id,
               instance_id: this.formDataAddAlert.instance_id.join(','),
-              dingding_name: this.formDataAddAlert.dingdingName,
+              token: this.formDataAddAlert.token,
+              dingding_name: this.formDataAddAlert.dingding_name,
               id: this.getRequest().id
             })
           }).then(response => {
             console.log(response)
-            this.feedbackFormStatus(response.data.status === 0, response.data.data)
-            // window.history.go(-1)
+            this.feedbackFormStatus(response.data.status === 0)
           }).catch(error => {
             console.log(error)
           })
@@ -230,15 +236,14 @@ export default {
     },
     /* 编辑策略 end */
     // 回馈提交状态
-    feedbackFormStatus (bool, message) {
+    feedbackFormStatus (bool) {
       if (bool) {
         this.$Message.success('操作成功！')
         setTimeout(function () {
-          history.go(-1)
+          window.location.href = './compAlertList.html?token=' + this.getRequest().token
         }, 800)
       } else {
         this.$Message.error('操作失败！')
-        this.$Message.error(message)
       }
     },
     getRequest () {
@@ -404,12 +409,13 @@ export default {
         arr.push(this.add_page.instance_group[i].instance_id)
       }
       this.formDataAddAlert.instance_id = arr
-      for (let i = 0; i < this.add_page.metric_info.length; i++) {
-        this.formDataAddAlert.operator_id[i] = this.add_page.metric_info[i].operator
-        this.formDataAddAlert.threshold[i] = this.add_page.metric_info[i].threshold
-        this.formDataAddAlert.period_id[i] = this.add_page.metric_info[i].period
+      for (let j = 0; j < this.add_page.metric_info.length; j++) {
+        this.formDataAddAlert.operator_id[j] = this.add_page.metric_info[j].operator
+        this.formDataAddAlert.threshold[j] = this.add_page.metric_info[j].threshold
+        this.formDataAddAlert.period_id[j] = this.add_page.metric_info[j].period
       }
-      this.formDataAddAlert.dingdingName = this.add_page.dingding_name
+      this.formDataAddAlert.dingding_name = this.add_page.dingding_name
+      this.formDataAddAlert.token = this.add_page.token
     })
   }
 }
