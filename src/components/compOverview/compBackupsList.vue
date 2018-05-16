@@ -167,7 +167,8 @@ export default {
               attrs: {
                 // type: 'primary'
               }
-            }, params.row.status === '已完成' ? '启用' : '停用')
+            // }, params.row.status === '已完成' ? '启用' : '停用')
+            }, params.row.status === 1 ? '启用' : '停用')
           }
         }
       ],
