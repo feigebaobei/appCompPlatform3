@@ -522,7 +522,6 @@ export default {
       if (bool) {
         this.$Message.success('操作成功！')
         setTimeout(function () {
-          this.$Message.success(message)
           history.go(0)
         }, 800)
       } else {

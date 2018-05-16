@@ -120,7 +120,7 @@ export default {
               attrs: {
                 href: `./compAuditEdit.html?id=${params.row.id}&operator=${params.row.audit_text === '审核' ? 'audit' : 'midify'}&token=${this.$store.getters.getUserInfo.token}`
               }
-            }, '审核')
+            }, params.row.audit_text)
           }
         }
       ],

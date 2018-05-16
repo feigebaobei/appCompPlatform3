@@ -131,7 +131,7 @@ export default {
         }, 800)
       } else {
         this.$Message.error('操作失败！')
-        this.$Message.success(message)
+        this.$Message.error(message)
       }
     },
     getRequest () {

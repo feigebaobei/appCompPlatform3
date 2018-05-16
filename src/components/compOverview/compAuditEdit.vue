@@ -136,12 +136,10 @@ export default {
           { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' }
         ],
         hostname1: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' }
         ],
         hostname2: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' }
         ],
         bind_cpu: [
           { required: true, message: '请输入cpu核数', pattern: /.+/, trigger: 'blur' },
@@ -203,11 +201,12 @@ export default {
       })
     },
     // 回馈提交状态
-    feedbackFormStatus (bool) {
+    feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
       } else {
         this.$Message.error('操作失败！')
+        this.$Message.error(message)
       }
     },
     /* 验证 start */

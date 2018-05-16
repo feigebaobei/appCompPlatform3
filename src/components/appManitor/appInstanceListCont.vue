@@ -576,7 +576,7 @@ export default {
       if (bool) {
         this.$Message.success('操作成功！')
         setTimeout(function () {
-          this.$Message.success(message)
+          history.go(-1)
         }, 800)
       } else {
         this.$Message.error('操作失败！')
