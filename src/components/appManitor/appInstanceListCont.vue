@@ -630,7 +630,7 @@ export default {
       this.responseInstanceList = response
       this.selectInstanceListData()
       // console.log(this.responseInstanceList)
-      this.setSelect()
+      // this.setSelect()
     })
     //
     // var that = this

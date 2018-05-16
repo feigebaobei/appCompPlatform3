@@ -178,6 +178,7 @@ export default {
       if (bool) {
         this.$Message.success('操作成功！')
         setTimeout(function () {
+          history.go(0)
           this.$Message.success(message)
         }, 800)
       } else {

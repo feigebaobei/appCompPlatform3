@@ -2,7 +2,7 @@
   <div>
     <Row style="margin: 0 0 15px 0;" :gutter="25">
       <Col span="10">
-        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
+        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id/申请部门" style="padding: 0 0 0 10px;"></Input>
       </Col>
       <Col span="4">
         <Button type="primary" class="retrievalBtn" @click="selectInstanceListData(searchText)">检索</Button>
@@ -35,18 +35,20 @@ export default {
           title: 'id',
           key: 'id',
           align: 'center',
-          width: 80
+          width: 80,
+          sortable: true
         },
         {
           title: '实例名称',
           key: 'name',
           align: 'center',
-          width: 120
+          width: 120,
+          sortable: true
         },
         {
           title: '组件类型',
           key: 'name',
-          align: '',
+          align: 'center',
           width: 120
         },
         {
@@ -76,7 +78,37 @@ export default {
           title: '状态',
           key: 'status',
           align: 'center',
-          width: 80
+          width: 80,
+          filters: [
+            {
+              label: '未审核',
+              value: '未审核'
+            },
+            {
+              label: '软件安装中',
+              value: '软件安装中'
+            },
+            {
+              label: '已审核',
+              value: '已审核'
+            },
+            {
+              label: '已驳回',
+              value: '已驳回'
+            }
+          ],
+          filterMethod (value, row) {
+            switch (value) {
+              case '未审核':
+                return row.status === '未审核'
+              case '软件安装中':
+                return row.status === '软件安装中'
+              case '已审核':
+                return row.status === '已审核'
+              case '已驳回':
+                return row.status === '已驳回'
+            }
+          }
         },
         {
           title: '操作',
@@ -155,7 +187,7 @@ export default {
         }
       } else {
         for (i = 0, iLen = data.length; i < iLen; i++) {
-          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
+          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1 || data[i].department_name.indexOf(condition) !== -1) {
             obj = {}
             obj.application_id = data[i].application_id
             obj.application_name = data[i].application_name

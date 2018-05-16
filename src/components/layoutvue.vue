@@ -514,6 +514,7 @@ export default {
     vuexStore () {
       var pageInfo = window.localStorage.pageInfo
       console.log(pageInfo)
+      if (pageInfo === undefined) { return '' }
       this.$store.dispatch('setPageInfo', JSON.parse(pageInfo))
     }
   },

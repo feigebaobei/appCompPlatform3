@@ -91,6 +91,8 @@ export default {
   methods: {
     tabActive () {
       var pageInfoStr = window.localStorage.pageInfo
+      console.log(pageInfoStr)
+      if (pageInfoStr === undefined) { return 'one' }
       var pageInfo = JSON.parse(pageInfoStr)
       console.log(pageInfo)
       return pageInfo.appInstanceList.curTab

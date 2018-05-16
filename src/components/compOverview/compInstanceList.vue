@@ -2,7 +2,7 @@
   <div>
     <Row :gutter="25" style="margin: 24px 0">
       <Col span="8">
-        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
+        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id/所属应用" style="padding: 0 0 0 10px;"></Input>
       </Col>
       <Col span="8">
         <Button type="primary" @click="selectedInstanceData(searchText)">检索</Button>
@@ -241,7 +241,7 @@ export default {
         }
       } else {
         for (i = 0, iLen = data.length; i < iLen; i++) {
-          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
+          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1 || data[i].application_name.indexOf() !== -1) {
             obj = {}
             obj.application_name = data[i].application_name
             obj.audit_text = data[i].audit_text
