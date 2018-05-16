@@ -523,7 +523,7 @@ export default {
       if (bool) {
         this.$Message.success('操作成功！')
         setTimeout(function () {
-          window.location.reload()
+          history.go(0)
         }, 800)
       } else {
         this.$Message.error('操作失败！')
