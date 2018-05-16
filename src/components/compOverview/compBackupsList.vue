@@ -269,7 +269,7 @@ export default {
         case '已停用':
           this.$axios({
             method: 'get',
-            url: 'http://infra.xesv5.com/api/alarm/start_alarm/id/' + curRowData.id + '?token=' + this.getRequest().token
+            url: 'http://infra.xesv5.com/api/backup/start/id/' + curRowData.id + '?token=' + this.getRequest().token
           }).then(response => {
             console.log(response)
             this.modalOperate = false

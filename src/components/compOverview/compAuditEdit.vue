@@ -49,6 +49,9 @@
           <Radio v-for="item in auditEdit.op_status" :key="item.id" :label="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
+      <FormItem v-if="formItem.status === 2">
+        <Button type="primary" @click="handleSubmit2('formItem')">Submit</Button>
+      </FormItem>
       <Card dis-hover v-if="formItem.status === 1">
         <p slot="title">实例配置</p>
         <FormItem label="v ip" prop="vip">
@@ -130,8 +133,7 @@ export default {
           { required: true, message: '请选择操作结果', pattern: /.+/, trigger: 'blur' }
         ],
         hostname_master: [
-          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
-          {validator: this.validatePort, trigger: 'change'}
+          { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' }
         ],
         hostname1: [
           { required: true, message: '请输入正确格式ip', pattern: /.+/, trigger: 'blur' },
@@ -167,6 +169,27 @@ export default {
               hostname_master: this.formItem.hostname_master,
               hostname: [this.formItem.hostname1, this.formItem.hostname2],
               bind_cpu: this.formItem.bind_cpu
+            })
+          }).then(res => {
+            console.log(res)
+            this.feedbackFormStatus(res.data.status === 0, res.data.data)
+          }).catch(err => {
+            console.log(err)
+          })
+        } else {
+          this.feedbackFormStatus(false)
+        }
+      })
+    },
+    handleSubmit2 (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$axios({
+            method: 'post',
+            url: 'http://infra.xesv5.com/api/redis/audit?token=' + this.getRequest().token,
+            data: this.qs.stringify({
+              id: this.getRequest().id,
+              status: this.formItem.status
             })
           }).then(res => {
             console.log(res)

@@ -112,7 +112,6 @@ export default {
           }).then(response => {
             console.log(response)
             this.feedbackFormStatus(response.data.status === 0, response.data.data)
-            window.history.go(-1)
           }).catch(error => {
             console.log(error)
           })
@@ -124,11 +123,15 @@ export default {
     handleResetAndAlert (name) {
       this.$refs[name].resetFields()
     },
-    feedbackFormStatus (bool) {
+    feedbackFormStatus (bool, message) {
       if (bool) {
         this.$Message.success('操作成功！')
+        setTimeout(function () {
+          window.history.go(-1)
+        }, 800)
       } else {
         this.$Message.error('操作失败！')
+        this.$Message.success(message)
       }
     },
     getRequest () {
