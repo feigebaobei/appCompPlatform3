@@ -20,7 +20,7 @@
       <Col span="4"><h6>组件类型</h6></Col>
       <Col span="8" v-html="auditEdit.component_name"></Col>
       <Col span="4"><h6>所属应用</h6></Col>
-      <Col span="8" v-html="auditEdit.application_name"></Col>
+      <Col span="8" v-html="auditEdit.application_name.name"></Col>
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请人</h6></Col>
@@ -30,7 +30,7 @@
     </Row>
     <Row type="flex" justify="center" class="code-row-bg">
       <Col span="4"><h6>申请类型</h6></Col>
-      <Col span="8" v-html="auditEdit.apply_type"></Col>
+      <Col span="8" v-html="auditEdit.apply_name"></Col>
       <Col span="4"><h6>申请时间</h6></Col>
       <Col span="8" v-html="auditEdit.create_time"></Col>
     </Row>
@@ -43,39 +43,39 @@
         <h1>审核意见</h1>
       </Col>
     </Row>
-    <Form ref="formItem" :model="formItem" :label-width="80" :rules="ruleValidate">
-      <FormItem>
+    <Form ref="formItem" :model="formItem" :label-width="100" :rules="ruleValidate">
+      <FormItem prop="status">
         <RadioGroup v-model="formItem.status">
           <Radio v-for="item in auditEdit.op_status" :key="item.id" :label="item.id">{{item.name}}</Radio>
         </RadioGroup>
       </FormItem>
       <Card dis-hover v-if="formItem.status === 1">
         <p slot="title">实例配置</p>
-        <FormItem label="v ip">
+        <FormItem label="v ip" prop="vip">
             <Input v-model="formItem.vip"></Input>
         </FormItem>
-        <FormItem label="master ip">
+        <FormItem label="master ip" prop="master_ip">
             <Input v-model="formItem.master_ip"></Input>
         </FormItem>
-        <FormItem label="hostname_master">
+        <FormItem label="hostname_master" prop="hostname_master">
             <Input v-model="formItem.hostname_master"></Input>
         </FormItem>
-        <FormItem label="slave1 ip">
+        <FormItem label="slave1 ip" prop="slave_ip1">
             <Input v-model="formItem.slave_ip1"></Input>
         </FormItem>
-        <FormItem label="hostname1">
+        <FormItem label="hostname1" prop="hostname1">
             <Input v-model="formItem.hostname1"></Input>
         </FormItem>
-        <FormItem label="slave2 ip">
+        <FormItem label="slave2 ip" prop="slave_ip2">
             <Input v-model="formItem.slave_ip2"></Input>
         </FormItem>
-        <FormItem label="hostname2">
+        <FormItem label="hostname2" prop="hostname2">
             <Input v-model="formItem.hostname2"></Input>
         </FormItem>
-        <FormItem label="port">
+        <FormItem label="port" prop="port">
             <Input v-model="formItem.port"></Input>
         </FormItem>
-        <FormItem label="cpu核数">
+        <FormItem label="cpu核数" prop="cpu_kernel">
             <Input v-model="formItem.cpu_kernel"></Input>
         </FormItem>
         <FormItem>
@@ -257,5 +257,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .code-row-bg{
+    margin: 5px 0 5px 0;
+  }
 </style>
