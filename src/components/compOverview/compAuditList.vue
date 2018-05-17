@@ -47,7 +47,7 @@ export default {
         },
         {
           title: '组件类型',
-          key: 'name',
+          key: 'component_type',
           align: 'center',
           width: 120
         },
@@ -141,6 +141,8 @@ export default {
           obj.apply_id = data[i].apply_id
           obj.apply_type = data[i].apply_type
           obj.audit_text = data[i].audit_text
+          obj.component_name = data[i].component_name
+          obj.component_type = data[i].component_type
           obj.department_name = data[i].department_name
           obj.id = data[i].id
           obj.name = data[i].name
@@ -176,6 +178,8 @@ export default {
           obj.apply_id = data[i].apply_id
           obj.apply_type = data[i].apply_type
           obj.audit_text = data[i].audit_text
+          obj.component_name = data[i].component_name
+          obj.component_type = data[i].component_type
           obj.department_name = data[i].department_name
           obj.id = data[i].id
           obj.name = data[i].name
@@ -194,6 +198,8 @@ export default {
             obj.apply_id = data[i].apply_id
             obj.apply_type = data[i].apply_type
             obj.audit_text = data[i].audit_text
+            obj.component_name = data[i].component_name
+            obj.component_type = data[i].component_type
             obj.department_name = data[i].department_name
             obj.id = data[i].id
             obj.name = data[i].name

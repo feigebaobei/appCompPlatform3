@@ -2,7 +2,7 @@
   <div>
     <Row type="flex" justify="start" align="middle" :gutter="15">
       <Col span="10">
-        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id" style="padding: 0 0 0 10px;"></Input>
+        <Input v-model="searchText" type="text" class="text" placeholder="实例名称/实例id/所属应用" style="padding: 0 0 0 10px;"></Input>
       </Col>
       <Col span="4">
         <Button type="default" class="retrievalBtn" @click="selectInstanceListData(searchText)">检索</Button>
@@ -107,6 +107,12 @@ export default {
           align: 'center',
           key: 'application_name',
           width: 100
+          // filters: [],
+          // filterMultiple: false,
+          // filterMethod (value, row) {
+          //   console.log(value, row)
+          //   return row.application_name === value
+          // }
         },
         {
           title: 'cpu',
@@ -515,7 +521,7 @@ export default {
         }
       } else {
         for (i = 0, iLen = data.length; i < iLen; i++) {
-          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1) {
+          if (data[i].name.indexOf(condition) !== -1 || data[i].id.toString().indexOf(condition) !== -1 || data[i].application_name.indexOf(condition) !== -1) {
             obj = {}
             obj.application_name = data[i].application_name
             obj.audit_text = data[i].audit_text
@@ -631,6 +637,14 @@ export default {
       this.selectInstanceListData()
       // console.log(this.responseInstanceList)
       // this.setSelect()
+      // var appGroup = this.responseInstanceList.data.data.extraData.application_group
+      // console.log(appGroup)
+      // for (var i = 0, iLen = appGroup.length; i < iLen; i++) {
+      //   this.instanceListColumns[6].filters.push({
+      //     label: appGroup[i].name,
+      //     value: appGroup[i].id
+      //   })
+      // }
     })
     //
     // var that = this
